@@ -65,3 +65,6 @@
 (setq column-number-mode t)
 
 (ac-config-default)
+
+
+(setq browse-url-browser-function 'browse-url-chromium)
