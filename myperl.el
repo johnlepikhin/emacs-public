@@ -22,10 +22,20 @@
 
 
 (require 'dropdown-list)
-
+(require 'rfringe)
 (require 'flymake)
+
+(defun my-copy-flymake-error()
+  (interactive)
+  (let ((err (get-char-property (point) 'help-echo)))
+    (when err
+      (progn
+        (message "Copied warning to kill-ring")
+        (kill-new err)))))
+  
 (global-set-key [f3] 'flymake-display-err-menu-for-current-line)
 (global-set-key [f4] 'flymake-goto-next-error)
+(global-set-key [(control f4)] 'my-copy-flymake-error)
 
 (require 'flymake-perlcritic)
 
