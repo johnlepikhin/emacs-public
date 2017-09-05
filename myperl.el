@@ -32,8 +32,26 @@
       (progn
         (message "Copied warning to kill-ring")
         (kill-new err)))))
-  
+
+(defun google-pbp-module (module)
+  "Google for Perl best practices module"
+  (interactive)
+  (progn
+    (google-this-parse-and-search-string
+     (concat "site:search.cpan.org \"Perl::Critic::Policy::" module "\"")
+     nil (google-this-lucky-search-url))
+    (message (concat "Googling for " module))))
+
+(defun my-search-flymake-error()
+  (interactive)
+  (let ((err (get-char-property (point) 'help-echo)))
+    (when err
+      (if (string-match ", \\([A-Z][A-Za-z0-9]+::[A-Z][A-Za-z0-9:]+\\))" err)
+          (google-pbp-module (match-string 1 err))
+        (google-this-string nil err 'noconfirm)))))
+
 (global-set-key [f3] 'flymake-display-err-menu-for-current-line)
+(global-set-key [(control f3)] 'my-search-flymake-error)
 (global-set-key [f4] 'flymake-goto-next-error)
 (global-set-key [(control f4)] 'my-copy-flymake-error)
 
