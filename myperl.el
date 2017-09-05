@@ -81,12 +81,38 @@
               (insert "\n## use critic"))))
       (message "No error found here"))))
 
-(global-set-key [f3] 'flymake-display-err-menu-for-current-line)
-(global-set-key [(control f3)] 'my-search-flymake-error)
-(global-set-key [f4] 'flymake-goto-next-error)
-(global-set-key [(control f4)] 'my-copy-flymake-error)
-(global-set-key [f5] 'perlcritic-disable-for-line)
-(global-set-key (kbd "C-c / p") 'google-cpan-word)
+(defun perl-insert-sub-documentation-template ()
+  (interactive)
+  (move-beginning-of-line nil)
+  (insert (concat "=over\n\n=item " subname " ()\n\n... Description ...\n\nB<Input:> \n\nB<Output:> \n\n=back\n\n=cut\n")))
+
+(defun perl-document-current-function ()
+  (interactive)
+  (progn
+    (beginning-of-defun)
+    (let ((line (thing-at-point 'line t)))
+      (when (string-match "[[:space:]]*sub[[:space:]]+\\([a-zA-Z0-9_]+\\)" line)
+        (let ((subname (match-string 1 line)))
+          (progn
+            (previous-line)
+            (when (string= "\n" (thing-at-point 'line t))
+              (previous-line))
+            (when (not (string= "=cut\n" (thing-at-point 'line t)))
+              (progn
+                (word-search-forward "sub")
+                (perl-insert-sub-documentation-template)))))))))
+          
+(add-hook
+ 'cperl-mode-hook
+ (lambda ()
+   (progn
+     (local-set-key [f3] 'flymake-display-err-menu-for-current-line)
+     (local-set-key [(control f3)] 'my-search-flymake-error)
+     (local-set-key [f4] 'flymake-goto-next-error)
+     (local-set-key [(control f4)] 'my-copy-flymake-error)
+     (local-set-key [f5] 'perlcritic-disable-for-line)
+     (local-set-key (kbd "C-c / p") 'google-cpan-word)
+     (local-set-key (kbd "C-x C-M-a") 'perl-document-current-function))))
 
 (require 'flymake-perlcritic)
 
