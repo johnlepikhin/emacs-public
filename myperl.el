@@ -33,27 +33,60 @@
         (message "Copied warning to kill-ring")
         (kill-new err)))))
 
-(defun google-pbp-module (module)
-  "Google for Perl best practices module"
+(defun google-cpan (string)
+  "Google CPAN for string"
   (interactive)
   (progn
     (google-this-parse-and-search-string
-     (concat "site:search.cpan.org \"Perl::Critic::Policy::" module "\"")
+     (concat "site:search.cpan.org " string)
      nil (google-this-lucky-search-url))
-    (message (concat "Googling for " module))))
+    (message (concat "Search CPAN for " string))))
+
+(defun google-pbp-module (module)
+  "Google for Perl best practices module"
+  (interactive)
+  (google-cpan (concat "\"Perl::Critic::Policy::" module "\"")))
+
+(defun google-cpan-word ()
+  "Google CPAN for word at point"
+  (interactive)
+  (google-cpan (thing-at-point 'word)))
+
+(defun perlcritic-extract-module (string)
+  (interactive)
+  (if (string-match ", \\([A-Z][A-Za-z0-9]+::[A-Z][A-Za-z0-9:]+\\))" string)
+      (match-string 1 string)
+    nil))
 
 (defun my-search-flymake-error()
   (interactive)
   (let ((err (get-char-property (point) 'help-echo)))
     (when err
-      (if (string-match ", \\([A-Z][A-Za-z0-9]+::[A-Z][A-Za-z0-9:]+\\))" err)
-          (google-pbp-module (match-string 1 err))
-        (google-this-string nil err 'noconfirm)))))
+      (let ((pbp-module (perlcritic-extract-module err)))
+        (if pbp-module
+            (google-pbp-module pbp-module)
+          (google-this-string nil err 'noconfirm))))))
+
+(defun perlcritic-disable-for-line ()
+  (interactive)
+  (let ((err (get-char-property (point) 'help-echo)))
+    (if err
+      (let ((pbp-module (perlcritic-extract-module err)))
+        (if pbp-module
+            (progn
+              (move-beginning-of-line nil)
+              (insert (concat "## no critic (" pbp-module) ")\n")
+              (indent-according-to-mode)
+              (move-end-of-line nil)
+              (insert "\n## use critic"))))
+      (message "No error found here"))))
 
 (global-set-key [f3] 'flymake-display-err-menu-for-current-line)
 (global-set-key [(control f3)] 'my-search-flymake-error)
 (global-set-key [f4] 'flymake-goto-next-error)
 (global-set-key [(control f4)] 'my-copy-flymake-error)
+(global-set-key [f5] 'perlcritic-disable-for-line)
+(global-set-key (kbd "C-c / p") 'google-cpan-word)
 
 (require 'flymake-perlcritic)
 
