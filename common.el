@@ -66,6 +66,7 @@
 
 (ac-config-default)
 
+(setq browse-url-browser-function 'browse-url-chromium)
 
 ;; isearch keybindings
 

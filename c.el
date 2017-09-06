@@ -1,7 +1,20 @@
 
 (require 'xcscope)
 
-(setq c-default-style "linux")
+(setq c-default-style "gnu")
+
+; Semantic
+(global-semantic-idle-completions-mode t)
+(global-semantic-decoration-mode t)
+(global-semantic-highlight-func-mode t)
+(global-semantic-show-unmatched-syntax-mode t)
+
+;; CC-mode
+(add-hook 'c-mode-hook '(lambda ()
+        (setq ac-sources (append '(ac-source-semantic) ac-sources))
+        (local-set-key (kbd "RET") 'newline-and-indent)
+        (linum-mode t)
+        (semantic-mode t)))
 
 ;; (require 'ggtags)
 
