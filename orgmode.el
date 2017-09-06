@@ -1,4 +1,6 @@
 
+(require 'org)
+
 (require 'package)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
@@ -15,6 +17,7 @@
 (add-to-list 'org-modules 'org-checklist)
 (add-to-list 'org-modules 'org-gnus)
 (add-to-list 'org-modules 'org-mouse)
+(add-to-list 'org-modules 'org-attach-screenshot)
 
 
 (require 'ox-latex)
@@ -33,3 +36,5 @@
        ("" "amssymb" t)
        ("" "capt-of" nil)
        ("" "hyperref" nil)))
+
+;(require 'org-attach-screenshot)
