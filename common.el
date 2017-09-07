@@ -48,6 +48,8 @@
 
 (setq comment-style 'multi-line)
 
+(global-set-key [C-return] (lambda () (interactive) (point-to-register 'r)))
+(global-set-key [M-return] (lambda () (interactive) (jump-to-register 'r)))
 
 ;; my coordinates
 
