@@ -86,6 +86,13 @@
   (move-beginning-of-line nil)
   (insert (concat "=over\n\n=item " subname " ()\n\n... Description ...\n\nB<Input:> \n\nB<Output:> \n\n=back\n\n=cut\n")))
 
+(defun perl-insert-sub-template ()
+  (interactive)
+  (move-beginning-of-line nil)
+  (insert "sub ")
+  (save-mark-and-excursion
+   (insert " {\n\nreturn;\n}\n")))
+
 (defun perl-document-current-function ()
   (interactive)
   (progn
@@ -112,7 +119,8 @@
      (local-set-key [(control f4)] 'my-copy-flymake-error)
      (local-set-key [f5] 'perlcritic-disable-for-line)
      (local-set-key (kbd "C-c / p") 'google-cpan-word)
-     (local-set-key (kbd "C-x C-M-a") 'perl-document-current-function))))
+     (local-set-key (kbd "C-x C-M-c") 'perl-document-current-function)
+     (local-set-key (kbd "C-x C-M-s") 'perl-insert-sub-template))))
 
 (require 'flymake-perlcritic)
 
