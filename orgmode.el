@@ -11,7 +11,9 @@
 (setq org-log-done t)
 
 
-(setq org-agenda-files (list "~/.emacs.d/org/"))
+(load-library "find-lisp")
+(setq org-agenda-files
+      (find-lisp-find-files "~/org/" "\.org$"))
 
 (add-to-list 'org-modules 'org-id)
 (add-to-list 'org-modules 'org-checklist)
@@ -37,4 +39,24 @@
        ("" "capt-of" nil)
        ("" "hyperref" nil)))
 
-;(require 'org-attach-screenshot)
+(setq org-latex-logfiles-extensions '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "log" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv" "tex"))
+
+(require 'ob-ruby)
+(require 'ob-perl)
+(require 'ob-sh)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((perl . t)
+   (sh . t)
+   (latex . t)
+   (emacs-lisp . t)))
+
+(add-hook
+ 'org-mode-hook
+ (lambda ()
+   (progn
+     (local-unset-key [C-return])
+     (local-unset-key [M-return])
+     (local-unset-key [M-left])
+     (local-unset-key [M-right]))))
