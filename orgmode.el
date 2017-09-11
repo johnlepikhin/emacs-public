@@ -11,7 +11,8 @@
 (setq org-log-done t)
 
 
-(load-library "find-lisp")
+(require 'find-lisp)
+
 (setq org-agenda-files
       (find-lisp-find-files "~/org/" "\.org$"))
 
