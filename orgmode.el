@@ -13,8 +13,12 @@
 
 (require 'find-lisp)
 
-(setq org-agenda-files
-      (find-lisp-find-files "~/org/" "\.org$"))
+(defun update-agenda-files-list ()
+  (interactive)
+  (setq org-agenda-files
+        (find-lisp-find-files "~/org/" "\.org$")))
+
+(run-with-timer 0 600 'update-agenda-files-list)
 
 (add-to-list 'org-modules 'org-id)
 (add-to-list 'org-modules 'org-checklist)
@@ -45,6 +49,7 @@
 (require 'ob-ruby)
 (require 'ob-perl)
 (require 'ob-sh)
+(require 'ob-sql)
 
 (org-babel-do-load-languages
  'org-babel-load-languages

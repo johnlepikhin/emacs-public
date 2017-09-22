@@ -119,7 +119,7 @@
      (local-set-key [(control f4)] 'my-copy-flymake-error)
      (local-set-key [f5] 'perlcritic-disable-for-line)
      (local-set-key (kbd "C-c / p") 'google-cpan-word)
-     (local-set-key (kbd "C-x C-M-c") 'perl-document-current-function)
+     (local-set-key (kbd "C-x C-M-d") 'perl-document-current-function)
      (local-set-key (kbd "C-x C-M-s") 'perl-insert-sub-template))))
 
 (require 'flymake-perlcritic)
