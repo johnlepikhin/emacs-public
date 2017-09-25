@@ -50,6 +50,7 @@
 (require 'ob-perl)
 (require 'ob-sh)
 (require 'ob-sql)
+(require 'ob-plantuml)
 
 (org-babel-do-load-languages
  'org-babel-load-languages
