@@ -4,7 +4,12 @@
 (global-set-key [M-left] 'tabbar-backward-tab)
 (global-set-key [M-right] 'tabbar-forward-tab)
 
+(defun my-modification-state-change ()
+  (tabbar-set-template tabbar-current-tabset nil)
+  (tabbar-display-update))
 
+(add-hook 'after-save-hook 'my-modification-state-change)
+(add-hook 'first-change-hook 'my-modification-state-change)
 
 (defun my-tabbar-buffer-groups () ;; customize to show all normal files in one group
    "Returns the name of the tab group names the current buffer belongs to.
