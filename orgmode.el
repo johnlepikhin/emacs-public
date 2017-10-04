@@ -57,6 +57,7 @@
  '((perl . t)
    (sh . t)
    (latex . t)
+   (dot . t)
    (emacs-lisp . t)))
 
 (add-hook
