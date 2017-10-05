@@ -5,3 +5,5 @@
 (global-set-key "\C-cgT" 'google-translate-query-translate)
 (setq google-translate-default-target-language "ru")
 (setq google-translate-default-source-language "auto")
+
+(provide 'my-google-translate)
