@@ -70,3 +70,12 @@
      (local-unset-key [M-return])
      (local-unset-key [M-left])
      (local-unset-key [M-right]))))
+
+(defun my/org-confirm-babel-evaluate (lang body)
+  (not (or
+        (string= lang "latex")
+        (string= lang "dot")
+        (string= lang "graphviz")
+        (string= lang "gnuplot")
+        (string= lang "plantuml"))))
+(setq org-confirm-babel-evaluate 'my/org-confirm-babel-evaluate)
