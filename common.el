@@ -22,6 +22,8 @@
 ;; disable backup files
 (setq make-backup-files nil)
 
+;; save minubuffer history
+(savehist-mode 1)
 
 ;; show matched paren
 (global-set-key (kbd "C-`") 'match-paren)
