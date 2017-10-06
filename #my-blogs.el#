@@ -1,0 +1,86 @@
+
+(
+
+(require 'org-page)
+(require 'blog-admin)
+
+;; common settings
+
+(setq httpd-port 9999
+      org-plantuml-jar-path "~/bin/plantuml.jar"
+      op/highlight-render 'htmlize
+      blog-admin-backend-type 'org-page
+      blog-admin-backend-new-post-in-drafts t
+      blog-admin-backend-new-post-with-same-name-dir t
+      blog-admin-backend-org-page-drafts "_drafts"
+      org-export-default-language "ru"
+      op/export-backend 'my-html
+      op/personal-avatar "https://avatars0.githubusercontent.com/u/381986?v=4&s=80"
+      op/theme-root-directory "~/blogs/themes"
+      op/personal-github-link "https://github.com/johnlepikhin")
+
+(defun configure-blog (directory domain master-branch html-branch main-title uri-prefix subtitle theme)
+  (interactive)
+  (progn
+    (setq op/repository-directory directory
+          blog-admin-backend-path directory
+          op/site-domain domain
+          op/repository-org-branch master-branch
+          op/repository-html-branch html-branch
+          op/site-main-title main-title
+          op/site-sub-title subtitle
+          op/theme theme)))
+
+;; YouTube support
+
+(defvar yt-iframe-format
+  ;; You may want to change your width and height.
+  (concat "<iframe width=\"440\""
+          " height=\"335\""
+          " src=\"https://www.youtube.com/embed/%s\""
+          " frameborder=\"0\""
+          " allowfullscreen>%s</iframe>"))
+
+(org-add-link-type
+ "yt"
+ (lambda (handle)
+   (browse-url
+    (concat "https://www.youtube.com/embed/"
+            handle)))
+ (lambda (path desc backend)
+   (cl-case backend
+     (html (format yt-iframe-format
+                   path (or desc "")))
+     (latex (format "\href{%s}{%s}"
+                    path (or desc "video"))))))
+
+;; Hyphenation
+
+(defun my-hyphenize-russian (input hyphen)
+  (interactive)
+  (with-temp-buffer
+    (progn
+      (insert input)
+      (call-process-region
+       (point-min)
+       (point-max)
+       "~/bin/hyphen/russian/russian-hyphen.pl"
+       t
+       t
+       nil
+       "--hyphenize-stdin"
+       (concat "--hyphen-char=" hyphen))
+      (buffer-string))))
+
+(org-export-define-derived-backend 'my-html 'html
+  :translate-alist '((plain-text . my-html-improvements)
+                     (template . my-html-improvements)))
+
+(defun my-html-improvements (contents info)
+  (my-hyphenize-russian contents "&shy;"))
+
+;;
+
+(defalias 'blog-post 'op/new-post)
+
+(provide 'my-blogs)
