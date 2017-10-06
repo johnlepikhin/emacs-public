@@ -19,7 +19,7 @@
       op/theme-root-directory "~/blogs/themes"
       op/personal-github-link "https://github.com/johnlepikhin")
 
-(defun configure-blog (directory domain master-branch html-branch main-title uri-prefix subtitle theme)
+(defun configure-blog (directory domain master-branch html-branch main-title uri-prefix subtitle theme google-analytics)
   (interactive)
   (progn
     (setq op/repository-directory directory
@@ -29,15 +29,14 @@
           op/repository-html-branch html-branch
           op/site-main-title main-title
           op/site-sub-title subtitle
-          op/theme theme)))
+          op/theme theme
+          op/personal-google-analytics-id google-analytics)))
 
 ;; YouTube support
 
 (defvar yt-iframe-format
   ;; You may want to change your width and height.
-  (concat "<iframe width=\"440\""
-          " height=\"335\""
-          " src=\"https://www.youtube.com/embed/%s\""
+  (concat "<div class=\"yt-container\"><iframe src=\"https://www.youtube.com/embed/%s\""
           " frameborder=\"0\""
           " allowfullscreen>%s</iframe>"))
 
