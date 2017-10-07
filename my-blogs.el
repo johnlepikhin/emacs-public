@@ -90,4 +90,13 @@
   (interactive)
   (op/do-publication t "HEAD~1" nil t t))
 
+(defun blog-insert-image-by-url (url filename)
+  (interactive "MURL: \nMFile: ")
+  (if (not (string= major-mode "org-mode"))
+      (error "Error major mode is not org-mode"))
+  (setq filename (concat "./images/" filename))
+  (mkdir "images")
+  (url-copy-file url filename)
+  (insert (concat "file:" filename)))
+
 (provide 'my-blogs)
