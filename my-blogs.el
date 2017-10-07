@@ -95,7 +95,7 @@
   (if (not (string= major-mode "org-mode"))
       (error "Error major mode is not org-mode"))
   (setq filename (concat "./images/" filename))
-  (mkdir "images")
+  (mkdir "images" t)
   (url-copy-file url filename)
   (insert (concat "file:" filename)))
 
