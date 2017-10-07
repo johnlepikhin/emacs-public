@@ -1,0 +1,67 @@
+
+(setq home-directory (getenv "HOME"))
+
+;; update PATH
+(setenv "PATH" (concat (getenv "PATH") ":" home-directory "/bin:" home-directory "/perl5/bin"))
+
+(exec-path-from-shell-initialize)
+
+; (add-to-list 'exec-path `(concat home-directory "/bin"))
+; (add-to-list 'exec-path `(concat home-directory "/perl5/bin"))
+; (setq exec-path
+;       (let ((newdirs '(`(concat home-directory "/bin")
+;                        `(concat home-directory "/perl5/bin"))))
+;         (append exec-path newdirs)))
+
+;; hide welcome screen
+(setq inhibit-startup-screen t)
+
+;; disable toolbar
+(tool-bar-mode -1)
+
+;; disable backup files
+(setq make-backup-files nil)
+
+
+;; show matched paren
+(global-set-key "%" 'match-paren)
+
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren; otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+        (t (self-insert-command (or arg 1)))))
+
+
+(defun comment-dwim-line-or-region ()
+  "[Un]comment line or region"
+  (interactive)
+  (if mark-active
+      (comment-dwim t)
+    (progn
+      (comment-line 1)
+      (previous-line))))
+
+(global-set-key (kbd "C-;") 'comment-dwim-line-or-region)
+
+
+(setq comment-style 'multi-line)
+
+
+;; my coordinates
+
+;; Moscow
+
+(setq
+ calendar-location-name "Moscow"
+ calendar-latitude 55.5
+ calendar-longitude 37.4)
+
+;; different things
+
+(setq-default indent-tabs-mode nil)
+(setq line-number-mode t)
+(setq column-number-mode t)
+
+(ac-config-default)
