@@ -9,3 +9,5 @@ PREFIX determines quoting."
   (google-this-region prefix 'noconfirm))
 
 (global-set-key "\C-cgs" 'jl/google-this-region-noconfirm)
+
+(provide 'my-google-search)

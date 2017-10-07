@@ -46,4 +46,4 @@
               (insert " ")))))))
 
 
-(provide 'init-bbdb)
+(provide 'my-bbdb)

@@ -51,6 +51,7 @@
 (require 'ob-sh)
 (require 'ob-sql)
 (require 'ob-plantuml)
+(require 'ob-gnuplot)
 
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -59,6 +60,7 @@
    (latex . t)
    (dot . t)
    (plantuml . t)
+   (gnuplot 't)
    (emacs-lisp . t)))
 
 (add-hook
@@ -69,3 +71,12 @@
      (local-unset-key [M-return])
      (local-unset-key [M-left])
      (local-unset-key [M-right]))))
+
+(defun my/org-confirm-babel-evaluate (lang body)
+  (not (or
+        (string= lang "latex")
+        (string= lang "dot")
+        (string= lang "graphviz")
+        (string= lang "gnuplot")
+        (string= lang "plantuml"))))
+(setq org-confirm-babel-evaluate 'my/org-confirm-babel-evaluate)
