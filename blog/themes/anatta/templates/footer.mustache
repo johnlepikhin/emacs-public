@@ -1,0 +1,71 @@
+    <div>{{! footer}}
+      {{#show-meta}}
+      <div class="post-meta">
+        <span title="Дата создания" class="post-info">{{{date}}}</span>
+        <span title="Дата последнего изменения" class="post-info">{{mod-date}}</span>
+        <span title="Автор" class="post-info">{{author}}</span>
+      </div>
+      <span title="Тэги" class="post-info">Тэги: {{{tag-links}}}</span>
+      {{/show-meta}}
+      {{#show-comment}}
+      <section>
+        <h1>Комментарии (выключены)</h1>
+        {{#disqus-comment}}
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "{{disqus-id}}";
+          var disqus_url = "{{disqus-url}}";
+          var disqus_shortname = '{{disqus-shortname}}';
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        {{/disqus-comment}}
+        {{#duoshuo-comment}}
+        <div class="ds-thread"></div>
+        <script type="text/javascript">
+          var duoshuoQuery = {short_name:'{{duoshuo-shortname}}'};
+          (function() {
+          var ds = document.createElement('script');
+          ds.type = 'text/javascript';ds.async = true;
+          ds.src = 'http://static.duoshuo.com/embed.js';
+          ds.charset = 'UTF-8';
+          (document.getElementsByTagName('head')[0]
+          || document.getElementsByTagName('body')[0]).appendChild(ds);
+          })();
+        </script>
+        {{/duoshuo-comment}}
+       {{#hashover-comment}}
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+       {{/hashover-comment}}
+      </section>
+      {{/show-comment}}
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      {{#google-analytics}}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{google-analytics-id}}"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', '{{google-analytics-id}}');
+        </script>
+      {{/google-analytics}}
+      <div class="footer">
+        <p>
+          Copyleft 2017 - ∞ <a href="mailto:{{email}}">{{author}}</a> (<a href="https://github.com/johnlepikhin">GitHub</a>)
+        </p>
+      </div>
+    </div>

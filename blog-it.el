@@ -1,15 +1,14 @@
 
 (require 'my-blogs)
 
-(defun blog-IT-select ()
+(defun blog-select-IT ()
   (interactive)
   (configure-blog
-   "~/blogs/content/it"
+   "~/blogs/johnlepikhin.github.io"
    "https://johnlepikhin.github.io"
    "source"
    "master"
    "The great nothingness"
-   "/it"
    "."
    'anatta
    "UA-107728320-1"))

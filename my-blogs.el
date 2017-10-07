@@ -16,10 +16,10 @@
       org-export-default-language "ru"
       op/export-backend 'my-html
       op/personal-avatar "https://avatars0.githubusercontent.com/u/381986?v=4&s=80"
-      op/theme-root-directory "~/blogs/themes"
+      op/theme-root-directory "~/.emacs.d/public/blog/themes"
       op/personal-github-link "https://github.com/johnlepikhin")
 
-(defun configure-blog (directory domain master-branch html-branch main-title uri-prefix subtitle theme google-analytics)
+(defun configure-blog (directory domain master-branch html-branch main-title subtitle theme google-analytics)
   (interactive)
   (progn
     (setq op/repository-directory directory
@@ -81,5 +81,13 @@
 ;;
 
 (defalias 'blog-post 'op/new-post)
+
+(defun blog-publish-changes ()
+  (interactive)
+  (op/do-publication nil "HEAD~1" nil t t))
+
+(defun blog-publish-all ()
+  (interactive)
+  (op/do-publication t "HEAD~1" nil t t))
 
 (provide 'my-blogs)
