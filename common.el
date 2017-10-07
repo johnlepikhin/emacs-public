@@ -51,6 +51,11 @@
 (global-set-key [C-return] (lambda () (interactive) (point-to-register 'r)))
 (global-set-key [M-return] (lambda () (interactive) (jump-to-register 'r)))
 
+;; me
+
+(setq user-full-name "Evgenii Lepikhin")
+(setq user-mail-address "johnlepikhin@gmail.com")
+
 ;; my coordinates
 
 ;; Moscow
