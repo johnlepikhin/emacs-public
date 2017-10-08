@@ -38,7 +38,7 @@
   ;; You may want to change your width and height.
   (concat "<div class=\"yt-container\"><iframe src=\"https://www.youtube.com/embed/%s\""
           " frameborder=\"0\""
-          " allowfullscreen>%s</iframe>"))
+          " allowfullscreen>%s</iframe></div>"))
 
 (org-add-link-type
  "yt"
