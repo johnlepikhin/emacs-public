@@ -3,6 +3,7 @@
 
 (require 'org-page)
 (require 'blog-admin)
+(require 'subr-x)
 
 ;; common settings
 
