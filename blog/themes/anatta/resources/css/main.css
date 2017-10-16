@@ -231,7 +231,11 @@ table th.right, table td.right {
 .post .figure {
     filter: grayscale(100%) contrast(115%);
     transition: .2s ease-in-out;
+    display: table;
+    margin: auto;
+    clear: both;
 }
+
 .post .figure:hover {
     filter: grayscale(0%) contrast(100%);
     transition: .2s ease-in-out;
@@ -239,6 +243,34 @@ table th.right, table td.right {
 
 .post img {
     max-width: 100%;
+}
+
+.post .img_left {
+    width: 38%;
+    float: left;
+    margin-top: 1em;
+    margin-right: 1em;
+}
+.post .img_right {
+    width: 38%;
+    float: right;
+    margin-top: 1em;
+    margin-left: 1em;
+}
+.post .img_center {
+    width: 62%;
+    margin-top: 1em;
+    display: table;
+    margin: auto;
+    clear: both;
+}
+
+.post .float_right {
+    width: 38%;
+    float: right;
+    margin-top: 1em;
+    margin-left: 1em;
+    margin-bottom: 1em;
 }
 
 .post div.yt-container {
