@@ -13,7 +13,7 @@
  'c-mode-common-hook
  (lambda ()
    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-     (c-toggle-auto-state 1)
+     (c-toggle-auto-newline -1)
      (setq ac-sources (append '(ac-source-semantic) ac-sources))
      (local-set-key (kbd "RET") 'newline-and-indent)
      (linum-mode t)
