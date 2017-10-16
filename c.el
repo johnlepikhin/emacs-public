@@ -2,22 +2,21 @@
 (require 'xcscope)
 (require 'ggtags)
 
-(setq c-default-style "linux"
-      c-basic-offset 2
-      tab-width 2)
-
-;; CC-mode
-(add-hook 'c-mode-hook '(lambda ()
-        (setq ac-sources (append '(ac-source-semantic) ac-sources))
-        (local-set-key (kbd "RET") 'newline-and-indent)
-        (linum-mode t)
-        (semantic-mode t)))
+(setq
+ c-default-style '((java-mode . "java")
+                   (awk-mode . "awk")
+                   (other . "gnu"))
+ c-basic-offset 4
+ tab-width 4)
 
 (add-hook
  'c-mode-common-hook
  (lambda ()
    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
      (c-toggle-auto-state 1)
+     (setq ac-sources (append '(ac-source-semantic) ac-sources))
+     (local-set-key (kbd "RET") 'newline-and-indent)
+     (linum-mode t)
      (ggtags-mode 1))))
 
 (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
