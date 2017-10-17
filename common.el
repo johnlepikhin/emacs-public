@@ -19,6 +19,9 @@
 ;; disable toolbar
 (tool-bar-mode -1)
 
+;; save file positions
+(save-place-mode 1)
+
 ;; disable backup files
 (setq make-backup-files nil)
 

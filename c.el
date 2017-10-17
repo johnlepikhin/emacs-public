@@ -14,7 +14,9 @@
  (lambda ()
    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
      (c-toggle-auto-newline -1)
-     (setq ac-sources (append '(ac-source-semantic) ac-sources))
+     (setq ac-sources (append '(ac-source-semantic) ac-sources)
+           c-default-style "linux"
+           c-basic-offset 4)
      (local-set-key (kbd "RET") 'newline-and-indent)
      (linum-mode t)
      (ggtags-mode 1))))
