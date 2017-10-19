@@ -16,7 +16,7 @@
 (defun update-agenda-files-list ()
   (interactive)
   (setq org-agenda-files
-        (find-lisp-find-files "~/org/" "\.org$")))
+        (find-lisp-find-files "~/org/" "-TODO\.org$")))
 
 (run-with-timer 0 600 'update-agenda-files-list)
 
