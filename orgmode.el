@@ -63,10 +63,15 @@
    (gnuplot 't)
    (emacs-lisp . t)))
 
+(defun my-before-org-mode-save ()
+  (interactive)
+  (org-table-iterate-buffer-tables))
+
 (add-hook
  'org-mode-hook
  (lambda ()
    (progn
+     (add-hook 'before-save-hook 'my-before-org-mode-save nil 'make-it-local)
      (local-unset-key [C-return])
      (local-unset-key [M-return])
      (local-unset-key [M-left])
