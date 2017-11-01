@@ -25,7 +25,6 @@
   (start-devel))
 
 (defun start-mobile ()
-  (interactive)
-  (start-general))
+  (interactive))
 
 (provide 'my-starter)
