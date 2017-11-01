@@ -1,17 +1,16 @@
 
-(require 'org)
-(require 'org-checklist)
 (require 'package)
 (add-to-list 'package-archives '("org-plus-contrib" . "http://orgmode.org/elpa/") t)
 
+(require 'org)
+(require 'org-checklist)
 (require 'org-install)
+(require 'find-lisp)
+
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
-
-
-(require 'find-lisp)
 
 (defun update-agenda-files-list ()
   (interactive)
