@@ -76,6 +76,8 @@
 (setq line-number-mode t)
 (setq column-number-mode t)
 
+(require 'auto-complete)
+(require 'auto-complete-config)
 (ac-config-default)
 
 (setq browse-url-browser-function 'browse-url-chromium)
