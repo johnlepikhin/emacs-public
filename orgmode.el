@@ -1,6 +1,6 @@
 
 (require 'org)
-
+(require 'org-checklist)
 (require 'package)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
@@ -16,7 +16,7 @@
 (defun update-agenda-files-list ()
   (interactive)
   (setq org-agenda-files
-        (find-lisp-find-files "~/org/" "\.org$")))
+        (find-lisp-find-files "~/org/" "-TODO\.org$")))
 
 (run-with-timer 0 600 'update-agenda-files-list)
 
