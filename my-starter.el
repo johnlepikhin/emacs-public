@@ -3,7 +3,8 @@
 
 (defun start-general ()
   (interactive)
-  (load-file "~/.emacs.d/public/blog/my-blogs.el"))
+  (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
+  (load-dir "~/.emacs.d/public/blog/elisp"))
 
 (defun start-gnus-n-server ()
   (interactive)
