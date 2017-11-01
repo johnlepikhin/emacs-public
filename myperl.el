@@ -22,7 +22,10 @@
 
 
 (require 'dropdown-list)
-(require 'rfringe)
+
+;; doesn't work well without X. To be removed
+;; (require 'rfringe)
+
 (require 'flymake)
 
 (defun my-copy-flymake-error()
