@@ -4,7 +4,7 @@
 (defun start-general ()
   (interactive)
   (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
-  (load-dir "~/.emacs.d/public/blog/elisp"))
+  (load-dir-one "~/.emacs.d/public/blog/elisp"))
 
 (defun start-gnus-n-server ()
   (interactive)
@@ -17,7 +17,7 @@
 
 (defun start-devel ()
   (add-to-list 'load-path "~/.emacs.d/public/devel")
-  (load-dir "~/.emacs.d/public/devel"))
+  (load-dir-one "~/.emacs.d/public/devel"))
 
 (defun start-desktop ()
   (interactive)
