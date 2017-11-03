@@ -5,9 +5,9 @@
   (interactive "Mname: ")
   (setq-default
    frame-title-format
-   '(:eval
-     (format "test %s %s@%s: %s %s"
-             prefix
+   '("adsasd"
+     (:eval
+     (format "%s@%s: %s %s"
              (or (file-remote-p default-directory 'user)
                  user-real-login-name)
              (or (file-remote-p default-directory 'host)
@@ -19,7 +19,7 @@
               (dired-directory
                (concat "{" dired-directory "}"))
               (t
-               "[no file]"))) )))
+               "[no file]"))) ))))
 
 (start-frame-title-with-prefix "zzzz")
 (setq-default frame-title-format "--- %b")
