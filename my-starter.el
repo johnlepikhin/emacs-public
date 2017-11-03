@@ -19,7 +19,7 @@
               (dired-directory
                (concat "{" dired-directory "}"))
               (t
-               "[no file]"))))))
+               "[no file]"))) t )))
 
 (defun start-general ()
   (interactive)
