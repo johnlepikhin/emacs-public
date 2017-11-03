@@ -19,7 +19,10 @@
               (dired-directory
                (concat "{" dired-directory "}"))
               (t
-               "[no file]"))) t )))
+               "[no file]"))) )))
+
+(start-frame-title-with-prefix "zzzz")
+(setq-default frame-title-format "--- %b")
 
 (defun start-general ()
   (interactive)
