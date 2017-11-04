@@ -29,6 +29,6 @@
 
 (defun my-recompile-emacs-configs ()
   (interactive)
-  (byte-recompile-directory "~/.emacs.d/public" 0 t))
+  (byte-recompile-directory "~/.emacs.d/" 0 t))
 
 (provide 'my-starter)
