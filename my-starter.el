@@ -1,7 +1,7 @@
 
 (require 'load-dir)
 
-(defun start-general ()
+(defun start-blog ()
   (interactive)
   (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
   (load-dir-one "~/.emacs.d/public/blog/elisp"))
@@ -21,7 +21,7 @@
 
 (defun start-desktop ()
   (interactive)
-  (start-general)
+  (start-blog)
   (start-devel))
 
 (defun start-mobile ()
