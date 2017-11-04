@@ -1,8 +1,8 @@
 
-(require 'load-dir)
 
 (defun start-blog ()
   (interactive)
+  (require 'load-dir)
   (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
   (load-dir-one "~/.emacs.d/public/blog/elisp"))
 
@@ -10,12 +10,14 @@
   (interactive)
   (start-general)
   (server-start)
+  (require 'load-dir)
   (add-to-list 'load-path "~/.emacs.d/mygnus")
   (load-dir-one "~/.emacs.d/mygnus")
   (set-background-color "ivory1")
   (gnus))
 
 (defun start-devel ()
+  (require 'load-dir)
   (add-to-list 'load-path "~/.emacs.d/public/devel")
   (load-dir-one "~/.emacs.d/public/devel"))
 
@@ -29,6 +31,6 @@
 
 (defun my-recompile-emacs-configs ()
   (interactive)
-  (byte-recompile-directory "~/.emacs.d/" 0 t))
+  (byte-recompile-directory "~/.emacs.d/" 0))
 
 (provide 'my-starter)
