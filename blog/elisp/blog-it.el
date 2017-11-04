@@ -1,4 +1,6 @@
 
+(add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
+
 (require 'my-blogs)
 
 (defun blog-select-IT ()

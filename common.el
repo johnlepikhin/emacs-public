@@ -46,7 +46,7 @@
       (comment-dwim t)
     (progn
       (comment-line 1)
-      (previous-line))))
+      (forward-line -1))))
 
 (global-set-key (kbd "C-;") 'comment-dwim-line-or-region)
 

@@ -1,4 +1,5 @@
 
+(add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
 (add-to-list 'load-path "~/.emacs.d/public/org-page-patched")
 
 (require 'org-page)
