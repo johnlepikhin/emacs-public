@@ -33,7 +33,7 @@
         (save-excursion
           (goto-char (point-min))
           (let ((inhibit-read-only t); edit the BBDB buffer
-                (default-enable-multibyte-characters nil); prevents corruption
+                ;; (enable-multibyte-characters nil); prevents corruption
                 pbm faces)
           (while (re-search-forward "^           face: \\(.*\\)" nil t)
             (setq faces (match-string 1))

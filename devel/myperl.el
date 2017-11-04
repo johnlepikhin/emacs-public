@@ -104,9 +104,9 @@
       (when (string-match "[[:space:]]*sub[[:space:]]+\\([a-zA-Z0-9_]+\\)" line)
         (let ((subname (match-string 1 line)))
           (progn
-            (previous-line)
+            (forward-line -1)
             (when (string= "\n" (thing-at-point 'line t))
-              (previous-line))
+              (forward-line -1))
             (when (not (string= "=cut\n" (thing-at-point 'line t)))
               (progn
                 (word-search-forward "sub")
