@@ -17,6 +17,7 @@
   (gnus))
 
 (defun start-devel ()
+  (interactive)
   (require 'load-dir)
   (add-to-list 'load-path "~/.emacs.d/public/devel")
   (load-dir-one "~/.emacs.d/public/devel"))
