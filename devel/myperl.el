@@ -103,6 +103,7 @@
   (interactive)
   (if (not my-perlysense-is-loaded)
       (progn
+        (setq my-perlysense-is-loaded 't)
         (global-unset-key "\C-o")
         (setq ps/key-prefix "\C-o")
         (require 'flymake-perlcritic)
