@@ -74,7 +74,6 @@
       (buffer-string))))
 
 (defun my-blog-macro-expand (input)
-  (interactive)
   (replace-regexp-in-string "~---" "&bnsp;&ndash;" input))
 
 (org-export-define-derived-backend 'my-html 'html
@@ -82,7 +81,8 @@
                      (template . my-html-improvements)))
 
 (defun my-html-improvements (contents info)
-  (my-hyphenize-russian contents "&shy;"))
+  (my-blog-macro-expand
+   (my-hyphenize-russian contents "&shy;")))
 
 ;;
 
