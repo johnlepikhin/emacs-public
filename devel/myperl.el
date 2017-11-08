@@ -1,15 +1,8 @@
 
-
 (setenv "PERL_LOCAL_LIB_ROOT" (concat (getenv "PERL_LOCAL_LIB_ROOT") ":" (getenv "HOME") "/perl5"))
 (setenv "PERL5LIB" (concat (getenv "PERL5LIB") ":" (getenv "HOME") "/perl5/lib/perl5"))
 
-
 (defalias 'perl-mode 'cperl-mode)
-
-(setq cperl-indent-level 4)
-
-(global-set-key (kbd "M-;") 'hippie-expand)
-
 
 (defun perl-mode-perltidy-buffer ()
   "perltidy buffer if this is perl file"
@@ -17,15 +10,7 @@
   (when (eq major-mode 'cperl-mode)
     (perltidy-buffer)))
 
-(add-hook 'before-save-hook #'perl-mode-perltidy-buffer)
-
-
-
 (require 'dropdown-list)
-
-;; doesn't work well without X. To be removed
-;; (require 'rfringe)
-
 (require 'flymake)
 
 (defun my-copy-flymake-error()
@@ -116,6 +101,12 @@
  'cperl-mode-hook
  (lambda ()
    (progn
+     (setq-local cperl-indent-level 4)
+     (local-unset-key "\C-o")
+     (setq-local ps/key-prefix "\C-o")
+
+     (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
+     (local-set-key (kbd "M-;") 'hippie-expand)
      (local-set-key [f3] 'flymake-display-err-menu-for-current-line)
      (local-set-key [(control f3)] 'my-search-flymake-error)
      (local-set-key [f4] 'flymake-goto-next-error)
@@ -133,8 +124,6 @@
 
 ;; ** PerlySense **
 ;; The PerlySense prefix key (unset only if needed, like for \C-o)
-(global-unset-key "\C-o")
-(setq ps/key-prefix "\C-o")
 
 (setq ps/load-flymake t)
 
@@ -185,3 +174,5 @@
 (setq ps/use-prepare-shell-command t)
 
 ;; *** PerlySense End ***
+
+(provide 'myperl)
