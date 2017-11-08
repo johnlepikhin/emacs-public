@@ -9,6 +9,10 @@
  c-basic-offset 4
  tab-width 4)
 
+(defun my-man2 (word)
+  (interactive)
+  (manual-entry (concat word "(2)")))
+
 (add-hook
  'c-mode-common-hook
  (lambda ()
@@ -18,6 +22,7 @@
            c-default-style "linux"
            c-basic-offset 4)
      (local-set-key (kbd "RET") 'newline-and-indent)
+     (local-set-key (kbd "F1") (lambda () (my-man2 (current-word))))
      (linum-mode t)
      (ggtags-mode 1))))
 
