@@ -13,6 +13,10 @@
   (interactive)
   (manual-entry (concat word "(2)")))
 
+(defun my-man-current-word ()
+  (message "test"))
+  ;; (my-man2 (current-word)))
+
 (add-hook
  'c-mode-common-hook
  (lambda ()
@@ -22,7 +26,7 @@
            c-default-style "linux"
            c-basic-offset 4)
      (local-set-key (kbd "RET") 'newline-and-indent)
-     (local-set-key (kbd "F1") (lambda () (my-man2 (current-word))))
+     (local-set-key [f1] '(lambda (message "test")))
      (linum-mode t)
      (ggtags-mode 1))))
 
