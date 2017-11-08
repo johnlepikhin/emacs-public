@@ -73,6 +73,10 @@
        (concat "--hyphen-char=" hyphen))
       (buffer-string))))
 
+(defun my-blog-macro-expand (input)
+  (interactive)
+  (replace-regexp-in-string "~---" "&bnsp;&ndash;" input))
+
 (org-export-define-derived-backend 'my-html 'html
   :translate-alist '((plain-text . my-html-improvements)
                      (template . my-html-improvements)))
