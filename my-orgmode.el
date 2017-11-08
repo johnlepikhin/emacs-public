@@ -132,5 +132,4 @@ _y_: ?y? year       _q_: quit           _L__l__c_: log = ?l?"
 
 (define-key org-agenda-mode-map "v" 'hydra-org-agenda-view/body)
 
-
 (provide 'my-orgmode)
