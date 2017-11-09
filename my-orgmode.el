@@ -90,6 +90,17 @@
 (setq org-confirm-babel-evaluate 'my/org-confirm-babel-evaluate)
 
 
+;; autosave
+
+(defun my-org-agenda-autosave-setup ()
+  (interactive)
+  (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t)
+  (auto-save-mode))
+
+(add-hook 'org-agenda-mode-hook 'my-org-agenda-autosave-setup)
+
+;; setup hydra for agenda mode
+
 (require 'hydra)
 
 (defun org-agenda-cts ()
