@@ -77,6 +77,10 @@
    (progn
      (setq-local buffer-save-without-query 't)
      (add-hook 'before-save-hook 'my-before-org-mode-save nil 'make-it-local)
+
+     (git-auto-commit-mode +1)
+     (setq-local gac-automatically-push-p 't)
+
      (local-unset-key [C-return])
      (local-unset-key [M-return])
      (local-unset-key [M-left])
@@ -97,7 +101,10 @@
 (defun my-org-agenda-autosave-setup ()
   (interactive)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t)
-  (auto-save-mode))
+  (auto-save-mode)
+
+  (git-auto-commit-mode +1)
+  (setq-local gac-automatically-push-p 't))
 
 (add-hook 'org-agenda-mode-hook 'my-org-agenda-autosave-setup)
 
