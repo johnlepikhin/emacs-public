@@ -74,6 +74,7 @@
  'org-mode-hook
  (lambda ()
    (progn
+     (setq-local save-without-query 't)
      (add-hook 'before-save-hook 'my-before-org-mode-save nil 'make-it-local)
      (local-unset-key [C-return])
      (local-unset-key [M-return])
