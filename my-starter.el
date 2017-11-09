@@ -2,7 +2,7 @@
 
 (defun start-blog ()
   (interactive)
-  (if (not start-blog-done)
+  (if (not (boundp 'start-blog-done))
       (progn
         (setq start-blog-done t)
         (require 'load-dir)
@@ -11,7 +11,7 @@
 
 (defun start-gnus-n-server ()
   (interactive)
-  (if (not start-gnus-n-server-done)
+  (if (not (boundp 'start-gnus-n-server-done))
       (progn
         (setq start-gnus-n-server-done t)
         (start-general)
@@ -24,7 +24,7 @@
 
 (defun start-devel ()
   (interactive)
-  (if (not start-devel-done)
+  (if (not (boundp 'start-devel-done))
       (progn
         (setq start-devel-done t)
         (require 'load-dir)
@@ -33,17 +33,18 @@
 
 (defun start-desktop ()
   (interactive)
-  (if (not start-desktop-done)
+  (if (not (boundp 'start-desktop-done))
       (progn
+        (message "Starting desktop environment")
         (setq start-desktop-done t)
         (start-blog)
         (start-devel))))
 
 (defun start-mobile ()
   (interactive)
-  (if (not start-mobile-done)
+  (if (not (boundp 'start-mobile-done)))
       (progn
-        (setq start-mobile-done t))))
+        (setq start-mobile-done t)))
 
 (defun my-recompile-emacs-configs ()
   (interactive)
