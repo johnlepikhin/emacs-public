@@ -101,6 +101,8 @@
 (defun my-org-agenda-autosave-setup ()
   (interactive)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t)
+  (setq-local auto-save-interval 20)
+  (setq-local auto-save-timeout 30)
   (auto-save-mode)
 
   (git-auto-commit-mode +1)
@@ -110,7 +112,9 @@
 
 (defun my-orgmode-autosave-setup ()
   (interactive)
-  (add-hook 'auto-save-hook 'save-current-buffer nil t)
+  (add-hook 'auto-save-hook 'save-buffer nil t)
+  (setq-local auto-save-interval 20)
+  (setq-local auto-save-timeout 30)
   (auto-save-mode)
   (git-auto-commit-mode +1)
   (setq-local gac-automatically-push-p 't))
