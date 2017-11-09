@@ -2,36 +2,59 @@
 
 (defun start-blog ()
   (interactive)
-  (require 'load-dir)
-  (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
-  (load-dir-one "~/.emacs.d/public/blog/elisp"))
+  (if (not start-blog-done)
+      (progn
+        (setq start-blog-done t)
+        (require 'load-dir)
+        (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
+        (load-dir-one "~/.emacs.d/public/blog/elisp"))))
 
 (defun start-gnus-n-server ()
   (interactive)
-  (start-general)
-  (server-start)
-  (require 'load-dir)
-  (add-to-list 'load-path "~/.emacs.d/mygnus")
-  (load-dir-one "~/.emacs.d/mygnus")
-  (set-background-color "ivory1")
-  (gnus))
+  (if (not start-gnus-n-server-done)
+      (progn
+        (setq start-gnus-n-server-done t)
+        (start-general)
+        (server-start)
+        (require 'load-dir)
+        (add-to-list 'load-path "~/.emacs.d/mygnus")
+        (load-dir-one "~/.emacs.d/mygnus")
+        (set-background-color "ivory1")
+        (gnus))))
 
 (defun start-devel ()
   (interactive)
-  (require 'load-dir)
-  (add-to-list 'load-path "~/.emacs.d/public/devel")
-  (load-dir-one "~/.emacs.d/public/devel"))
+  (if (not start-devel-done)
+      (progn
+        (setq start-devel-done t)
+        (require 'load-dir)
+        (add-to-list 'load-path "~/.emacs.d/public/devel")
+        (load-dir-one "~/.emacs.d/public/devel"))))
 
 (defun start-desktop ()
   (interactive)
-  (start-blog)
-  (start-devel))
+  (if (not start-desktop-done)
+      (progn
+        (setq start-desktop-done t)
+        (start-blog)
+        (start-devel))))
 
 (defun start-mobile ()
-  (interactive))
+  (interactive)
+  (if (not start-mobile-done)
+      (progn
+        (setq start-mobile-done t))))
 
 (defun my-recompile-emacs-configs ()
   (interactive)
   (byte-recompile-directory "~/.emacs.d/" 0))
+
+(defun my-start ()
+  (interactive)
+  (if (file-exists-p "/etc/debian_version")
+      (start-desktop)
+    (start-mobile)))
+
+(my-start)
 
 (provide 'my-starter)
