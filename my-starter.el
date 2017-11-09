@@ -14,7 +14,6 @@
   (if (not (boundp 'start-gnus-n-server-done))
       (progn
         (setq start-gnus-n-server-done t)
-        (start-general)
         (server-start)
         (require 'load-dir)
         (add-to-list 'load-path "~/.emacs.d/mygnus")
