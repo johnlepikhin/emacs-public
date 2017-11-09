@@ -108,6 +108,15 @@
 
 (add-hook 'org-agenda-mode-hook 'my-org-agenda-autosave-setup)
 
+(defun my-orgmode-autosave-setup ()
+  (interactive)
+  (add-hook 'auto-save-hook 'save-current-buffer nil t)
+  (auto-save-mode)
+  (git-auto-commit-mode +1)
+  (setq-local gac-automatically-push-p 't))
+
+(add-hook 'org-mode-hook 'my-orgmode-autosave-setup)
+
 ;; setup hydra for agenda mode
 
 (require 'hydra)
