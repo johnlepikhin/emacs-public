@@ -7,6 +7,7 @@
 (require 'org-checklist)
 (require 'org-install)
 (require 'find-lisp)
+(require 'git-auto-commit-mode)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
@@ -74,7 +75,7 @@
  'org-mode-hook
  (lambda ()
    (progn
-     (setq-local save-without-query 't)
+     (setq-local buffer-save-without-query 't)
      (add-hook 'before-save-hook 'my-before-org-mode-save nil 'make-it-local)
      (local-unset-key [C-return])
      (local-unset-key [M-return])
