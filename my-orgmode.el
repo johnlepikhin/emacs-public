@@ -98,26 +98,34 @@
 
 ;; autosave
 
-(defun my-org-agenda-autosave-setup ()
+(defun my-orgmode-autosave-setup-common ()
   (interactive)
-  (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t)
   (setq-local auto-save-interval 20)
   (setq-local auto-save-timeout 30)
   (auto-save-mode)
+  (setq-local gac-automatically-push-p 't)
+  (git-auto-commit-mode +1))
 
-  (git-auto-commit-mode +1)
-  (setq-local gac-automatically-push-p 't))
+(defun my-orgmode-autosave-disable-common ()
+  (interactive)
+  (setq-local auto-save-interval 0)
+  (setq-local auto-save-timeout nil)
+  (auto-save-mode -1)
+  (git-auto-commit-mode -1))
+
+(defun my-org-agenda-autosave-setup ()
+  (interactive)
+  (my-orgmode-autosave-setup-common)
+  (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t))
 
 (add-hook 'org-agenda-mode-hook 'my-org-agenda-autosave-setup)
 
+  
+  
 (defun my-orgmode-autosave-setup ()
   (interactive)
-  (add-hook 'auto-save-hook 'save-buffer nil t)
-  (setq-local auto-save-interval 20)
-  (setq-local auto-save-timeout 30)
-  (auto-save-mode)
-  (git-auto-commit-mode +1)
-  (setq-local gac-automatically-push-p 't))
+  (my-orgmode-autosave-setup-common)
+  (add-hook 'auto-save-hook 'save-buffer nil t))
 
 (add-hook 'org-mode-hook 'my-orgmode-autosave-setup)
 
@@ -126,9 +134,9 @@
 (defun my-org-archive-done-tasks ()
   "Archive all DONE tasks in current buffer"
   (interactive)
-  (auto-save-mode t)
-  (org-map-entries 'org-archive-subtree "/DONE" 'file)
-  (auto-save-mode))
+  ;; (my-orgmode-autosave-disable-common)
+  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+  ;; (my-orgmode-autosave-setup-common))
 
 ;; setup hydra for agenda mode
 
