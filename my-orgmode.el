@@ -121,6 +121,13 @@
 
 (add-hook 'org-mode-hook 'my-orgmode-autosave-setup)
 
+;;
+
+(defun my-org-archive-done-tasks ()
+  "Archive all DONE tasks in current buffer"
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+
 ;; setup hydra for agenda mode
 
 (require 'hydra)
