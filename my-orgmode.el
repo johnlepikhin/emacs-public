@@ -120,12 +120,12 @@
 
 (add-hook 'org-agenda-mode-hook 'my-org-agenda-autosave-setup)
 
-  
-  
 (defun my-orgmode-autosave-setup ()
   (interactive)
-  (my-orgmode-autosave-setup-common)
-  (add-hook 'auto-save-hook 'save-buffer nil t))
+  (if (string-match ".*/org/.*" (buffer-file-name))
+      (progn
+        (my-orgmode-autosave-setup-common)
+        (add-hook 'auto-save-hook 'save-buffer nil t))))
 
 (add-hook 'org-mode-hook 'my-orgmode-autosave-setup)
 
