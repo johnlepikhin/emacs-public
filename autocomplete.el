@@ -11,7 +11,6 @@
       helm-gtags-prefix-key "\C-cg"
       helm-gtags-suggested-key-mapping t)
 
-(require 'helm-locate)
 (require 'helm-gtags)
 ;; Enable helm-gtags-mode
 (add-hook 'dired-mode-hook 'helm-gtags-mode)
