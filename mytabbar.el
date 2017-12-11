@@ -26,3 +26,5 @@
 ; (setq tabbar-buffer-groups-function
 ;       (lambda ()
 ;         (list "All")))
+
+(tabbar-mode)
