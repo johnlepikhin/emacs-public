@@ -27,6 +27,11 @@
 (add-to-list 'org-modules 'org-mouse)
 (add-to-list 'org-modules 'org-attach-screenshot)
 
+(setq org-todo-keywords
+      '((sequence "TODO" "WAIT" "VERIFY" "|" "DONE" "DELEGATED" "CANCELED")))
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
 
 (require 'ox-latex)
 
