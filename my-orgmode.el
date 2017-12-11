@@ -30,8 +30,10 @@
 (setq org-todo-keywords
       '((sequence "TODO" "WAIT" "VERIFY" "|" "DONE" "DELEGATED" "CANCELED")))
 
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
+(setq org-todo-keyword-faces
+      '(("WAIT" . (:foreground "#ff8040" :weight bold))
+        ("VERIFY" . (:foreground "#afaf00" :weight bold))
+        ("CANCELED" . (:foreground "#006000" :weight bold))))
 
 (require 'ox-latex)
 
