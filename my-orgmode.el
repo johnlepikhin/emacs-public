@@ -28,7 +28,7 @@
 (add-to-list 'org-modules 'org-attach-screenshot)
 
 (setq org-todo-keywords
-      '((sequence "TODO" "WAIT" "VERIFY" "|" "DONE" "DELEGATED" "CANCELED")))
+      '((sequence "TODO(t)" "WAIT(w)" "VERIFY(v)" "|" "DONE(d)" "DELEGATED(D)" "CANCELED(c)")))
 
 (setq org-todo-keyword-faces
       '(("WAIT" . (:foreground "#ff8040" :weight bold))
