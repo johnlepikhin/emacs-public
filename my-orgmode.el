@@ -61,6 +61,7 @@
 
 (require 'ob-ruby)
 (require 'ob-perl)
+(require 'ob-shell)
 (require 'ob-sh)
 (require 'ob-sql)
 (require 'ob-plantuml)
