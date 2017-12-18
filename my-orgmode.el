@@ -62,7 +62,7 @@
 (require 'ob-ruby)
 (require 'ob-perl)
 (require 'ob-shell)
-(require 'ob-sh)
+;; (require 'ob-sh)
 (require 'ob-sql)
 (require 'ob-plantuml)
 (require 'ob-gnuplot)
@@ -73,7 +73,7 @@
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((perl . t)
-   (sh . t)
+   ;; (sh . t)
    (shell . t)
    (latex . t)
    (dot . t)
