@@ -73,6 +73,7 @@
  'org-babel-load-languages
  '((perl . t)
    (sh . t)
+   (shell . t)
    (latex . t)
    (dot . t)
    (plantuml . t)
