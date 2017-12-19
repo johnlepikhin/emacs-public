@@ -111,8 +111,8 @@
 
 ;; alerts
 
-(require 'org-alert)
-(setq alert-default-style 'libnotify)
+; (require 'org-alert)
+; (setq alert-default-style 'libnotify)
 
 ;; autosave
 
