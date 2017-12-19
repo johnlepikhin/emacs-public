@@ -14,12 +14,12 @@
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 
-(defun update-agenda-files-list ()
+(defun update-agenda-files-list (directory)
   (interactive)
   (setq org-agenda-files
-        (find-lisp-find-files "~/org/" "-TODO\.org$")))
+        (find-lisp-find-files directory "-TODO\.org$")))
 
-(run-with-timer 0 600 'update-agenda-files-list)
+(run-with-timer 0 600 (lambda () (progn (update-agenda-files-list "~/org/"))))
 
 (add-to-list 'org-modules 'org-id)
 (add-to-list 'org-modules 'org-checklist)
