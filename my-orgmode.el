@@ -109,6 +109,10 @@
         (string= lang "plantuml"))))
 (setq org-confirm-babel-evaluate 'my/org-confirm-babel-evaluate)
 
+;; alerts
+
+(require 'org-alert)
+(setq alert-default-style 'libnotify)
 
 ;; autosave
 
