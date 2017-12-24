@@ -4,7 +4,7 @@
 (defun sport/equipment-report-weights (src)
   "Return summary weights grouped by buggage type"
   (cons
-   (nthcdr 2 (first src))
+   (nthcdr 0 (first src))
    (cons
     'hline
     (list (let ((cols (- (length (first src)) 2)))
@@ -16,10 +16,12 @@
    (cdr src)
    (make-list cols 0)))))))
 
+(sport/equipment-report-weights src)
+
 (defun sport/equipment-report-baggage (src pos)
   "Return list for specified buggage type (column position in src table)"
   (cons
-   '("" "Кол-во" "Вес")
+   '("" "Вес" "Кол-во")
    (cons
     'hline
     (remove-if-not
@@ -29,7 +31,7 @@
       '(lambda (row)
          (let ((name (first row))
                (cnt (lst-number-or-v row pos 0)))
-               (list name cnt (* (lst-number-or-v row 1 0) cnt))))
+               (list name (* (lst-number-or-v row 1 0) cnt) cnt)))
       (cdr src))))))
 
 (provide 'my-sport)
