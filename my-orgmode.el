@@ -7,7 +7,7 @@
 (require 'org-checklist)
 (require 'org-install)
 (require 'find-lisp)
-(require 'git-auto-commit-mode)
+;; (require 'git-auto-commit-mode)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
