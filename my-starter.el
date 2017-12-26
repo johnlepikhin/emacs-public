@@ -51,9 +51,10 @@
 
 (defun my-start ()
   (interactive)
-  (if (file-exists-p "/etc/debian_version")
-      (start-desktop)
-    (start-mobile)))
+  (if (file-exists-p "~/.emacs.d/flags/is_desktop")
+      (start-desktop))
+  (if (file-exists-p "~/.emacs.d/flags/is_mobile")
+      (start-mobile)))
 
 (my-start)
 
