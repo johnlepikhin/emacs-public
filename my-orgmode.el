@@ -147,7 +147,16 @@
 ;         (my-orgmode-autosave-setup-common)
 ;         (add-hook 'auto-save-hook 'save-buffer nil t))))
 
-; (add-hook 'org-mode-hook 'my-orgmode-autosave-setup)
+(defun my-org-set-flag-git-need-sync ()
+  (write-region "" "" "~/org/need_git_sync"))
+
+(defun my-org-mode-hook-cb ()
+  (interactive)
+  (if (string-match ".*/org/.*" (buffer-file-name))
+      (progn
+        (add-hook 'after-save-hook 'my-org-set-flag-git-need-sync nil t))))
+
+(add-hook 'org-mode-hook 'my-org-mode-hook-cb)
 
 ;;
 
