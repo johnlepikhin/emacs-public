@@ -4,6 +4,8 @@
 
 (defalias 'perl-mode 'cperl-mode)
 
+(require 'tramp)
+
 (defun perl-mode-perltidy-buffer ()
   "perltidy buffer if this is perl file"
   (interactive)
