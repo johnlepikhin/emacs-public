@@ -85,21 +85,6 @@
   (interactive)
   (org-table-iterate-buffer-tables))
 
-(add-hook
- 'org-mode-hook
- (lambda ()
-   (progn
-     (setq-local buffer-save-without-query 't)
-     (add-hook 'before-save-hook 'my-before-org-mode-save nil 'make-it-local)
-
-     (git-auto-commit-mode +1)
-     (setq-local gac-automatically-push-p 't)
-
-     (local-unset-key [C-return])
-     (local-unset-key [M-return])
-     (local-unset-key [M-left])
-     (local-unset-key [M-right]))))
-
 (defun my/org-confirm-babel-evaluate (lang body)
   (not (or
         (string= lang "latex")
@@ -107,6 +92,7 @@
         (string= lang "graphviz")
         (string= lang "gnuplot")
         (string= lang "plantuml"))))
+
 (setq org-confirm-babel-evaluate 'my/org-confirm-babel-evaluate)
 
 ;; alerts
@@ -118,42 +104,21 @@
 
 (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
 
-; (defun my-orgmode-autosave-setup-common ()
-;   (interactive)
-;   (setq-local auto-save-interval 20)
-;   (setq-local auto-save-timeout 30)
-;   (auto-save-mode)
-;   (setq-local gac-automatically-push-p 't)
-;   (git-auto-commit-mode +1))
-
-; (defun my-orgmode-autosave-disable-common ()
-;   (interactive)
-;   (setq-local auto-save-interval 0)
-;   (setq-local auto-save-timeout nil)
-;   (auto-save-mode -1)
-;   (git-auto-commit-mode -1))
-
-; (defun my-org-agenda-autosave-setup ()
-;   (interactive)
-;   (my-orgmode-autosave-setup-common)
-;   (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t))
-
-; (add-hook 'org-agenda-mode-hook 'my-org-agenda-autosave-setup)
-
-; (defun my-orgmode-autosave-setup ()
-;   (interactive)
-;   (if (string-match ".*/org/.*" (buffer-file-name))
-;       (progn
-;         (my-orgmode-autosave-setup-common)
-;         (add-hook 'auto-save-hook 'save-buffer nil t))))
-
 (defun my-org-set-flag-git-need-sync ()
   (write-region "" "" "~/org/need_git_sync"))
 
 (defun my-org-mode-hook-cb ()
   (interactive)
+  (local-unset-key [C-return])
+  (local-unset-key [M-return])
+  (local-unset-key [M-left])
+  (local-unset-key [M-right])
+
+  (add-hook 'before-save-hook 'my-before-org-mode-save nil 'make-it-local)
+
   (if (string-match ".*/org/.*" (buffer-file-name))
       (progn
+        (setq-local buffer-save-without-query 't)
         (add-hook 'after-save-hook 'my-org-set-flag-git-need-sync nil t))))
 
 (add-hook 'org-mode-hook 'my-org-mode-hook-cb)
