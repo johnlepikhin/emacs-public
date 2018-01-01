@@ -116,7 +116,7 @@
 
   (add-hook 'before-save-hook 'my-before-org-mode-save nil 'make-it-local)
 
-  (if (string-match ".*/org/.*" (buffer-file-name))
+  (if (and (not (null (buffer-file-name))) (string-match ".*/org/.*" (buffer-file-name)))
       (progn
         (setq-local buffer-save-without-query 't)
         (add-hook 'after-save-hook 'my-org-set-flag-git-need-sync nil t))))
