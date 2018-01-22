@@ -19,6 +19,8 @@
       helm-wikipedia-summary-url "https://ru.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page=%s"
       helm-search-suggest-action-wikipedia-url "https://ru.wikipedia.org/wiki/Special:Search?search=%s")
 
+(setq helm-input-idle-delay 0.1)
+
 (defun my-helm-search-all ()
   (interactive)
   (require 'helm-x-files)
@@ -35,6 +37,6 @@
                    helm-source-google-suggest)
         :buffer "*helm completions*"))
 
-(global-set-key "\M-s\ \M-s" 'my-helm-search-all)
+(global-set-key "\M-s \M-s" 'my-helm-search-all)
 
 (provide 'my-helm)
