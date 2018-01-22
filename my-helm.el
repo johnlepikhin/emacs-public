@@ -27,9 +27,11 @@
                    helm-source-recentf
                    helm-source-info-pages
                    helm-source-notmuch
+                   helm-source-complex-command-history
                    helm-source-bbdb
-                   helm-source-wikipedia-suggest
-                   helm-source-google-suggest))
+                   ; helm-source-wikipedia-suggest
+                   ; helm-source-google-suggest
+                   ))
 
 (defun my-helm-search-all ()
   (interactive)
