@@ -1,5 +1,7 @@
 
 (require 'helm-for-files)
+(require 'helm-locate)
+(require 'helm-bbdb)
 (require 'helm-notmuch)
 (require 'recentf)
 
@@ -11,9 +13,9 @@
   (helm :sources '(helm-source-buffers-list
                    helm-source-info-pages
                    helm-source-notmuch
-                   helm-source-info-bbdb
+                   helm-source-bbdb
                    helm-source-google-suggest
-                   helm-source-regexp)
+                   helm-source-locate)
         :buffer "*helm completions*"))
 
 (global-set-key "\M-s\ \M-s" 'my-helm-search-all)
