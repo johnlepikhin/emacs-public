@@ -8,6 +8,7 @@
 (require 'helm-buffers)
 (require 'helm-net)
 (require 'helm-org-rifle)
+(require 'helm-elisp)
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
@@ -22,7 +23,7 @@
 
 (setq helm-input-idle-delay 0.1)
 
-(setq-local my-helm-sources
+(setq my-helm-sources
             '(helm-source-buffers-list
                    helm-source-recentf
                    helm-source-info-pages

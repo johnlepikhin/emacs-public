@@ -7,5 +7,5 @@
 
 (add-hook 'post-command-hook 'im-cursor-color-set)
 
-(global-set-key (kbd "s-SPC") (lambda () (interactive) (deactivate-input-method)))
-(global-set-key (kbd "H-SPC") (lambda () (interactive) (set-input-method 'russian-computer)))
+(global-set-key (kbd "s-\\") (lambda () (interactive) (deactivate-input-method)))
+(global-set-key (kbd "C-\\") (lambda () (interactive) (set-input-method 'russian-computer)))
