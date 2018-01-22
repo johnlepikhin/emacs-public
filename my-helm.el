@@ -5,6 +5,7 @@
 (require 'helm-info)
 (require 'helm-notmuch)
 (require 'recentf)
+(require 'helm-buffers)
 (require 'helm-net)
 
 (recentf-mode 1)
