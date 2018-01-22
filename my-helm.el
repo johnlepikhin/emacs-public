@@ -37,6 +37,6 @@
                    helm-source-google-suggest)
         :buffer "*helm completions*"))
 
-(global-set-key "\C-\M-s" 'my-helm-search-all)
+(global-set-key "\M-s\ \M-s" 'my-helm-search-all)
 
 (provide 'my-helm)
