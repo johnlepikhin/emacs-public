@@ -9,18 +9,6 @@
         (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
         (load-dir-one "~/.emacs.d/public/blog/elisp"))))
 
-(defun start-gnus-n-server ()
-  (interactive)
-  (if (not (boundp 'start-gnus-n-server-done))
-      (progn
-        (setq start-gnus-n-server-done t)
-        (server-start)
-        (require 'load-dir)
-        (add-to-list 'load-path "~/.emacs.d/mygnus")
-        (load-dir-one "~/.emacs.d/mygnus")
-        (set-background-color "ivory1")
-        (gnus))))
-
 (defun start-devel ()
   (interactive)
   (if (not (boundp 'start-devel-done))
@@ -29,6 +17,19 @@
         (require 'load-dir)
         (add-to-list 'load-path "~/.emacs.d/public/devel")
         (load-dir-one "~/.emacs.d/public/devel"))))
+
+(defun start-gnus-n-server ()
+  (interactive)
+  (if (not (boundp 'start-gnus-n-server-done))
+      (progn
+        (setq start-gnus-n-server-done t)
+        (server-start)
+        (start-devel)
+        (require 'load-dir)
+        (add-to-list 'load-path "~/.emacs.d/mygnus")
+        (load-dir-one "~/.emacs.d/mygnus")
+        (set-background-color "ivory1")
+        (gnus))))
 
 (defun start-desktop ()
   (interactive)
