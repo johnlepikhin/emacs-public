@@ -7,6 +7,7 @@
 (require 'recentf)
 (require 'helm-buffers)
 (require 'helm-net)
+(require 'helm-org-rifle)
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
@@ -24,18 +25,19 @@
 (defun my-helm-search-all ()
   (interactive)
   (require 'helm-x-files)
-  (unless helm-source-buffers-list
-    (setq helm-source-buffers-list
-          (helm-make-source "Buffers" 'helm-source-buffers)))
-  (helm :sources '(helm-source-buffers-list
-                   helm-source-recentf
+  (let ((sources '(helm-source-buffers-list
                    helm-source-recentf
                    helm-source-info-pages
                    helm-source-notmuch
                    helm-source-bbdb
                    helm-source-wikipedia-suggest
-                   helm-source-google-suggest)
-        :buffer "*helm completions*"))
+                   helm-source-google-suggest)))
+    (let ((sources (append (helm-org-rifle-get-sources-for-open-buffers) sources)))
+      (unless helm-source-buffers-list
+        (setq helm-source-buffers-list
+              (helm-make-source "Buffers" 'helm-source-buffers)))
+      (helm :sources sources
+            :buffer "*helm completions*"))))
 
 (global-set-key "\M-s\ \M-s" 'my-helm-search-all)
 
