@@ -7,6 +7,7 @@
 (require 'org-checklist)
 (require 'org-install)
 (require 'find-lisp)
+(require 'helm-org-rifle)
 ;; (require 'git-auto-commit-mode)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
