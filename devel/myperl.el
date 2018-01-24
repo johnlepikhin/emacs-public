@@ -172,7 +172,9 @@
      (local-set-key [f5] 'perlcritic-disable-for-line)
      (local-set-key (kbd "C-c / p") 'google-cpan-word)
      (local-set-key (kbd "C-x C-M-d") 'perl-document-current-function)
-     (local-set-key (kbd "C-x C-M-s") 'perl-insert-sub-template))))
+     (local-set-key (kbd "C-x C-M-s") 'perl-insert-sub-template)
+     (local-set-key (kbd "\M-.") 'helm-etags-plus-select)
+     (local-set-key (kbd "\M-,") 'helm-etags-plus-history-go-back))))
 
 
 
