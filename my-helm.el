@@ -30,6 +30,7 @@
                    helm-source-notmuch
                    helm-source-complex-command-history
                    helm-source-bbdb
+                   helm-source-etags-select
                    ; helm-source-wikipedia-suggest
                    ; helm-source-google-suggest
                    ))
