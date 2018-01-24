@@ -31,6 +31,7 @@
                    helm-source-complex-command-history
                    helm-source-bbdb
                    helm-source-etags-select
+                   helm-source-grep-ag
                    ; helm-source-wikipedia-suggest
                    ; helm-source-google-suggest
                    ))
