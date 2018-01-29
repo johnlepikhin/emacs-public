@@ -156,6 +156,13 @@
         ;; optimization, please try it out.
         (setq ps/use-prepare-shell-command t))))
 
+(defun my-perl-goto-vc-project ()
+  (interactive)
+  (perl-mode-perltidy-buffer)
+  (save-buffer)
+  (ps/go-to-vc-project))
+  
+
 (add-hook
  'cperl-mode-hook
  (lambda ()
@@ -163,7 +170,9 @@
      (setq-local cperl-indent-level 4)
      (my-load-perlysense)
 
-     (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
+     (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
+
+     ;; (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
      (local-set-key (kbd "M-;") 'hippie-expand)
      (local-set-key [f3] 'flymake-display-err-menu-for-current-line)
      (local-set-key [(control f3)] 'my-search-flymake-error)
