@@ -14,3 +14,6 @@
 
 (setq focus-follows-mouse t
       mouse-autoselect-window t)
+
+
+(global-unset-key (kbd "C-z"))
