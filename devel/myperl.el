@@ -171,6 +171,7 @@
      (my-load-perlysense)
 
      (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
+     (local-set-key (kbd "C-M-q") 'perl-mode-perltidy-buffer)
 
      ;; (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
      (local-set-key (kbd "M-;") 'hippie-expand)
