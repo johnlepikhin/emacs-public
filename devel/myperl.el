@@ -159,9 +159,14 @@
 (defun my-perl-goto-vc-project ()
   (interactive)
   (perl-mode-perltidy-buffer)
+  (flymake-start-syntax-check)
   (save-buffer)
   (ps/go-to-vc-project))
-  
+
+(defun my-perl-indent-and-syntax-check ()
+  (interactive)
+  (perl-mode-perltidy-buffer)
+  (flymake-start-syntax-check))
 
 (add-hook
  'cperl-mode-hook
@@ -171,7 +176,7 @@
      (my-load-perlysense)
 
      (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
-     (local-set-key (kbd "C-M-q") 'perl-mode-perltidy-buffer)
+     (local-set-key (kbd "C-M-q") 'my-perl-indent-and-syntax-check)
 
      ;; (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
      (local-set-key (kbd "M-;") 'hippie-expand)
