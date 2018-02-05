@@ -158,7 +158,7 @@
 
 (defun my-perl-goto-vc-project ()
   (interactive)
-  (perl-mode-perltidy-buffer)
+  ;; (perl-mode-perltidy-buffer)
   (flymake-start-syntax-check)
   (save-buffer)
   (ps/go-to-vc-project))
