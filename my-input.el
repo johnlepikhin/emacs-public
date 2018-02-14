@@ -13,7 +13,7 @@
 (global-set-key (kbd "M-<tab>") (lambda () (interactive) (other-window 1)))
 
 (setq focus-follows-mouse t
-      mouse-autoselect-window t)
+      mouse-autoselect-window nil)
 
 
 (global-unset-key (kbd "C-z"))
