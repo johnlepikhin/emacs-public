@@ -151,7 +151,9 @@ _d_: ?d? day        _g_: time grid=?g?  _a_: arch-trees
 _w_: ?w? week       _[_: inactive       _A_: arch-files
 _t_: ?t? fortnight  _f_: follow=?f?     _r_: clock report=?r?
 _m_: ?m? month      _e_: entry text=?e? _D_: include diary=?D?
-_y_: ?y? year       _q_: quit           _L__l__c_: log = ?l?"
+_y_: ?y? year       _q_: quit           _L__l__c_: log = ?l?
+_C_: calendar
+"
   ("SPC" org-agenda-reset-view)
   ("d" org-agenda-day-view (if (eq 'day (org-agenda-cts)) "[x]" "[ ]"))
   ("w" org-agenda-week-view (if (eq 'week (org-agenda-cts)) "[x]" "[ ]"))
@@ -161,6 +163,7 @@ _y_: ?y? year       _q_: quit           _L__l__c_: log = ?l?"
   ("l" org-agenda-log-mode (format "% -3S" org-agenda-show-log))
   ("L" (org-agenda-log-mode '(4)))
   ("c" (org-agenda-log-mode 'clockcheck))
+  ("C" my-open-calendar)
   ("f" org-agenda-follow-mode (format "% -3S" org-agenda-follow-mode))
   ("a" org-agenda-archives-mode)
   ("A" (org-agenda-archives-mode 'files))
