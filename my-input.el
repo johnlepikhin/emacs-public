@@ -1,5 +1,5 @@
 
-(defun im-cursor-color-set nil 
+(defun im-cursor-color-set nil
   (set-cursor-color
    (if current-input-method 
        "red"
