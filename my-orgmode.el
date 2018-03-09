@@ -11,6 +11,15 @@
 (require 'bbdb-anniv)
 ;; (require 'git-auto-commit-mode)
 
+(setq org-bbdb-anniversary-field 'birthday)
+
+(add-to-list
+ 'org-bbdb-anniversary-format-alist
+ '("birthday"
+   (lambda (name years suffix)
+     (concat name " исполняется " (format "%s" years)))))
+
+
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
