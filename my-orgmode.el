@@ -8,6 +8,7 @@
 (require 'org-install)
 (require 'find-lisp)
 (require 'helm-org-rifle)
+(require 'bbdb-anniv)
 ;; (require 'git-auto-commit-mode)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
