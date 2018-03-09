@@ -13,11 +13,23 @@
 
 (setq org-bbdb-anniversary-field 'birthday)
 
+(setq org-bbdb-anniversary-format-alist
+  '(("birthday" .
+     (lambda (name years suffix)
+       (concat "Birthday: [[bbdb:" name "][" name " ("
+    	       (format "%s" years)        ; handles numbers as well as strings
+    	       suffix ")]]")))
+    ("wedding" .
+     (lambda (name years suffix)
+       (concat "[[bbdb:" name "][" name "'s "
+    	       (format "%s" years)
+    	       suffix " wedding anniversary]]")))))
+
 (add-to-list
  'org-bbdb-anniversary-format-alist
- '("birthday"
+ '(("birthday" .
    (lambda (name years suffix)
-     (concat name " исполняется " (format "%s" years)))))
+     (concat name " исполняется " (format "%s" years) suffix)))))
 
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
