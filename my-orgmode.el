@@ -9,6 +9,7 @@
 (require 'find-lisp)
 (require 'helm-org-rifle)
 (require 'bbdb-anniv)
+(require 'org-password-manager)
 ;; (require 'git-auto-commit-mode)
 
 (setq org-bbdb-anniversary-field 'birthday)
@@ -103,6 +104,10 @@
 
 ; (require 'org-alert)
 ; (setq alert-default-style 'libnotify)
+
+;;
+
+(add-hook 'org-mode-hook 'org-password-manager-key-bindings)
 
 ;;
 
