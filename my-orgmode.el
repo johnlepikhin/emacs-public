@@ -111,8 +111,6 @@
 
 (advice-add 'org-revert-all-org-buffers :before 'my-org-fill-files-list)
 
-
-
 ;; autosave
 
 (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
