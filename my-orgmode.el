@@ -140,9 +140,11 @@
 (defun my-org-archive-done-tasks ()
   "Archive all DONE tasks in current buffer"
   (interactive)
-  ;; (my-orgmode-autosave-disable-common)
-  (org-map-entries 'org-archive-subtree "/DONE" 'file))
-  ;; (my-orgmode-autosave-setup-common))
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (outline-previous-heading)))
+   "/DONE" 'file))
 
 ;; setup hydra for agenda mode
 
