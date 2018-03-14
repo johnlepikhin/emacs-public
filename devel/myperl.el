@@ -1,5 +1,5 @@
 
-;; Code
+;;;; Code:
 
 (setenv "PERL_LOCAL_LIB_ROOT" (concat (getenv "PERL_LOCAL_LIB_ROOT") ":" (getenv "HOME") "/perl5"))
 (setenv "PERL5LIB" (concat (getenv "PERL5LIB") ":" (getenv "HOME") "/perl5/lib/perl5"))
@@ -9,7 +9,7 @@
 (require 'tramp)
 
 (defun perl-mode-perltidy-buffer ()
-  "perltidy buffer if this is perl file"
+  "Perltidy buffer if this is perl file."
   (interactive)
   (when (eq major-mode 'cperl-mode)
     (perltidy-buffer)))
