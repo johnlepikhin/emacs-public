@@ -111,6 +111,18 @@
 
 ;;
 
+(defvar my-org-default-file "~/org/personal/general-TODO.org")
+
+(defun my-org-visit-default-insert-point ()
+  (interactive)
+  (find-file my-org-default-file)
+  (goto-char (point-max))
+  (insert "* TODO ")
+  (org-schedule t))
+  
+
+;;
+
 (defun my-org-fill-files-list ()
   (setq org-agenda-files (directory-files-recursively "~/org" ".*-TODO.org$")))
 
