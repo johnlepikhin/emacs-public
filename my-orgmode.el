@@ -104,6 +104,15 @@
 ; (require 'org-alert)
 ; (setq alert-default-style 'libnotify)
 
+;;
+
+(defun my-org-fill-files-list ()
+  (setq org-agenda-files (directory-files-recursively "~/org" ".*-TODO.org$")))
+
+(advice-add 'org-revert-all-org-buffers :before 'my-org-fill-files-list)
+
+
+
 ;; autosave
 
 (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
