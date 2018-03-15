@@ -120,14 +120,15 @@
   (insert "* TODO ")
   (org-schedule t))
 
-(global-set-key [C-c ?\r] 'my-org-add-todo)
+(global-set-key (kbd "C-c RET") 'my-org-add-todo)
 
 ;;
 
-(defun my-org-fill-files-list ()
+(defun my-org-fill-files-list (&optional EXHAUSTIVE)
   (setq org-agenda-files (directory-files-recursively "~/org" ".*-TODO.org$")))
 
 (advice-add 'org-revert-all-org-buffers :before 'my-org-fill-files-list)
+(advice-add 'org-agenda-redo-all :before 'my-org-fill-files-list)
 
 ;; autosave
 
