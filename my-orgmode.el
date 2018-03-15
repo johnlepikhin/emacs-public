@@ -19,12 +19,10 @@
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 
-(defun update-agenda-files-list (directory)
-  (interactive)
-  (setq org-agenda-files
-        (find-lisp-find-files directory "-TODO\.org$")))
+(defun my-org-fill-files-list (&optional EXHAUSTIVE)
+  (setq org-agenda-files (directory-files-recursively "~/org" "[.]org$")))
 
-(run-with-timer 0 600 (lambda () (progn (update-agenda-files-list "~/org/"))))
+(run-with-timer 0 600 'my-org-fill-files-list)
 
 (add-to-list 'org-modules 'org-id)
 (add-to-list 'org-modules 'org-checklist)
@@ -123,9 +121,6 @@
 (global-set-key (kbd "C-c RET") 'my-org-add-todo)
 
 ;;
-
-(defun my-org-fill-files-list (&optional EXHAUSTIVE)
-  (setq org-agenda-files (directory-files-recursively "~/org" ".*-TODO.org$")))
 
 (advice-add 'org-revert-all-org-buffers :before 'my-org-fill-files-list)
 (advice-add 'org-agenda-redo-all :before 'my-org-fill-files-list)
