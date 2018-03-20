@@ -22,7 +22,9 @@
 
 (defun my-org-fill-files-list (&optional EXHAUSTIVE)
   (setq org-agenda-files
-        (seq-remove (lambda (file) (not (string-match "#" file))) (directory-files-recursively "~/org" "[.]org$"))))
+        (seq-remove
+         (lambda (file) (string-match "[.]#" file))
+         (directory-files-recursively "~/org" "[.]org$"))))
 
 (run-with-timer 0 600 'my-org-fill-files-list)
 
