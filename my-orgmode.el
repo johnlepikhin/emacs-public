@@ -10,6 +10,7 @@
 (require 'helm-org-rifle)
 (require 'bbdb-anniv)
 (require 'org-password-manager)
+(require 'seq)
 ;; (require 'git-auto-commit-mode)
 
 (setq org-bbdb-anniversary-field 'birthday)
@@ -20,7 +21,8 @@
 (setq org-log-done t)
 
 (defun my-org-fill-files-list (&optional EXHAUSTIVE)
-  (setq org-agenda-files (directory-files-recursively "~/org" "[.]org$")))
+  (setq org-agenda-files
+        (seq-remove (lambda (file) (not (string-match "#" file))) (directory-files-recursively "~/org" "[.]org$"))))
 
 (run-with-timer 0 600 'my-org-fill-files-list)
 
