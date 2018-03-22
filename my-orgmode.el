@@ -142,6 +142,7 @@
   (local-unset-key [M-return])
   (local-unset-key [M-left])
   (local-unset-key [M-right])
+  (local-unset-key (kbd "C-c RET"))
   (auto-fill-mode)
 
   (add-hook 'before-save-hook 'my-before-org-mode-save nil 'make-it-local)
