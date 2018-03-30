@@ -9,6 +9,7 @@
 (require 'helm-net)
 (require 'helm-org-rifle)
 (require 'helm-elisp)
+(require 'helm-perldoc)
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
@@ -32,6 +33,7 @@
                    helm-source-bbdb
                    helm-source-etags-select
                    helm-source-grep-ag
+                   helm-perldoc:imported-source
                    ; helm-source-wikipedia-suggest
                    ; helm-source-google-suggest
                    ))
