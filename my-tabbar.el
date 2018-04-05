@@ -18,7 +18,13 @@
  There are two groups: Emacs buffers (those whose name starts with '*', plus
  dired buffers), and the rest.  This works at least with Emacs v24.2 using
  tabbar.el v1.7."
-   (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
+   (list (cond ((string-match "Org Agenda" (buffer-name)) "Org")
+                ((string-match "[.]org$" (buffer-name)) "Org")
+                ((string-equal "*Group*" (buffer-name)) "Gnus")
+                ((string-match "[*]Summary " (buffer-name)) "Gnus")
+                ((string-match "[*]Article " (buffer-name)) "Gnus")
+                ((string-match "[*]unsent " (buffer-name)) "Gnus")
+                ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
                ((eq major-mode 'dired-mode) "emacs")
                ((string-equal "TAGS" (buffer-name)) "emacs")
                ((string-equal "bbdb" (buffer-name)) "emacs")
