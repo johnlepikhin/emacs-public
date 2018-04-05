@@ -25,12 +25,12 @@
                 ((string-match "[*]Article " (buffer-name)) "Gnus")
                 ((string-match "[*]unsent " (buffer-name)) "Gnus")
                 ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
-               ((eq major-mode 'dired-mode) "emacs")
-               ((string-equal "TAGS" (buffer-name)) "emacs")
-               ((string-equal "bbdb" (buffer-name)) "emacs")
-               ((string-match "org_archive$" (buffer-name)) "org-archives")
-               ((string-match "^magit[0-9a-z-]*:" (buffer-name)) "magit")
-               (t "user"))))
+                ((eq major-mode 'dired-mode) "emacs")
+                ((string-equal "TAGS" (buffer-name)) "emacs")
+                ((string-equal "bbdb" (buffer-name)) "emacs")
+                ((string-match "org_archive$" (buffer-name)) "org-archives")
+                ((string-match "^magit[0-9a-z-]*:" (buffer-name)) "magit")
+                (t "user"))))
 (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
 
 ; (setq tabbar-buffer-groups-function
