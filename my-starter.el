@@ -16,7 +16,6 @@
         (setq start-devel-done t)
         (require 'load-dir)
         (add-to-list 'load-path "~/.emacs.d/public/devel")
-        (require 'proof-site "~/.emacs.d/lisp/PG/generic/proof-site")
         (load-dir-one "~/.emacs.d/public/devel"))))
 
 (defun start-gnus-n-server ()

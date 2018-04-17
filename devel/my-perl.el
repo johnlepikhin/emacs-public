@@ -9,6 +9,10 @@
 (require 'tramp)
 (require 'helm-perldoc)
 
+(add-to-list 'company-backends 'company-plsense)
+(add-hook 'perl-mode-hook 'company-mode)
+(add-hook 'cperl-mode-hook 'company-mode)
+
 (defun perl-mode-perltidy-buffer ()
   "Perltidy buffer if this is perl file."
   (interactive)
