@@ -3,4 +3,7 @@
 
 (add-hook 'coq-mode-hook #'company-coq-mode)
 
+(setq coq-prog-name "coqtop")
+
+
 (provide 'my-coq)
