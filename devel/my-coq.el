@@ -4,7 +4,7 @@
 (defun my-configure-coq-mode ()
   (interactive)
   (company-coq-mode)
-  (setq-local company-minimum-prefix-length 2)
+  (setq-local company-minimum-prefix-length 1)
   (coq-double-hit-enable)
   (auto-complete-mode -1))
 
