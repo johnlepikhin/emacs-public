@@ -5,7 +5,7 @@
   (interactive)
   (company-coq-mode)
   (setq-local company-minimum-prefix-length 1)
-  (coq-double-hit-enable)
+  (setq-local coq-double-hit-enable t)
   (auto-complete-mode -1))
 
 (add-hook 'coq-mode-hook #'my-configure-coq-mode)
