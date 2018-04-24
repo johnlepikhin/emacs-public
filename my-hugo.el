@@ -35,15 +35,21 @@
        (concat "--hyphen-char=" hyphen))
       (buffer-string))))
 
-(org-export-define-derived-backend 'my-hugo 'hugo
-  :translate-alist '((plain-text . my-hugo-improvements)
-                     (bold . my-hugo-improvements)
-                     (italic . my-hugo-improvements)
-                     (paragraph . my-hugo-improvements)))
+; (org-export-define-derived-backend 'my-hugo 'hugo
+;   :translate-alist '((plain-text . my-hugo-improvements)
+;                      (bold . my-hugo-improvements)
+;                      (italic . my-hugo-improvements)
+;                      (inner-template . my-hugo-improvements)
+;                      (paragraph . my-hugo-improvements)))
 
-(defun my-hugo-improvements (contents info)
-  (my-blog-macro-expand
-   (my-hyphenize-russian contents "&#173;")))
+(defun my-hugo-improvements (text backend info)
+  (when (org-export-derived-backend-p backend 'hugo)
+    (progn
+      (message (concat "replace in " text))
+      (my-hyphenize-russian text "&#173;"))))
+
+(add-to-list 'org-export-filter-plain-text-functions
+             'my-hugo-improvements)
 
 
 
