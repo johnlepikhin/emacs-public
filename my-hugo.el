@@ -6,15 +6,16 @@
 
 (defun my-org-hugo-export-file (f)
   (interactive)
-  (save-excursion 
+  (save-excursion
     (find-file f)
     (org-hugo-export-wim-to-md :all-subtrees)
     (kill-buffer (current-buffer))))
 
 (defun my-org-hugo-export-files-org-personal () 
   (interactive)
-  (mapc 'my-org-hugo-export-file
-        (directory-files "~/org/personal" t "^blog-.*\\.org$")))
+  (save-excursion
+    (mapc 'my-org-hugo-export-file
+          (directory-files "~/org/personal" t "^blog-.*\\.org$"))))
 
 
 ;; Hyphenation
@@ -35,18 +36,9 @@
        (concat "--hyphen-char=" hyphen))
       (buffer-string))))
 
-; (org-export-define-derived-backend 'my-hugo 'hugo
-;   :translate-alist '((plain-text . my-hugo-improvements)
-;                      (bold . my-hugo-improvements)
-;                      (italic . my-hugo-improvements)
-;                      (inner-template . my-hugo-improvements)
-;                      (paragraph . my-hugo-improvements)))
-
 (defun my-hugo-improvements (text backend info)
   (when (org-export-derived-backend-p backend 'hugo)
-    (progn
-      (message (concat "replace in " text))
-      (my-hyphenize-russian text "&#173;"))))
+    (my-hyphenize-russian text "&#173;")))
 
 (add-to-list 'org-export-filter-plain-text-functions
              'my-hugo-improvements)
