@@ -13,9 +13,6 @@
 (require 'seq)
 ;; (require 'git-auto-commit-mode)
 
-(with-eval-after-load 'ox
-  (require 'ox-hugo))
-
 (setq org-bbdb-anniversary-field 'birthday)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
