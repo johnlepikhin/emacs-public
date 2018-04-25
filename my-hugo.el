@@ -18,6 +18,27 @@
           (directory-files "~/org/personal" t "^blog-.*\\.org$"))))
 
 
+;; youtube
+
+(defvar yt-iframe-format
+  ;; You may want to change your width and height.
+  (concat "<div class=\"yt-container\"><iframe src=\"https://www.youtube.com/embed/%s\""
+          " frameborder=\"0\""
+          " allowfullscreen>%s</iframe></div>"))
+
+(org-add-link-type
+ "yt"
+ (lambda (handle)
+   (browse-url
+    (concat "https://www.youtube.com/embed/"
+            handle)))
+ (lambda (path desc backend)
+   (cl-case backend
+     (html (format yt-iframe-format
+                   path (or desc "")))
+     (latex (format "\href{%s}{%s}"
+                    path (or desc "video"))))))
+
 ;; Hyphenation
 
 (defun my-hyphenize-russian (input hyphen)
