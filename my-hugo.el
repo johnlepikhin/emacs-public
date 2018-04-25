@@ -21,10 +21,11 @@
 ;; youtube
 
 (defvar yt-iframe-format
-  ;; You may want to change your width and height.
   (concat "<div class=\"yt-container\"><iframe src=\"https://www.youtube.com/embed/%s\""
           " frameborder=\"0\""
           " allowfullscreen>%s</iframe></div>"))
+
+(defvar yt-hugo-format "[![%s](https://img.youtube.com/vi/%s/0.jpg)](https://www.youtube.com/watch?v=%s)")
 
 (org-add-link-type
  "yt"
@@ -34,8 +35,8 @@
             handle)))
  (lambda (path desc backend)
    (cl-case backend
-     (html (format yt-iframe-format
-                   path (or desc "")))
+     (md (format yt-hugo-format (or desc "") path path))
+     (html (format yt-iframe-format path (or desc "")))
      (latex (format "\href{%s}{%s}"
                     path (or desc "video"))))))
 
