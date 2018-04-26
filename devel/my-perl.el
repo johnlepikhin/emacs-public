@@ -13,6 +13,10 @@
 ; (add-hook 'perl-mode-hook 'company-mode)
 ; (add-hook 'cperl-mode-hook 'company-mode)
 
+(defun perl-insert-json ()
+  (interactive)
+  (shell-command-on-region (point) (point) "xclip -o | perl -MData::Dumper -MJSON -e '$Data::Dumper::Terse=1; $Data::Dumper::Indent=0; $Data::Dumper::Quotekeys=0; print Dumper from_json(<>)'"))
+
 (defun perl-mode-perltidy-buffer ()
   "Perltidy buffer if this is perl file."
   (interactive)
@@ -194,6 +198,7 @@
      (local-set-key [(control f4)] 'my-copy-flymake-error)
      (local-set-key [f5] 'perlcritic-disable-for-line)
      (local-set-key (kbd "C-c / p") 'google-cpan-word)
+     (local-set-key (kbd "C-c j") 'perl-insert-json)
      (local-set-key (kbd "C-x C-M-d") 'perl-document-current-function)
      (local-set-key (kbd "C-x C-M-s") 'perl-insert-sub-template)
      (local-set-key (kbd "\M-.") 'helm-etags-plus-select)
