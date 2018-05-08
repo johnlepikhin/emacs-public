@@ -126,6 +126,19 @@
              (latex (format "\href{%s}{%s}"
                             path (or desc "video"))))))
 
+
+(defun org-yt-get-image (url)
+  "Retrieve image from url."
+  (let ((image-buf (url-retrieve-synchronously url)))
+    (when image-buf
+      (with-current-buffer image-buf
+        (goto-char (point-min))
+        (when (looking-at "HTTP/")
+          (delete-region (point-min)
+                         (progn (re-search-forward "\n[\n]+")
+                                (point))))
+        (setq image-data (buffer-substring-no-properties (point-min) (point-max)))))))
+
 (defconst org-yt-video-id-regexp "[-_[:alnum:]]\\{10\\}[AEIMQUYcgkosw048]"
   "Regexp matching youtube video id's taken from `https://webapps.stackexchange.com/questions/54443/format-for-id-of-youtube-video'.")
 
