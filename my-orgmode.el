@@ -113,18 +113,46 @@
 
 (defvar yt-hugo-format "[![%s](https://img.youtube.com/vi/%s/0.jpg)](https://www.youtube.com/watch?v=%s)")
 
-(org-add-link-type
+(org-link-set-parameters
  "yt"
- (lambda (handle)
-   (browse-url
-    (concat "https://www.youtube.com/embed/"
-            handle)))
- (lambda (path desc backend)
-   (cl-case backend
-     (md (format yt-hugo-format (or desc "") path path))
-     (html (format yt-iframe-format path (or desc "")))
-     (latex (format "\href{%s}{%s}"
-                    path (or desc "video"))))))
+ :follow (lambda (handle)
+           (browse-url
+            (concat "https://www.youtube.com/embed/"
+                    handle)))
+ :export (lambda (path desc backend)
+           (cl-case backend
+             (md (format yt-hugo-format (or desc "") path path))
+             (html (format yt-iframe-format path (or desc "")))
+             (latex (format "\href{%s}{%s}"
+                            path (or desc "video"))))))
+
+(defconst org-yt-video-id-regexp "[-_[:alnum:]]\\{10\\}[AEIMQUYcgkosw048]"
+  "Regexp matching youtube video id's taken from `https://webapps.stackexchange.com/questions/54443/format-for-id-of-youtube-video'.")
+
+(defun org-yt-display-inline-images (&optional include-linked refresh beg end)
+  "Like `org-display-inline-images' but for yt-links."
+  (when (display-graphic-p)
+    (org-with-wide-buffer
+     (goto-char (or beg (point-min)))
+     (let ((re (format "\\[\\[%s:\\(%s\\)\\]\\]" "yt" org-yt-video-id-regexp)))
+       (while (re-search-forward re end t)
+         (let ((video-id (match-string 1))
+               (el (save-excursion (goto-char (match-beginning 1)) (org-element-context)))
+               image-data)
+           (when el
+             (setq image-data 
+                   (or (let ((old (get-char-property-and-overlay
+                                   (org-element-property :begin el)
+                                   'org-image-overlay)))
+                         (and old
+                              (car-safe old)
+                              (overlay-get (cdr old) 'display)))
+                       (org-yt-get-image (format "http://img.youtube.com/vi/%s/0.jpg" video-id))))
+             (when image-data
+               (org-image-update-overlay image-data el t t)))))))))
+
+(advice-add #'org-display-inline-images :after #'org-yt-display-inline-images)
+
 ;; alerts
 
 ; (require 'org-alert)
