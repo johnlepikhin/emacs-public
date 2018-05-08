@@ -17,29 +17,6 @@
     (mapc 'my-org-hugo-export-file
           (directory-files "~/org/personal" t "^blog-.*\\.org$"))))
 
-
-;; youtube
-
-(defvar yt-iframe-format
-  (concat "<div class=\"yt-container\"><iframe src=\"https://www.youtube.com/embed/%s\""
-          " frameborder=\"0\""
-          " allowfullscreen>%s</iframe></div>"))
-
-(defvar yt-hugo-format "[![%s](https://img.youtube.com/vi/%s/0.jpg)](https://www.youtube.com/watch?v=%s)")
-
-(org-add-link-type
- "yt"
- (lambda (handle)
-   (browse-url
-    (concat "https://www.youtube.com/embed/"
-            handle)))
- (lambda (path desc backend)
-   (cl-case backend
-     (md (format yt-hugo-format (or desc "") path path))
-     (html (format yt-iframe-format path (or desc "")))
-     (latex (format "\href{%s}{%s}"
-                    path (or desc "video"))))))
-
 ;; Hyphenation
 
 (defun my-hyphenize-russian (input hyphen)
