@@ -1,13 +1,13 @@
 
 
-(defun start-blog ()
-  (interactive)
-  (if (not (boundp 'start-blog-done))
-      (progn
-        (setq start-blog-done t)
-        (require 'load-dir)
-        (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
-        (load-dir-one "~/.emacs.d/public/blog/elisp"))))
+; (defun start-blog ()
+;   (interactive)
+;   (if (not (boundp 'start-blog-done))
+;       (progn
+;         (setq start-blog-done t)
+;         (require 'load-dir)
+;         (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
+;         (load-dir-one "~/.emacs.d/public/blog/elisp"))))
 
 (defun start-devel ()
   (interactive)
@@ -37,7 +37,7 @@
       (progn
         (message "Starting desktop environment")
         (setq start-desktop-done t)
-        (start-blog)
+        ;; (start-blog)
         (start-devel))))
 
 (defun start-mobile ()

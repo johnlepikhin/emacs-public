@@ -11,6 +11,7 @@
 (require 'bbdb-anniv)
 (require 'org-password-manager)
 (require 'seq)
+(require 'org-element)
 ;; (require 'git-auto-commit-mode)
 
 (setq org-bbdb-anniversary-field 'birthday)
@@ -104,6 +105,80 @@
 
 (setq org-confirm-babel-evaluate 'my/org-confirm-babel-evaluate)
 
+;; common
+
+(defun org-image-update-overlay (file link &optional data-p refresh)
+  "Create image overlay for FILE associtated with org-element LINK.
+        If DATA-P is non-nil FILE is not a file name but a string with the image data.
+        See also `create-image'.
+        This function is almost a duplicate of a part of `org-display-inline-images'."
+  (when (or data-p (file-exists-p file))
+    (let ((width
+           ;; Apply `org-image-actual-width' specifications.
+           (cond
+            ((not (image-type-available-p 'imagemagick)) nil)
+            ((eq org-image-actual-width t) nil)
+            ((listp org-image-actual-width)
+             (or
+              ;; First try to find a width among
+              ;; attributes associated to the paragraph
+              ;; containing link.
+              (let ((paragraph
+                     (let ((e link))
+                       (while (and (setq e (org-element-property
+                                            :parent e))
+                                   (not (eq (org-element-type e)
+                                            'paragraph))))
+                       e)))
+                (when paragraph
+                  (save-excursion
+                    (goto-char (org-element-property :begin paragraph))
+                    (when
+                        (re-search-forward
+                         "^[ \t]*#\\+attr_.*?: +.*?:width +\\(\\S-+\\)"
+                         (org-element-property
+                          :post-affiliated paragraph)
+                         t)
+                      (string-to-number (match-string 1))))))
+              ;; Otherwise, fall-back to provided number.
+              (car org-image-actual-width)))
+            ((numberp org-image-actual-width)
+             org-image-actual-width)))
+          (old (get-char-property-and-overlay
+                (org-element-property :begin link)
+                'org-image-overlay)))
+      (if (and (car-safe old) refresh)
+          (image-refresh (overlay-get (cdr old) 'display))
+        (let ((image (create-image file
+                                   (and width 'imagemagick)
+                                   data-p
+                                   :width width)))
+          (when image
+            (let* ((link
+                    ;; If inline image is the description
+                    ;; of another link, be sure to
+                    ;; consider the latter as the one to
+                    ;; apply the overlay on.
+                    (let ((parent
+                           (org-element-property :parent link)))
+                      (if (eq (org-element-type parent) 'link)
+                          parent
+                        link)))
+                   (ov (make-overlay
+                        (org-element-property :begin link)
+                        (progn
+                          (goto-char
+                           (org-element-property :end link))
+                          (skip-chars-backward " \t")
+                          (point)))))
+              (overlay-put ov 'display image)
+              (overlay-put ov 'face 'default)
+              (overlay-put ov 'org-image-overlay t)
+              (overlay-put
+               ov 'modification-hooks
+               (list 'org-display-inline-remove-overlay))
+              (push ov org-inline-image-overlays))))))))
+
 ;; youtube
 
 (defvar yt-iframe-format
@@ -112,6 +187,8 @@
           " allowfullscreen>%s</iframe></div>"))
 
 (defvar yt-hugo-format "[![%s](https://img.youtube.com/vi/%s/0.jpg)](https://www.youtube.com/watch?v=%s)")
+
+(message "hello 1")
 
 (org-link-set-parameters
  "yt"
@@ -126,6 +203,7 @@
              (latex (format "\href{%s}{%s}"
                             path (or desc "video"))))))
 
+(message "hello 2")
 
 (defun org-yt-get-image (url)
   "Retrieve image from url."
