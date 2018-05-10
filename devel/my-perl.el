@@ -15,7 +15,7 @@
 
 (defun perl-insert-json ()
   (interactive)
-  (shell-command-on-region (point) (point) "xclip -o | perl -MData::Dumper -MJSON -e '$Data::Dumper::Terse=1; $Data::Dumper::Indent=0; $Data::Dumper::Quotekeys=0; $Data::Dumper::Sortkeys=1; print Dumper from_json(<>)'" t))
+  (shell-command-on-region (point) (point) "xclip -o | perl -MData::Dumper -MJSON -e '$Data::Dumper::Terse=1; $Data::Dumper::Indent=0; $Data::Dumper::Quotekeys=0; $Data::Dumper::Sortkeys=1; print Dumper from_json(<>, { utf8  => 1 })'" t))
 
 (defun perl-mode-perltidy-buffer ()
   "Perltidy buffer if this is perl file."
