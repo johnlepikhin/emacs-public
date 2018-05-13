@@ -4,7 +4,7 @@
 
 (require 'org)
 (require 'org-agenda)
-(require 'org-checklist)
+;; (require 'org-checklist)
 (require 'org-install)
 (require 'find-lisp)
 (require 'helm-org-rifle)
@@ -30,7 +30,7 @@
 (run-with-timer 0 600 'my-org-fill-files-list)
 
 (add-to-list 'org-modules 'org-id)
-(add-to-list 'org-modules 'org-checklist)
+;; (add-to-list 'org-modules 'org-checklist)
 (add-to-list 'org-modules 'org-gnus)
 (add-to-list 'org-modules 'org-mouse)
 (add-to-list 'org-modules 'org-attach-screenshot)
