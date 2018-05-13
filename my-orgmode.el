@@ -188,6 +188,11 @@
 
 (defvar yt-hugo-format "[![%s](https://img.youtube.com/vi/%s/0.jpg)](https://www.youtube.com/watch?v=%s)")
 
+(defvar vr360-iframe-format
+  (concat
+   "<script src='https://storage.googleapis.com/vrview/2.0/build/vrview.min.js'></script>"
+   "<iframe src='https://storage.googleapis.com/vrview/2.0/embed?image=%s'></iframe>"))
+
 (org-link-set-parameters
  "yt"
  :follow (lambda (handle)
@@ -200,6 +205,19 @@
              (html (format yt-iframe-format path (or desc "")))
              (latex (format "\href{%s}{%s}"
                             path (or desc "video"))))))
+
+(org-link-set-parameters
+ "vr360"
+ :follow (lambda (handle)
+           (browse-url
+            (concat "https://www.youtube.com/embed/"
+                    handle)))
+ :export (lambda (path desc backend)
+           (cl-case backend
+             (md (format vr360-iframe-format path (or desc "")))
+             (html (format vr360-iframe-format path (or desc "")))
+             (latex (format "\href{%s}{%s}"
+                            path (or desc "VR360 pano"))))))
 
 (defun org-yt-get-image (url)
   "Retrieve image from url."
