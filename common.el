@@ -182,3 +182,5 @@ T - tag prefix
   ("." nil :color blue))
 
 (eval-after-load "dired" '(progn (define-key dired-mode-map "." 'hydra-dired/body)))
+
+(provide 'common)
