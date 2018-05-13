@@ -1,6 +1,8 @@
 
 (require 'my-orgmode)
 
+(require 'common)
+
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
