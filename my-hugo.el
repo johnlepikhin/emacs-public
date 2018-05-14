@@ -15,6 +15,7 @@
           (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
           (not (string= (org-entry-get nil "EXPORT_FILE_NAME") "")))
        (progn
+         (org-todo 'done)
          (org-set-property
           "EXPORT_FILE_NAME"
           (format "twit-%s-%i" (format-time-string "%F-%T") org-twit-counter))
