@@ -27,6 +27,7 @@
   (save-excursion
     (find-file f)
     (my-org-hugo-twits-prepare)
+    (save-buffer)
     (org-hugo-export-wim-to-md :all-subtrees)
     (kill-buffer (current-buffer))))
 
