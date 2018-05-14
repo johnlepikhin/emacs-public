@@ -6,10 +6,27 @@
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
+(defun my-org-hugo-twits-prepare ()
+  (setq-local org-twit-counter 1)
+  (org-map-entries
+   (lambda ()
+     (when
+         (and
+          (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
+          (not (string= (org-entry-get nil "EXPORT_FILE_NAME") "")))
+       (progn
+         (org-set-property
+          "EXPORT_FILE_NAME"
+          (format "twit-%s-%i" (format-time-string "%F-%T") org-twit-counter))
+         (incf org-twit-counter))))
+   "twit"
+   'file))
+
 (defun my-org-hugo-export-file (f)
   (interactive)
   (save-excursion
     (find-file f)
+    (my-org-hugo-twits-prepare)
     (org-hugo-export-wim-to-md :all-subtrees)
     (kill-buffer (current-buffer))))
 
