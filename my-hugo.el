@@ -36,7 +36,7 @@
   (interactive)
   (save-excursion
     (mapc 'my-org-hugo-export-file
-          (directory-files "~/org/personal" t "^blog-.*\\.org$"))))
+          (directory-files-recursively "~/org/personal" "\\.org$"))))
 
 ;; Hyphenation
 
