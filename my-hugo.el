@@ -49,8 +49,6 @@
                  (time-less-p newer-than (nth 5 (file-attributes file)))))
              (directory-files-recursively "~/org/personal" "\\.org$"))))))
 
-(my-org-hugo-export-files-org-personal :newer-than 1526499193)
-
 ;; Hyphenation
 
 (defun my-hyphenize-russian (input hyphen)
