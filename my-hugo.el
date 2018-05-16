@@ -38,13 +38,18 @@
     (org-hugo-export-wim-to-md :all-subtrees)
     (kill-buffer (current-buffer))))
 
-(defun my-org-hugo-export-files-org-personal (&key (newer-than 0))
+(defun my-org-hugo-export-files-org-personal (&key newer-than)
   (interactive)
   (save-excursion
-    (mapc 'my-org-hugo-export-file
-          (seq-filter
-           (lambda (file) (> (nth 5 (file-attributes file)) newer-than))
-           (directory-files-recursively "~/org/personal" "\\.org$")))))
+    (let ((newer-than (seconds-to-time (if (null newer-than) 0 newer-than))))
+      (mapc 'my-org-hugo-export-file
+            (seq-filter
+             (lambda (file)
+               (progn
+                 (time-less-p newer-than (nth 5 (file-attributes file)))))
+             (directory-files-recursively "~/org/personal" "\\.org$"))))))
+
+(my-org-hugo-export-files-org-personal :newer-than 1526499193)
 
 ;; Hyphenation
 
