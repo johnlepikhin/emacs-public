@@ -3,6 +3,7 @@
 
 (require 'common)
 (require 'cl)
+(require 'seq)
 
 (with-eval-after-load 'ox
   (require 'ox-hugo))
@@ -37,11 +38,13 @@
     (org-hugo-export-wim-to-md :all-subtrees)
     (kill-buffer (current-buffer))))
 
-(defun my-org-hugo-export-files-org-personal () 
+(defun my-org-hugo-export-files-org-personal (&key (newer-than 0))
   (interactive)
   (save-excursion
     (mapc 'my-org-hugo-export-file
-          (directory-files-recursively "~/org/personal" "\\.org$"))))
+          (seq-filter
+           (lambda (file) (> (nth 5 (file-attributes file)) newer-than))
+           (directory-files-recursively "~/org/personal" "\\.org$")))))
 
 ;; Hyphenation
 
