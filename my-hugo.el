@@ -2,6 +2,7 @@
 (require 'my-orgmode)
 
 (require 'common)
+(require 'cl)
 
 (with-eval-after-load 'ox
   (require 'ox-hugo))
@@ -9,6 +10,7 @@
 (defun my-org-hugo-twits-prepare ()
   (interactive)
   (setq-local org-twit-counter 1)
+  (message "Preparing twits...")
   (org-map-entries
    (lambda ()
      (when
@@ -16,6 +18,7 @@
           (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
           (not (string= (org-entry-get nil "EXPORT_FILE_NAME") "")))
        (progn
+         (message (format "Preparing twit '%s'" (org-entry-get nil "ITEM")))
          (org-todo 'done)
          (org-set-property
           "EXPORT_FILE_NAME"
@@ -27,6 +30,7 @@
 (defun my-org-hugo-export-file (f)
   (interactive)
   (save-excursion
+    (message (concat "Processing file " f))
     (find-file f)
     (my-org-hugo-twits-prepare)
     (save-buffer)
