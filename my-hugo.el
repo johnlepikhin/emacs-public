@@ -7,6 +7,7 @@
   (require 'ox-hugo))
 
 (defun my-org-hugo-twits-prepare ()
+  (interactive)
   (setq-local org-twit-counter 1)
   (org-map-entries
    (lambda ()
