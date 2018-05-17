@@ -216,8 +216,7 @@
                     handle)))
  :export (lambda (path desc backend)
            (cl-case backend
-             (md (format vr360-iframe-format path (or desc "")))
-             (html (format vr360-hugo-format img))
+             (md (format vr360-hugo-format path (or desc "")))
              (latex (format "\href{%s}{%s}"
                             path (or desc "VR360 pano"))))))
 
