@@ -186,7 +186,7 @@
           " frameborder=\"0\""
           " allowfullscreen>%s</iframe></div>"))
 
-(defvar yt-hugo-format "[![%s](https://img.youtube.com/vi/%s/0.jpg)](https://www.youtube.com/watch?v=%s)")
+(defvar yt-hugo-format "{{< youtube id=\"%s\" >}}")
 
 (defvar vr360-iframe-format
   (concat
@@ -201,7 +201,7 @@
                     handle)))
  :export (lambda (path desc backend)
            (cl-case backend
-             (md (format yt-hugo-format (or desc "") path path))
+             (md (format yt-hugo-format path))
              (html (format yt-iframe-format path (or desc "")))
              (latex (format "\href{%s}{%s}"
                             path (or desc "video"))))))
