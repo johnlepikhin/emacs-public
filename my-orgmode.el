@@ -188,12 +188,12 @@
 
 (defvar yt-hugo-format "{{< youtube id=\"%s\" >}}")
 
-(defvar vr360-hugo-format "{{< vr360 img=\"/ox-hugo/%s\" >}}")
+; (defvar vr360-hugo-format "{{< vr360 img=\"/ox-hugo/%s\" >}}")
 
-(defvar vr360-iframe-format
-  (concat
-   "<script src='https://storage.googleapis.com/vrview/2.0/build/vrview.min.js'></script>"
-   "<iframe src='https://storage.googleapis.com/vrview/2.0/embed?image=%s'></iframe>"))
+; (defvar vr360-iframe-format
+;   (concat
+;    "<script src='https://storage.googleapis.com/vrview/2.0/build/vrview.min.js'></script>"
+;    "<iframe src='https://storage.googleapis.com/vrview/2.0/embed?image=%s'></iframe>"))
 
 (org-link-set-parameters
  "yt"
@@ -208,18 +208,18 @@
              (latex (format "\href{%s}{%s}"
                             path (or desc "video"))))))
 
-(org-link-set-parameters
- "vr360"
- :follow (lambda (handle)
-           (browse-url
-            (concat "https://www.youtube.com/embed/"
-                    handle)))
- :export (lambda (path desc backend)
-           (cl-case backend
-             (md (let* ((proc-path (org-hugo--attachment-rewrite-maybe path org-export-options-alist)))
-                   (format vr360-hugo-format path)))
-             (latex (format "\href{%s}{%s}"
-                            path (or desc "VR360 pano"))))))
+; (org-link-set-parameters
+;  "vr360"
+;  :follow (lambda (handle)
+;            (browse-url
+;             (concat "https://www.youtube.com/embed/"
+;                     handle)))
+;  :export (lambda (path desc backend)
+;            (cl-case backend
+;              (md (let* ((proc-path (org-hugo--attachment-rewrite-maybe path '())))
+;                    (format vr360-hugo-format path)))
+;              (latex (format "\href{%s}{%s}"
+;                             path (or desc "VR360 pano"))))))
 
 (add-to-list 'org-html-inline-image-rules '("vr360" . "\\.\\(jpeg\\|jpg\\|png\\|gif\\|svg\\)\\'"))
 
