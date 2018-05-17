@@ -216,7 +216,8 @@
                     handle)))
  :export (lambda (path desc backend)
            (cl-case backend
-             (md (format vr360-hugo-format path (or desc "")))
+             (md (let* ((proc-path (org-hugo--attachment-rewrite-maybe path '())))
+                   (format vr360-hugo-format proc-path)))
              (latex (format "\href{%s}{%s}"
                             path (or desc "VR360 pano"))))))
 
