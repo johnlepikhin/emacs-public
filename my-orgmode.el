@@ -188,6 +188,8 @@
 
 (defvar yt-hugo-format "{{< youtube id=\"%s\" >}}")
 
+(defvar vr360-hugo-format "{{< vr360 img=\"/ox-hugo/%s\" >}}")
+
 (defvar vr360-iframe-format
   (concat
    "<script src='https://storage.googleapis.com/vrview/2.0/build/vrview.min.js'></script>"
@@ -215,7 +217,7 @@
  :export (lambda (path desc backend)
            (cl-case backend
              (md (format vr360-iframe-format path (or desc "")))
-             (html (format vr360-iframe-format path (or desc "")))
+             (html (format vr360-hugo-format img))
              (latex (format "\href{%s}{%s}"
                             path (or desc "VR360 pano"))))))
 
