@@ -221,7 +221,7 @@
 ;              (latex (format "\href{%s}{%s}"
 ;                             path (or desc "VR360 pano"))))))
 
-(add-to-list 'org-html-inline-image-rules '("vr360" . "\\.\\(jpeg\\|jpg\\|png\\|gif\\|svg\\)\\'"))
+;; (add-to-list 'org-html-inline-image-rules '("vr360" . "\\.\\(jpeg\\|jpg\\|png\\|gif\\|svg\\)\\'"))
 
 (defun org-yt-get-image (url)
   "Retrieve image from url."
