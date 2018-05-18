@@ -17,7 +17,7 @@
      (when
          (and
           (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
-          (not (string= (org-entry-get nil "EXPORT_FILE_NAME") "")))
+          (string= (org-entry-get nil "EXPORT_FILE_NAME") ""))
        (progn
          (message (format "Preparing twit '%s'" (org-entry-get nil "ITEM")))
          (org-todo 'done)
