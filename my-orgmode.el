@@ -21,6 +21,8 @@
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 
+(setq org-log-into-drawer 't)
+
 (defun my-org-fill-files-list (&optional EXHAUSTIVE)
   (setq org-agenda-files
         (seq-remove
