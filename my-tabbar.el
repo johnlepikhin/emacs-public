@@ -1,8 +1,8 @@
 
 (require 'tabbar)
 
-(global-set-key [M-left] 'tabbar-backward-tab)
-(global-set-key [M-right] 'tabbar-forward-tab)
+(global-set-key [s-left] 'tabbar-backward-tab)
+(global-set-key [s-right] 'tabbar-forward-tab)
 
 (defun my-modification-state-change ()
   (tabbar-set-template tabbar-current-tabset nil)
