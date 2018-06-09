@@ -77,6 +77,7 @@
 (require 'ob-plantuml)
 (require 'ob-gnuplot)
 (require 'ob-coq)
+(require 'ob-python)
 (require 'ob-ocaml)
 (require 'package)
 
