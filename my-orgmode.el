@@ -12,6 +12,7 @@
 (require 'org-password-manager)
 (require 'seq)
 (require 'org-element)
+(require 'my-sport)
 ;; (require 'git-auto-commit-mode)
 
 (setq org-bbdb-anniversary-field 'birthday)
@@ -305,6 +306,14 @@
      (org-archive-subtree)
      (setq org-map-continue-from (outline-previous-heading)))
    "/DONE" 'file))
+
+;; templates
+
+(custom-set-variables
+  '(org-capture-templates
+    (quote
+     (("e" "Экспедиция/мероприятие" entry (file (read-file-name "Как назвать файл экспы"))
+       (function sport/expedition-template))))))
 
 ;; setup hydra for agenda mode
 
