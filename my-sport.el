@@ -1,5 +1,6 @@
 
 (require 'my-utils)
+(require 's)
 
 (defun sport/equipment-report-weights (src)
   "Return summary weights grouped by buggage type"
@@ -37,9 +38,37 @@
 
 (defun sport/expedition-template ()
   (interactive)
-  (let ((tpl (with-temp-buffer
-      (insert-file-contents "~/org/personal/sport/организация-экспедиции.org.tpl")
-      (buffer-string))))
-    (message tpl)))
+  (let* ((event (org-completing-read-no-i "Название экспедиции: " nil))
+         (category (org-completing-read-no-i "Категория в org: " nil))
+         (date-start (org-read-date nil t nil "Начало экспедиции: "))
+         (date-fmt (car org-time-stamp-formats))
+         (date-5-months (format-time-string date-fmt (time-subtract date-start (seconds-to-time (* 86400 30 5)))))
+         (date-1-month (format-time-string date-fmt (time-subtract date-start (seconds-to-time (* 86400 30)))))
+         (date-2-weeks (format-time-string date-fmt (time-subtract date-start (seconds-to-time (* 86400 7 2)))))
+         (date-1-week (format-time-string date-fmt (time-subtract date-start (seconds-to-time (* 86400 7)))))
+         (src-tpl (with-temp-buffer
+                    (insert-file-contents "~/org/personal/sport/организация-экспедиции.org.tpl")
+                    (buffer-string)))
+         (tpl
+          (s-replace
+           "%event%" event
+           (s-replace
+            "%category%" category
+            (s-replace
+             "%date_5_months%" date-5-months
+             (s-replace
+              "%date_1_month%" date-1-month
+              (s-replace
+               "%date_2_weeks%" date-2-weeks
+               (s-replace
+                "%date_1_week%" date-1-week
+                (s-replace "%date_start%" date-start src-tpl)))))))))
+    tpl))
+
+
+
+(setq-local test "=== %date_5_months%")
+
+(s-replace "%date_5_months%" "asdasdasdasdasdasdasd" test)
 
 (provide 'my-sport)
