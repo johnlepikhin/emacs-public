@@ -20,6 +20,7 @@
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
+(define-key global-map "\C-cc" 'org-capture)
 (setq org-log-done t)
 
 (setq org-log-into-drawer 't)
@@ -312,7 +313,8 @@
 (custom-set-variables
   '(org-capture-templates
     (quote
-     (("e" "Экспедиция/мероприятие" plain (file (read-file-name "Как назвать файл экспы: " "~/org/personal/sport/"))
+     (("e" "Экспедиция/мероприятие" plain
+       (file (lambda () (read-file-name "Как назвать файл экспы: " "~/org/personal/sport/")))
        (function sport/expedition-template))))))
 
 ;; setup hydra for agenda mode
