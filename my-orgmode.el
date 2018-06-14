@@ -312,7 +312,7 @@
 (custom-set-variables
   '(org-capture-templates
     (quote
-     (("e" "Экспедиция/мероприятие" entry (file (read-file-name "Как назвать файл экспы"))
+     (("e" "Экспедиция/мероприятие" plain (file (read-file-name "Как назвать файл экспы: " "~/org/personal/sport/"))
        (function sport/expedition-template))))))
 
 ;; setup hydra for agenda mode
