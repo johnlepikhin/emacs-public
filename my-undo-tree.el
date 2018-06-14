@@ -1,6 +1,4 @@
 
-(global-undo-tree-mode)
+(require 'undo-tree)
 
-(setq 
- undo-tree-visualizer-diff t
- undo-tree-visualizer-timestamps t)
+(global-undo-tree-mode)
