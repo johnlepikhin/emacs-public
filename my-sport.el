@@ -38,7 +38,7 @@
 
 (defun sport/expedition-template ()
   (interactive)
-  (let* ((event (org-completing-read-no-i "Название экспедиции: " nil))
+  (let* ((event (read-string "Название экспедиции: " nil))
          (category (org-completing-read-no-i "Категория в org: " nil))
          (date-input (org-read-date nil t nil "Начало экспедиции: "))
          (date-fmt (car org-time-stamp-formats))

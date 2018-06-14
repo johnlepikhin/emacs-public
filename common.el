@@ -94,6 +94,10 @@
 (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer)
 
 
+;; buffers
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
 
 
 
