@@ -35,4 +35,11 @@
                (list name (* (lst-number-or-v row 1 0) cnt) cnt)))
       (cdr src))))))
 
+(defun sport/expedition-template ()
+  (interactive)
+  (let ((tpl (with-temp-buffer
+      (insert-file-contents "~/org/personal/sport/организация-экспедиции.org.tpl")
+      (buffer-string))))
+    (message tpl)))
+
 (provide 'my-sport)
