@@ -46,6 +46,7 @@
          (date-1-month (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 30)))))
          (date-2-weeks (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 7 2)))))
          (date-1-week (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 7)))))
+         (date-1-day (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 1)))))
          (date-start (format-time-string date-fmt date-input))
          (src-tpl (with-temp-buffer
                     (insert-file-contents "~/org/personal/sport/организация-экспедиции.org.tpl")
