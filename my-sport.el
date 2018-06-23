@@ -26,15 +26,17 @@
    '("" "Вес" "Кол-во")
    (cons
     'hline
-    (remove-if-not
-     '(lambda (row) (> (nth 1 row) 0))
-     (map
-      #'list
-      '(lambda (row)
-         (let ((name (first row))
-               (cnt (lst-number-or-v row pos 0)))
-               (list name (* (lst-number-or-v row 1 0) cnt) cnt)))
-      (cdr src))))))
+    (sort 
+     (remove-if-not
+      '(lambda (row) (> (nth 1 row) 0))
+      (map
+       #'list
+       '(lambda (row)
+          (let ((name (first row))
+                (cnt (lst-number-or-v row pos 0)))
+            (list name (* (lst-number-or-v row 1 0) cnt) cnt)))
+       (cdr src)))
+     (lambda (a b) (> (nth 1 a) (nth 1 b)))))))
 
 (defun sport/expedition-template ()
   (interactive)
