@@ -14,6 +14,8 @@
   (message "Preparing twits...")
   (org-map-entries
    (lambda ()
+     (progn
+       (message (org-entry-get nil "EXPORT_FILE_NAME"))
      (when
          (and
           (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
@@ -26,7 +28,7 @@
           (format "twit-%s-%i" (format-time-string "%F-%T") org-twit-counter))
          (incf org-twit-counter))))
    "twit"
-   'file))
+   'file)))
 
 (defun my-org-hugo-export-file (f)
   (interactive)
