@@ -8,18 +8,16 @@
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
-(defun my-org-hugo-twits-prepare ()
+(defun my-org-hugo-twits-prepare (file)
   (interactive)
   (setq-local org-twit-counter 1)
   (message "Preparing twits...")
   (org-map-entries
    (lambda ()
-     (progn
-       (message (org-entry-get nil "EXPORT_FILE_NAME"))
      (when
          (and
           (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
-          (string= (org-entry-get nil "EXPORT_FILE_NAME") ""))
+          (not (org-entry-get nil "EXPORT_FILE_NAME")))
        (progn
          (message (format "Preparing twit '%s'" (org-entry-get nil "ITEM")))
          (org-todo 'done)
@@ -28,14 +26,14 @@
           (format "twit-%s-%i" (format-time-string "%F-%T") org-twit-counter))
          (incf org-twit-counter))))
    "twit"
-   'file)))
+   (list file)))
 
 (defun my-org-hugo-export-file (f)
   (interactive)
   (save-excursion
     (message (concat "Processing file " f))
     (find-file f)
-    (my-org-hugo-twits-prepare)
+    (my-org-hugo-twits-prepare f)
     (save-buffer)
     (org-hugo-export-wim-to-md :all-subtrees)
     (kill-buffer (current-buffer))))
