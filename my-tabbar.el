@@ -5,7 +5,6 @@
 (global-set-key [s-right] 'tabbar-forward-tab)
 
 (defun my-modification-state-change ()
-  (message "test")
   (tabbar-set-template tabbar-current-tabset nil)
   (tabbar-display-update))
 
@@ -13,6 +12,7 @@
 (add-hook 'first-change-hook 'my-modification-state-change)
 
 (defadvice undo (after undo-after activate) (my-modification-state-change))
+(defadvice undo-tree-undo (after undo-after activate) (my-modification-state-change))
 
 (defun my-tabbar-buffer-groups () ;; customize to show all normal files in one group
    "Returns the name of the tab group names the current buffer belongs to.

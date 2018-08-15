@@ -12,6 +12,8 @@
 
 (global-set-key (kbd "M-<tab>") (lambda () (interactive) (other-window 1)))
 
+(global-set-key (kbd "s-'") (lambda () (interactive) (insert "«»") (left-char)))
+
 (setq focus-follows-mouse t
       mouse-autoselect-window nil)
 
