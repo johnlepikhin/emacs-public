@@ -5,6 +5,7 @@
 (global-set-key [s-right] 'tabbar-forward-tab)
 
 (defun my-modification-state-change ()
+  (message "test")
   (tabbar-set-template tabbar-current-tabset nil)
   (tabbar-display-update))
 
