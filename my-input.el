@@ -19,3 +19,14 @@
 
 
 (global-unset-key (kbd "C-z"))
+
+;; region expanding
+
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+;;
+
+
+
+(provide 'my-input)
