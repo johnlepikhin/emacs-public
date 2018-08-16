@@ -1,6 +1,8 @@
 
 (require 'my-utils)
 (require 's)
+(require 'seq)
+(require 'my-orgmode)
 
 (defun sport/equipment-report-weights (src)
   "Return summary weights grouped by buggage type"
@@ -68,5 +70,30 @@
                 "%date_1_week%" date-1-week
                 (s-replace "%date_start%" date-start src-tpl)))))))))
     tpl))
+
+(defun my-sport-journal-add (type value notes)
+  (interactive
+   (list
+    (completing-read
+     "Тип: "
+     (with-current-buffer (find-file-noselect "~/org/personal/sport/sports-periodic-TODO.org")
+       (goto-char (point-min))
+       (setq case-fold-search nil)
+       (re-search-forward "^#\\+NAME: sports-journal")
+       (next-line)
+       (mapcar
+        (lambda (row) (car (cdr row)))
+        (seq-filter (lambda (row) (not (eq row 'hline))) (org-table-to-lisp)))))
+    (read-string "Значение: ")
+    (read-string "Заметки: ")))
+  ;; TODO: improve
+  (with-current-buffer (find-file-noselect "~/org/personal/sport/sports-periodic-TODO.org")
+    (goto-char (point-min))
+    (setq case-fold-search nil)
+    (re-search-forward "^#\\+NAME: sports-journal")
+    (next-line)
+    (goto-char (org-table-end))
+    (insert
+     (format "| [%s] | %s | | %s | %s |\n" (format-time-string "%F %R") type value notes))))
 
 (provide 'my-sport)
