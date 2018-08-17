@@ -9,3 +9,5 @@
 (defun shell-quoted-yank ()
   (interactive)
   (insert (shell-quote-argument (car kill-ring))))
+
+(provide 'my-shell)
