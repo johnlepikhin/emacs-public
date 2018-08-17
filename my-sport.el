@@ -2,7 +2,6 @@
 (require 'my-utils)
 (require 's)
 (require 'seq)
-(require 'my-orgmode)
 
 (defun sport/equipment-report-weights (src)
   "Return summary weights grouped by buggage type"
