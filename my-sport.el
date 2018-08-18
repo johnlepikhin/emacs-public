@@ -46,8 +46,6 @@
    (cons
     'hline
     (sort 
-     (remove-if
-      '(lambda (row) (= (lst-number-or-v row 1 0) 0))
       (map
        #'list
        '(lambda (row)
@@ -55,8 +53,10 @@
            (first row)
            (lst-number-or-v row 1 0)
            (lst-number-or-v row 6 0)))
-       (cdr src)))
-     (lambda (a b) (string> (nth 0 a) (nth 0 b)))))))
+       (remove-if
+        '(lambda (row) (= (lst-number-or-v row 6 0) 0))
+        (cdr src)))
+      (lambda (a b) (string< (nth 0 a) (nth 0 b)))))))
 
 (defun sport/expedition-template ()
   (interactive)
