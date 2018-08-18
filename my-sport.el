@@ -46,8 +46,8 @@
    (cons
     'hline
     (sort 
-     (remove-if-not
-      '(lambda (row) (> (nth 1 row) 0))
+     (remove-if
+      '(lambda (row) (= (lst-number-or-v row 1 0) 0))
       (map
        #'list
        '(lambda (row)
