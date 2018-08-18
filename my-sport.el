@@ -39,6 +39,25 @@
        (cdr src)))
      (lambda (a b) (> (nth 1 a) (nth 1 b)))))))
 
+(defun sport/equipment-report-shared (src)
+  "Return list for specified buggage type (column position in src table)"
+  (cons
+   '("" "Вес" "Кол-во")
+   (cons
+    'hline
+    (sort 
+     (remove-if-not
+      '(lambda (row) (> (nth 1 row) 0))
+      (map
+       #'list
+       '(lambda (row)
+          (list
+           (first row)
+           (lst-number-or-v row 1 0)
+           (lst-number-or-v row 6 0)))
+       (cdr src)))
+     (lambda (a b) (string> (nth 0 a) (nth 0 b)))))))
+
 (defun sport/expedition-template ()
   (interactive)
   (let* ((event (read-string "Название экспедиции: " nil))
