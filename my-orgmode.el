@@ -14,6 +14,7 @@
 (require 'org-element)
 (require 'my-sport)
 ;; (require 'git-auto-commit-mode)
+(require 'ox-latex)
 
 (setq org-bbdb-anniversary-field 'birthday)
 
@@ -52,22 +53,22 @@
                ((org-agenda-span 'day)
                 (org-agenda-overriding-header "Today's Deadlines "))))
 
-(require 'ox-latex)
-
 (setq org-latex-default-packages-alist
       '(("AUTO" "inputenc" t ("pdflatex"))
-       ("T2A" "fontenc" t ("pdflatex"))
-       ("" "graphicx" t)
-       ("" "grffile" t)
-       ("" "longtable" nil)
-       ("" "wrapfig" nil)
-       ("" "rotating" nil)
-       ("normalem" "ulem" t)
-       ("" "amsmath" t)
-       ("" "textcomp" t)
-       ("" "amssymb" t)
-       ("" "capt-of" nil)
-       ("" "hyperref" nil)))
+        ("T2A" "fontenc" t ("pdflatex"))
+        ("english,russian" "babel" t)
+        ("" "cmap" t)
+        ("" "graphicx" t)
+        ("" "grffile" t)
+        ("" "longtable" nil)
+        ("" "wrapfig" nil)
+        ("" "rotating" nil)
+        ("normalem" "ulem" t)
+        ("" "amsmath" t)
+        ("" "textcomp" t)
+        ("" "amssymb" t)
+        ("" "capt-of" nil)
+        ("" "hyperref" nil)))
 
 (setq org-latex-logfiles-extensions '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "log" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv" "tex"))
 
