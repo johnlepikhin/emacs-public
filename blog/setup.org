@@ -3,5 +3,6 @@
 #+MACRO: img_right (eval (concat "#+begin_img_right\n#+caption: $1\n[[file:" (string-trim "$2") "][file:" (string-trim "$2") "]]\n#+end_img_right"))
 #+latex_header: \newcommand{\kg}[1]{#1~кг}
 #+latex_header: \newcommand{\rub}[1]{#1~руб.}
+#+latex_header: \newcommand{\meter}[1]{#1~м}
 #+TODO: TODO(t) DRAFT(D) | DONE(d) CHANGED(c@)
 #+HUGO_CUSTOM_FRONT_MATTER: :math true
