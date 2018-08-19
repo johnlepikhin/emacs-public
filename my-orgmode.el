@@ -54,9 +54,9 @@
                 (org-agenda-overriding-header "Today's Deadlines "))))
 
 (setq org-latex-default-packages-alist
-      '(("AUTO" "inputenc" t ("pdflatex"))
+      '(("utf8" "inputenc" t ("pdflatex"))
         ("T2A" "fontenc" t ("pdflatex"))
-        ("english,russian" "babel" t)
+        ("russian" "babel" t)
         ("" "cmap" t)
         ("" "graphicx" t)
         ("" "grffile" t)
