@@ -5,5 +5,6 @@
 #+MACRO: kg (eval (concat "$1" "\\nbsp{}кг"))
 #+MACRO: rub (eval (concat "$1" "\\nbsp{}руб."))
 #+MACRO: mg (eval (concat "$1" "\\nbsp{}мг"))
+#+MACRO: ml (eval (concat "$1" "\\nbsp{}мл"))
 #+TODO: TODO(t) DRAFT(D) | DONE(d) CHANGED(c@)
 #+HUGO_CUSTOM_FRONT_MATTER: :math true
