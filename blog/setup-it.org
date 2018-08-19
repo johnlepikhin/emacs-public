@@ -1,0 +1,3 @@
+#+setupfile: "~/.emacs.d/public/blog/setup.org"
+#+HUGO_BASE_DIR: ~/blogs/it
+#+HUGO_SECTION: post

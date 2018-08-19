@@ -5,3 +5,4 @@
 #+latex_header: \newcommand{\kg}[1]{#1~кг}
 #+latex_header: \newcommand{\rub}[1]{#1~руб.}
 #+TODO: TODO(t) DRAFT(D) | DONE(d) CHANGED(c@)
+#+HUGO_CUSTOM_FRONT_MATTER: :math true
