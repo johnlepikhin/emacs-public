@@ -35,7 +35,7 @@
     (find-file f)
     (my-org-hugo-twits-prepare f)
     (save-buffer)
-    (org-hugo-export-wim-to-md :all-subtrees)
+    (org-hugo-export-wim-to-md :all-subtrees :noerror)
     (kill-buffer (current-buffer))))
 
 (defun my-org-hugo-export-files-org-personal (&key newer-than)
