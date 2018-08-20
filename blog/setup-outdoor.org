@@ -1,3 +1,4 @@
 #+setupfile: "~/.emacs.d/public/blog/setup.org"
 #+HUGO_BASE_DIR: ~/blogs/outdoor
 #+HUGO_SECTION: post
+#+OPTIONS: tags:nil todo:nil
