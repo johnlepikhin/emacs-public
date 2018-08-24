@@ -41,6 +41,7 @@
 (add-to-list 'org-modules 'org-attach-screenshot)
 
 (setq org-src-tab-acts-natively t
+      org-refile-targets '((org-agenda-files :maxlevel . 2))
       org-refile-use-outline-path 'file)
 
 (setq org-todo-keywords
