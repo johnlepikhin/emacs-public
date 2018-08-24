@@ -19,7 +19,8 @@
  There are two groups: Emacs buffers (those whose name starts with '*', plus
  dired buffers), and the rest.  This works at least with Emacs v24.2 using
  tabbar.el v1.7."
-   (list (cond ((string-match "Org Agenda" (buffer-name)) "Org")
+   (list (cond ((string-match "Org Agenda" (buffer-name)) "Org-TODO")
+                ((string-match "-TODO[.]org$" (buffer-name)) "Org-TODO")
                 ((string-match "[.]org$" (buffer-name)) "Org")
                 ((string-equal "*Group*" (buffer-name)) "Gnus")
                 ((string-match "[*]Summary " (buffer-name)) "Gnus")
@@ -32,6 +33,7 @@
                 ((string-match "org_archive$" (buffer-name)) "org-archives")
                 ((string-match "^magit[0-9a-z-]*:" (buffer-name)) "magit")
                 (t "user"))))
+
 (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
 
 ; (setq tabbar-buffer-groups-function
