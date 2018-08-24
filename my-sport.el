@@ -96,6 +96,7 @@
     (completing-read
      "Тип: "
      (with-current-buffer (find-file-noselect "~/org/personal/sport/sports-periodic-TODO.org")
+       (outline-show-all)
        (goto-char (point-min))
        (setq case-fold-search nil)
        (re-search-forward "^#\\+NAME: sports-journal")
@@ -114,5 +115,10 @@
     (goto-char (org-table-end))
     (insert
      (format "| [%s] | %s | | %s | %s |\n" (format-time-string "%F %R") type value notes))))
+
+(defun my-sport-journal-add-cookie (count)
+  "Добавить печенек в журнал"
+  (interactive "P")
+  (my-sport-journal-add "печенье" (prefix-numeric-value count) ""))
 
 (provide 'my-sport)
