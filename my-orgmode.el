@@ -40,7 +40,8 @@
 (add-to-list 'org-modules 'org-mouse)
 (add-to-list 'org-modules 'org-attach-screenshot)
 
-(setq org-src-tab-acts-natively t)
+(setq org-src-tab-acts-natively t
+      org-refile-use-outline-path 'file)
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "WAIT(w!)" "VERIFY(v!)" "|" "DONE(d!)" "DELEGATED(D!)" "CANCELED(c!)")))
