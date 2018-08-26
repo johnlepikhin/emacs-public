@@ -70,6 +70,7 @@
         ("normalem" "ulem" t)
         ("" "amsmath" t)
         ("" "textcomp" t)
+        ("" "tabularx" t)
         ("" "amssymb" t)
         ("" "capt-of" nil)
         ("" "hyperref" nil)))
