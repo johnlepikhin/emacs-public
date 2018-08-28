@@ -11,7 +11,8 @@
 (defun my-org-hugo-add-printable-version (backend)
   (if (eq backend 'hugo)
       (let ((generate-printable (org-entry-get nil "HUGO_GENERATE_PRINTABLE")))
-        (if generate-printable
+        (if (and generate-printable (string= generate-printable "t"))
+            ;; check if buffer is newer than pdf
             (org-latex-export-to-pdf)))))
 
 (add-hook 'org-export-before-parsing-hook 'my-org-hugo-add-printable-version)
