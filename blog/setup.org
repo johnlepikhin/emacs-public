@@ -10,4 +10,5 @@
 #+HUGO_CUSTOM_FRONT_MATTER: :math true
 
 #+author: Evgenii Lepikhin
+#+email: johnlepikhin@gmail.com
 #+options: creator:nil author:t

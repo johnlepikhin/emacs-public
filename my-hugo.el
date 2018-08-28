@@ -23,11 +23,11 @@
                       (progn
                         (save-excursion
                           (goto-char (point-max))
-                          (insert (format "\n** Версия для печати\n\nДля удобства просмотра и печати можно воспользоваться [[file:%s][PDF]]-версией этой статьи." (file-name-base file-pdf-name))))
+                          (insert (format "\n** Версия для печати\n\nДля удобства просмотра и печати можно воспользоваться [[file:%s][PDF]]-версией этой статьи." (file-name-nondirectory file-pdf-name))))
                         (org-set-property "HUGO_GENERATE_PRINTABLE_ADDED" "t")
                         (save-buffer)))))))))
 
-(add-hook 'org-export-before-parsing-hook 'my-org-hugo-add-printable-version)
+(add-hook 'org-export-before-processing-hook 'my-org-hugo-add-printable-version)
 
 (defun my-org-hugo-twits-prepare (file)
   (interactive)
