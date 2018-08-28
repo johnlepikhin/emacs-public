@@ -28,6 +28,7 @@
                         (save-buffer)))))))))
 
 (add-hook 'org-export-before-processing-hook 'my-org-hugo-add-printable-version)
+(remove-hook 'org-export-before-parsing-hook 'my-org-hugo-add-printable-version)
 
 (defun my-org-hugo-twits-prepare (file)
   (interactive)

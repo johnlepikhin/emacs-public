@@ -11,4 +11,4 @@
 
 #+author: Evgenii Lepikhin
 #+email: johnlepikhin@gmail.com
-#+options: creator:nil author:t
+#+options: creator:nil author:t title:t
