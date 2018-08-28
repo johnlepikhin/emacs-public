@@ -8,3 +8,6 @@
 #+MACRO: ml (eval (concat "$1" "\\nbsp{}мл"))
 #+TODO: TODO(t) DRAFT(D) | DONE(d) CHANGED(c@)
 #+HUGO_CUSTOM_FRONT_MATTER: :math true
+
+#+author: Evgenii Lepikhin
+#+options: creator:nil author:t
