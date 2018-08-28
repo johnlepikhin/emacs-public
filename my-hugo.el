@@ -8,6 +8,11 @@
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
+(defun my-org-hugo-add-printable-version (backend)
+  (message "test"))
+
+(add-hook 'org-export-before-parsing-hook 'my-org-hugo-add-printable-version)
+
 (defun my-org-hugo-twits-prepare (file)
   (interactive)
   (setq-local org-twit-counter 1)
