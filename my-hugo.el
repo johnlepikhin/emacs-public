@@ -4,16 +4,28 @@
 (require 'common)
 (require 'cl)
 (require 'seq)
+(require 'files)
 
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
 (defun my-org-hugo-add-printable-version (backend)
   (if (eq backend 'hugo)
-      (let ((generate-printable (org-entry-get nil "HUGO_GENERATE_PRINTABLE")))
+      (let ((generate-printable (org-entry-get nil "HUGO_GENERATE_PRINTABLE"))
+            (file-org-name (buffer-file-name))
+            (file-pdf-name (concat (file-name-sans-extension (buffer-file-name)) ".pdf")))
         (if (and generate-printable (string= generate-printable "t"))
-            ;; check if buffer is newer than pdf
-            (org-latex-export-to-pdf)))))
+            (if (file-newer-than-file-p file-org-name file-pdf-name)
+                (progn
+                  (org-latex-export-to-pdf)
+                  (find-file file-org-name)
+                  (if (not (org-entry-get nil "HUGO_GENERATE_PRINTABLE_ADDED"))
+                      (progn
+                        (message "no print")
+                        (goto-char (point-max))
+                        (insert (format "* Версия для печати\n\nДля удобства просмотра и печати можно воспользоваться [[file:][PDF]]-версией этой статьи." (file-name-base file-pdf-name)))
+                        (org-set-property "HUGO_GENERATE_PRINTABLE_ADDED" "t")
+                  ))))))))
 
 (add-hook 'org-export-before-parsing-hook 'my-org-hugo-add-printable-version)
 
