@@ -12,7 +12,7 @@
   (if (eq backend 'hugo)
       (let ((generate-printable (org-entry-get nil "HUGO_GENERATE_PRINTABLE")))
         (if generate-printable
-            (message (concat "---" generate-printable "---\n"))))))
+            (org-latex-export-to-pdf)))))
 
 (add-hook 'org-export-before-parsing-hook 'my-org-hugo-add-printable-version)
 
