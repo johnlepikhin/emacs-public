@@ -21,11 +21,11 @@
                   (find-file file-org-name)
                   (if (not (org-entry-get nil "HUGO_GENERATE_PRINTABLE_ADDED"))
                       (progn
-                        (message "no print")
-                        (goto-char (point-max))
-                        (insert (format "* Версия для печати\n\nДля удобства просмотра и печати можно воспользоваться [[file:][PDF]]-версией этой статьи." (file-name-base file-pdf-name)))
+                        (save-excursion
+                          (goto-char (point-max))
+                          (insert (format "\n** Версия для печати\n\nДля удобства просмотра и печати можно воспользоваться [[file:%s][PDF]]-версией этой статьи." (file-name-base file-pdf-name))))
                         (org-set-property "HUGO_GENERATE_PRINTABLE_ADDED" "t")
-                  ))))))))
+                        (save-buffer)))))))))
 
 (add-hook 'org-export-before-parsing-hook 'my-org-hugo-add-printable-version)
 
