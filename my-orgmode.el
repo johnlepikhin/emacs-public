@@ -15,6 +15,12 @@
 (require 'my-sport)
 ;; (require 'git-auto-commit-mode)
 (require 'ox-latex)
+(require 'ispell)
+
+(add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+(add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+(add-to-list 'ispell-skip-region-alist '("\\[id:" . "\\]"))
+
 
 (setq org-bbdb-anniversary-field 'birthday)
 
