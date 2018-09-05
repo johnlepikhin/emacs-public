@@ -273,15 +273,23 @@
 ;;
 
 (defvar my-org-default-file "~/org/personal/general-TODO.org")
+(defvar my-org-mailru-default-file "~/org/work/mail.ru/private/unsorted-TODO.org")
 
-(defun my-org-add-todo ()
-  (interactive)
-  (find-file my-org-default-file)
-  (goto-char (point-max))
-  (insert "* TODO ")
-  (org-schedule t))
+(defun my-org-add-todo/non-interacitve (file title)
+  "Add TODO record to file non-interactively"
+  (with-current-buffer
+      (find-file file)
+    (goto-char (point-max))
+    (insert (concat "* TODO " title))
+    (org-schedule t)))
 
-(global-set-key (kbd "C-c RET") 'my-org-add-todo)
+(defun my-org-add-todo (file)
+  "Interactively add new TODO record to specified file"
+  (interactive "fИмя файла: ")
+  (my-org-add-todo/non-interacitve file (read-from-minibuffer "Заголовок: ")))
+
+(global-set-key (kbd "C-c RET g") (lambda () (interactive) (my-org-add-todo my-org-default-file)))
+(global-set-key (kbd "C-c RET m") (lambda () (interactive) (my-org-add-todo my-org-mailru-default-file)))
 
 ;;
 
