@@ -1,4 +1,7 @@
 
+(require 'calendar)
+(require 'russian-holidays)
+
 (setq home-directory (getenv "HOME"))
 
 ;; update PATH
@@ -68,7 +71,10 @@
 (setq
  calendar-location-name "Moscow"
  calendar-latitude 55.5
- calendar-longitude 37.4)
+ calendar-longitude 37.4
+ calendar-holidays (append calendar-holidays russian-holidays))
+
+;; Calendar
 
 ;; different things
 

@@ -58,10 +58,10 @@
         ("VERIFY" . (:foreground "#afaf00" :weight bold))
         ("CANCELED" . (:foreground "#006000" :weight bold))))
 
-(add-to-list 'org-agenda-custom-commands
-             '("d" agenda "Agenda for current day"
-               ((org-agenda-span 'day)
-                (org-agenda-overriding-header "Today's Deadlines "))))
+(setq org-agenda-custom-commands
+             '(("d" agenda "Agenda for current day"
+                ((org-agenda-span 'day)
+                 (org-agenda-overriding-header "Today's Deadlines ")))))
 
 (setq org-latex-default-packages-alist
       '(("utf8" "inputenc" t ("pdflatex"))
