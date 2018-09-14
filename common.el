@@ -72,7 +72,7 @@
  calendar-location-name "Moscow"
  calendar-latitude 55.5
  calendar-longitude 37.4
- calendar-holidays (append calendar-holidays russian-holidays))
+ calendar-holidays russian-holidays)
 
 ;; Calendar
 
