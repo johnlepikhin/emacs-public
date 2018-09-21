@@ -281,6 +281,15 @@
 (defvar my-org-default-file "~/org/personal/general-TODO.org")
 (defvar my-org-mailru-default-file "~/org/work/mail.ru/private/unsorted-TODO.org")
 
+(defun my-org-refile (file headline &optional arg)
+  (let ((pos (save-excursion
+               (find-file file)
+               (org-find-exact-headline-in-buffer headline))))
+    (org-refile arg nil (list headline file nil pos)))
+  (switch-to-buffer (current-buffer)))
+
+
+
 (defun my-org-add-todo/non-interacitve (file title)
   "Add TODO record to file non-interactively"
   (with-current-buffer
