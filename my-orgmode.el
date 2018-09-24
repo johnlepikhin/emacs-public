@@ -292,11 +292,10 @@
 
 (defun my-org-add-todo/non-interacitve (file title)
   "Add TODO record to file non-interactively"
-  (with-current-buffer
-      (find-file file)
-    (goto-char (point-max))
+  (with-temp-buffer
     (insert (concat "* TODO " title))
-    (org-schedule t)))
+    (org-schedule t)
+    (my-org-refile file "")))
 
 (defun my-org-add-todo (file)
   "Interactively add new TODO record to specified file"
