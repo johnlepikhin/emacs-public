@@ -72,6 +72,7 @@
           (?∅ "undef"                (cperl-mode))
           (?λ "sub"                  (cperl-mode))
           (?↦ "return"               (cperl-mode))
+          ((list ?≠ ?∅ ?∨) "//"                (cperl-mode))
 
 
 
