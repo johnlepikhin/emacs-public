@@ -71,13 +71,12 @@
           (?∃ "exists"               (cperl-mode))
           (?∅ "undef"                (cperl-mode))
           (?λ "sub"                  (cperl-mode))
-          (?↦ "return"               (cperl-mode))
+          (?⊢ "return"               (cperl-mode))
           (?⧄ "//"                   (cperl-mode))
           (?≡ "my"                   (cperl-mode))
           (?⌦ "delete"                   (cperl-mode))
           (?≥ ">="                   (,@c-like))
           (?≤ "<="                   (,@c-like))
-          (?⩴ "::"                   (cperl-mode))
 
 
 
