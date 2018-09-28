@@ -58,7 +58,8 @@
           (?∞ "\\<infinity\\>"       nil)
           (?∧ "\\<andalso\\>"        (,@mlen))
           (?∨ "\\<orelse\\>"         (,@mlen))
-          (?≈ "~="                   (perl-mode cperl-mode))
+          (?≈ "=~"                   (perl-mode cperl-mode))
+          (?≉ "!~"                   (perl-mode cperl-mode))
 
           (?∅ "\\<NULL\\>"           (,@c-like))
           (?¬ "[( ]\\(!\\b\\)"       (,@c-like))
@@ -72,7 +73,7 @@
           (?∅ "undef"                (cperl-mode))
           (?λ "sub"                  (cperl-mode))
           (?⊢ "return"               (cperl-mode))
-          (?⧄ "//"                   (cperl-mode))
+          (?⫽ "//"                   (cperl-mode))
           (?≡ "my"                   (cperl-mode))
           (?❌ "delete"               (cperl-mode))
           (?❓ "defined"              (cperl-mode))
@@ -81,7 +82,7 @@
           (?≥ ">="                   (,@c-like))
           (?≤ "<="                   (,@c-like))
           (?⨝ "join"                 (cperl-mode))
-          (?∅ "()"                   (,@c-like))
+          (?⊲ "grep"                  (cperl-mode))
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
                  "$%_}&#{†‡¶©§…£^~*\\|{}•©†‡$…—–¡><ªº¶·¿“”‘’®§£™_〈〉"
