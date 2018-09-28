@@ -92,6 +92,8 @@
           (?↴ "last"                 (cperl-mode))
           (?↻ "while"                (cperl-mode))
           (?⑃ "if"                   (cperl-mode))
+          (?∆ "++"                   (,@c-like))
+          (?ℤ "int"                  (cperl-mode))
 
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
