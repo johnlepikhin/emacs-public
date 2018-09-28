@@ -83,6 +83,8 @@
           (?≤ "<="                   (,@c-like))
           (?⨝ "join"                 (cperl-mode))
           (?⊲ "grep"                  (cperl-mode))
+          (?ϕ "map"                  (cperl-mode))
+          (?⋰ ".."                   (cperl-mode))
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
                  "$%_}&#{†‡¶©§…£^~*\\|{}•©†‡$…—–¡><ªº¶·¿“”‘’®§£™_〈〉"
