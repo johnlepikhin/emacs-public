@@ -80,9 +80,8 @@
           (?¬ "not"                  (cperl-mode))
           (?≥ ">="                   (,@c-like))
           (?≤ "<="                   (,@c-like))
-          (?… "$"                    (cperl-mode))
-
-
+          (?⨝ "join"                 (cperl-mode))
+          (?∅ "()"                   (,@c-like))
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
                  "$%_}&#{†‡¶©§…£^~*\\|{}•©†‡$…—–¡><ªº¶·¿“”‘’®§£™_〈〉"
