@@ -83,11 +83,11 @@
           (?≤ "<="                   (,@c-like))
           (?⨝ "join"                 (cperl-mode))
           (?⊲ "grep"                  (cperl-mode))
-          (?ϕ "map"                  (cperl-mode))
+          (?𝒇 "map"                  (cperl-mode))
           (?⋰ ".."                   (cperl-mode))
-          (?∅ "''"                   (cperl-mode))
-          (?∅ "q{}"                  (cperl-mode))
-          (?∅ "qq{}"                 (cperl-mode))
+          (?⨀ "''"                   (cperl-mode))
+          (?⨀ "q{}"                  (cperl-mode))
+          (?⨀ "qq{}"                 (cperl-mode))
 
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
