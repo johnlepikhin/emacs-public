@@ -94,6 +94,9 @@
           (?⑃ "if"                   (cperl-mode))
           (?∆ "++"                   (,@c-like))
           (?ℤ "int"                  (cperl-mode))
+          (?𝐊 "keys"                (cperl-mode))
+          (?≭ "ne"                   (cperl-mode))
+          (?≍ "eq"                   (cperl-mode))
 
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
