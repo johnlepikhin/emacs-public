@@ -88,7 +88,10 @@
           (?⋰ ".."                   (cperl-mode))
           (?⨀ "''"                   (cperl-mode))
           (?⨀ "q{}"                  (cperl-mode))
-          (?⨀ "qq{}"                 (cperl-mode))
+          (?↰ "next"                 (cperl-mode))
+          (?↴ "last"                 (cperl-mode))
+          (?↻ "while"                (cperl-mode))
+          (?⑃ "if"                   (cperl-mode))
 
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
