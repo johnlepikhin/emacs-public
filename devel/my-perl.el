@@ -205,6 +205,7 @@
      (local-set-key (kbd "\M-.") 'helm-etags-plus-select)
      (local-set-key (kbd "\M-,") 'helm-etags-plus-history-go-back))))
 
+(setq cperl-highlight-variables-indiscriminately t)
 
 (eval-after-load "cperl-mode"
   '(progn

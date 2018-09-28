@@ -74,9 +74,13 @@
           (?⊢ "return"               (cperl-mode))
           (?⧄ "//"                   (cperl-mode))
           (?≡ "my"                   (cperl-mode))
-          (?⌦ "delete"                   (cperl-mode))
+          (?❌ "delete"               (cperl-mode))
+          (?❓ "defined"              (cperl-mode))
+          (?¬ "!"                    (,@c-like))
+          (?¬ "not"                  (cperl-mode))
           (?≥ ">="                   (,@c-like))
           (?≤ "<="                   (,@c-like))
+          (?… "$"                    (cperl-mode))
 
 
 
