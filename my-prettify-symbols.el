@@ -97,6 +97,7 @@
           (?𝐊 "keys"                (cperl-mode))
           (?≭ "ne"                   (cperl-mode))
           (?≍ "eq"                   (cperl-mode))
+          (?⇐ "= shift"              (cperl-mode))
 
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
