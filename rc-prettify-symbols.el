@@ -51,14 +51,14 @@
           (?‽ "!?"                   nil)
           (?← ":="                   (smalltalk-mode))
           (?← "<-"                   ( haskell-mode))
-          (?→ "->"                   (perl-mode  haskell-mode ,@mlen))
-          (?⇒ "=>"                   (perl-mode ,@mlen))
+          (?→ "->"                   (perl-mode cperl-mode haskell-mode ,@mlen))
+          (?⇒ "=>"                   (perl-mode cperl-mode ,@mlen))
           (?∓ "minus-plus"           nil)
           (?√ "\\<sqrt\\>"           ())
           (?∞ "\\<infinity\\>"       nil)
           (?∧ "\\<andalso\\>"        (,@mlen))
           (?∨ "\\<orelse\\>"         (,@mlen))
-          (?≈ "~="                   (perl-mode))
+          (?≈ "~="                   (perl-mode cperl-mode))
 
           (?∅ "\\<NULL\\>"           (,@c-like))
           (?¬ "[( ]\\(!\\b\\)"       (,@c-like))
@@ -70,6 +70,8 @@
           (?∀ "foreach"              (cperl-mode))
           (?∃ "exists"               (cperl-mode))
           (?∅ "undef"                (cperl-mode))
+          (?λ "sub"                  (cperl-mode))
+          (?↦ "return"               (cperl-mode))
 
 
 
