@@ -72,7 +72,10 @@
           (?∅ "undef"                (cperl-mode))
           (?λ "sub"                  (cperl-mode))
           (?↦ "return"               (cperl-mode))
-          ("∅ →" "//"                   (cperl-mode))
+          (?⧄ "//"                   (cperl-mode))
+          (?≡ "my"                   (cperl-mode))
+          (?≥ ">="                   (,@c-like))
+          (?≤ "<="                   (,@c-like))
 
 
 
