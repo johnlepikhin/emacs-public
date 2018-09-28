@@ -65,7 +65,11 @@
           (?√ " +\\(sqrt\\)("        (,@c-like))
           (?∧ "&&"                   (,@c-like ))
           (?∨ "||"                   (,@c-like ))
-          (?≠ "\\!="                 (,@c-like ))
+          (?≠ "!="                   (,@c-like ))
+          (?∀ "for"                  (cperl-mode))
+          (?∀ "foreach"              (cperl-mode))
+          (?∃ "exists"               (cperl-mode))
+          (?∅ "undef"                (cperl-mode))
 
 
 
