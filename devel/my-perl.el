@@ -183,6 +183,7 @@
  'cperl-mode-hook
  (lambda ()
    (progn
+     (prettify-symbols-mode)
      (setq-local cperl-indent-level 4)
      (local-set-key (kbd "C-h f") 'cperl-perldoc)
      (my-load-perlysense)
