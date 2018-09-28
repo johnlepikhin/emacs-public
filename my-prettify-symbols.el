@@ -189,4 +189,4 @@
 
 (prettify-symbols-initialize)
 
-(provide 'rc-prettify-symbols)
+(provide 'my-prettify-symbols)
