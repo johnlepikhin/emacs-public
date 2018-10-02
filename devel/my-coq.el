@@ -1,6 +1,8 @@
 
 (load "~/.emacs.d/lisp/PG/generic/proof-site")
 
+(require 'my-coq-ssr)
+
 (defun my-configure-coq-mode ()
   (interactive)
   (company-coq-mode)
