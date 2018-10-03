@@ -92,6 +92,7 @@
           (?↴ "last"                 (cperl-mode))
           (?↻ "while"                (cperl-mode))
           (?⑃ "if"                   (cperl-mode))
+          (?⊻ "else"                 (,@c-like))
           (?∆ "++"                   (,@c-like))
           (?ℤ "int"                  (cperl-mode))
           (?𝐊 "keys"                (cperl-mode))
