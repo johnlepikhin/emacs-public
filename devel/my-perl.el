@@ -183,7 +183,6 @@
  'cperl-mode-hook
  (lambda ()
    (progn
-     (modify-syntax-entry ?\; "." cperl-mode-syntax-table)
      (prettify-symbols-mode)
      (setq-local cperl-indent-level 4)
      (local-set-key (kbd "C-h f") 'cperl-perldoc)
