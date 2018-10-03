@@ -15,7 +15,7 @@
 
 (defun perl-insert-json ()
   (interactive)
-  (shell-command-on-region (point) (point) "(xclip -o; echo) | perl -MData::Dumper -MJSON -e 'binmode STDOUT, \":encoding(UTF-8)\"; $Data::Dumper::Useqq=1; $Data::Dumper::Terse=1; $Data::Dumper::Indent=0; $Data::Dumper::Quotekeys=0;  $Data::Dumper::Sortkeys=1; $Data::Dumper::Useperl=1; sub Data::Dumper::qquote { \"'\"'\"'$_[0]'\"'\"'\" }; $/=\"\"; $s=<>; print Dumper from_json($s, { utf8  => 1 })'" t))
+  (shell-command-on-region (point) (point) "xclip -o | json_to_perl.pl" t))
 
 (defun perl-mode-perltidy-buffer ()
   "Perltidy buffer if this is perl file."
