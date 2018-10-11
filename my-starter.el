@@ -1,14 +1,4 @@
 
-
-; (defun start-blog ()
-;   (interactive)
-;   (if (not (boundp 'start-blog-done))
-;       (progn
-;         (setq start-blog-done t)
-;         (require 'load-dir)
-;         (add-to-list 'load-path "~/.emacs.d/public/blog/elisp")
-;         (load-dir-one "~/.emacs.d/public/blog/elisp"))))
-
 (defun start-devel ()
   (interactive)
   (if (not (boundp 'start-devel-done))
@@ -18,18 +8,18 @@
         (add-to-list 'load-path "~/.emacs.d/public/devel")
         (load-dir-one "~/.emacs.d/public/devel"))))
 
-(defun start-gnus-n-server ()
-  (interactive)
-  (if (not (boundp 'start-gnus-n-server-done))
-      (progn
-        (setq start-gnus-n-server-done t)
-        (server-start)
-        (start-devel)
-        (require 'load-dir)
-        (add-to-list 'load-path "~/.emacs.d/mygnus")
-        (load-dir-one "~/.emacs.d/mygnus")
-        (set-background-color "ivory1")
-        (gnus))))
+; (defun start-gnus-n-server ()
+;   (interactive)
+;   (if (not (boundp 'start-gnus-n-server-done))
+;       (progn
+;         (setq start-gnus-n-server-done t)
+;         (server-start)
+;         (start-devel)
+;         (require 'load-dir)
+;         (add-to-list 'load-path "~/.emacs.d/mygnus")
+;         (load-dir-one "~/.emacs.d/mygnus")
+;         (set-background-color "ivory1")
+;         (gnus))))
 
 (defun start-desktop ()
   (interactive)
@@ -37,7 +27,7 @@
       (progn
         (message "Starting desktop environment")
         (setq start-desktop-done t)
-        ;; (start-blog)
+        (frames-only-mode)
         (start-devel))))
 
 (defun start-mobile ()
