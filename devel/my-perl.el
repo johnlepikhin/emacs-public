@@ -197,6 +197,7 @@
      (local-set-key [(control f3)] 'my-search-flymake-error)
      (local-set-key [f4] 'flymake-goto-next-error)
      (local-set-key [(control f4)] 'my-copy-flymake-error)
+     (local-set-key [control f5] 'flymake-start-syntax-check)
      (local-set-key [f5] 'perlcritic-disable-for-line)
      (local-set-key (kbd "C-c / p") 'google-cpan-word)
      (local-set-key (kbd "C-c j") 'perl-insert-json)
