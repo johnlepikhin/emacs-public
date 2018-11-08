@@ -86,8 +86,6 @@
           (?𝐌 "map"                  (cperl-mode))
           (?𝐒 "sort"                  (cperl-mode))
           (?⋰ ".."                   (cperl-mode))
-          (?⨀ "''"                   (cperl-mode))
-          (?⨀ "q{}"                  (cperl-mode))
           (?↰ "next"                 (cperl-mode))
           (?↴ "last"                 (cperl-mode))
           (?↻ "while"                (cperl-mode))
