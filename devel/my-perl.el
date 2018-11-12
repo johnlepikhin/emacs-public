@@ -25,6 +25,11 @@
         (perltidy-region (region-beginning) (region-end))
       (perltidy-buffer))))
 
+(defun my-perl-mode-indent-defun ()
+  (interactive)
+  (my-select-defun)
+  (perl-mode-perltidy))
+
 (require 'dropdown-list)
 (require 'flymake)
 
@@ -186,7 +191,8 @@
      (my-load-perlysense)
 
      (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
-     (local-set-key (kbd "C-M-q") 'perl-mode-perltidy)
+     (local-set-key (kbd "C-c d i") 'my-perl-mode-indent-defun)
+     (local-set-key (kbd "C-c i b") 'perl-mode-perltidy)
 
      ;; (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
      (local-set-key (kbd "M-;") 'hippie-expand)
