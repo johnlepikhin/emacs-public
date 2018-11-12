@@ -10,8 +10,8 @@
   (end-of-defun)
   (let ((end-of-defun-pos (point)))
     (beginning-of-defun)
-    (push-mark end-of-defun-pos 'nil 't)))
-  (setq mark-active t))
+    (push-mark end-of-defun-pos 'nil 't)
+    (setq mark-active t)))
 
 (global-set-key (kbd "C-c d s") 'my-select-defun)
 

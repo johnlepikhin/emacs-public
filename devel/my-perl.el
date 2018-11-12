@@ -30,6 +30,12 @@
   (my-select-defun)
   (perl-mode-perltidy))
 
+(defun my-perl-indent-or-tab ()
+  (interactive)
+  (if (use-region-p)
+      (perltidy-region (region-beginning) (region-end))
+    (indent-for-tab-command)))
+
 (require 'dropdown-list)
 (require 'flymake)
 
@@ -181,33 +187,32 @@
   (save-buffer)
   (ps/go-to-vc-project))
 
-(add-hook
- 'cperl-mode-hook
- (lambda ()
-   (progn
-     (prettify-symbols-mode)
-     (setq-local cperl-indent-level 4)
-     (local-set-key (kbd "C-h f") 'cperl-perldoc)
-     (my-load-perlysense)
+(defun my-cperl-mode-setup ()
+  (prettify-symbols-mode)
+  (setq-local cperl-indent-level 4)
+  (local-set-key (kbd "C-h f") 'cperl-perldoc)
+  (my-load-perlysense)
 
-     (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
-     (local-set-key (kbd "C-c d i") 'my-perl-mode-indent-defun)
-     (local-set-key (kbd "C-c i b") 'perl-mode-perltidy)
+  (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
+  (local-set-key (kbd "C-c d i") 'my-perl-mode-indent-defun)
+  (local-set-key (kbd "C-c i b") 'perl-mode-perltidy)
 
-     ;; (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
-     (local-set-key (kbd "M-;") 'hippie-expand)
-     (local-set-key [f3] 'flymake-display-err-menu-for-current-line)
-     (local-set-key [(control f3)] 'my-search-flymake-error)
-     (local-set-key [f4] 'flymake-goto-next-error)
-     (local-set-key [(control f4)] 'my-copy-flymake-error)
-     (local-set-key [control f5] 'flymake-start-syntax-check)
-     (local-set-key [f5] 'perlcritic-disable-for-line)
-     (local-set-key (kbd "C-c / p") 'google-cpan-word)
-     (local-set-key (kbd "C-c j") 'perl-insert-json)
-     (local-set-key (kbd "C-x C-M-d") 'perl-document-current-function)
-     (local-set-key (kbd "C-x C-M-s") 'perl-insert-sub-template)
-     (local-set-key (kbd "\M-.") 'helm-etags-plus-select)
-     (local-set-key (kbd "\M-,") 'helm-etags-plus-history-go-back))))
+  ;; (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
+  (local-set-key (kbd "M-;") 'hippie-expand)
+  (local-set-key [f3] 'flymake-display-err-menu-for-current-line)
+  (local-set-key [(control f3)] 'my-search-flymake-error)
+  (local-set-key [f4] 'flymake-goto-next-error)
+  (local-set-key [(control f4)] 'my-copy-flymake-error)
+  (local-set-key [control f5] 'flymake-start-syntax-check)
+  (local-set-key [f5] 'perlcritic-disable-for-line)
+  (local-set-key (kbd "C-c / p") 'google-cpan-word)
+  (local-set-key (kbd "C-c j") 'perl-insert-json)
+  (local-set-key (kbd "C-x C-M-d") 'perl-document-current-function)
+  (local-set-key (kbd "C-x C-M-s") 'perl-insert-sub-template)
+  (local-set-key (kbd "\M-.") 'helm-etags-plus-select)
+  (local-set-key (kbd "\M-,") 'helm-etags-plus-history-go-back))
+
+(add-hook 'cperl-mode-hook 'my-cperl-mode-setup)
 
 (setq cperl-highlight-variables-indiscriminately t)
 
