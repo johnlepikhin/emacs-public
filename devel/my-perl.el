@@ -26,11 +26,6 @@
           (perltidy-region (region-beginning) (region-end))
         (perltidy-buffer)))))
 
-(defun my-perl-mode-indent-defun ()
-  (interactive)
-  (my-select-defun)
-  (perl-mode-perltidy))
-
 (defun my-perl-tab-indent ()
   (interactive)
   (if (use-region-p)
@@ -195,7 +190,7 @@
   (my-load-perlysense)
 
   (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
-  (local-set-key (kbd "C-c d i") 'my-perl-mode-indent-defun)
+  (local-set-key (kbd "C-c d i") 'perltidy-subroutine)
   (local-set-key (kbd "C-c i b") 'perl-mode-perltidy)
   (local-set-key (kbd "TAB") 'my-perl-tab-indent)
 
