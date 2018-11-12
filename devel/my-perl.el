@@ -17,11 +17,13 @@
   (interactive)
   (shell-command-on-region (point) (point) "xclip -o | json_to_perl.pl" t))
 
-(defun perl-mode-perltidy-buffer ()
-  "Perltidy buffer if this is perl file."
+(defun perl-mode-perltidy ()
+  "Perltidy buffer or region if this is perl file."
   (interactive)
   (when (eq major-mode 'cperl-mode)
-    (perltidy-buffer)))
+    (if (use-region-p)
+        (perltidy-region (region-beginning) (region-end))
+      (perltidy-buffer))))
 
 (require 'dropdown-list)
 (require 'flymake)
@@ -174,11 +176,6 @@
   (save-buffer)
   (ps/go-to-vc-project))
 
-(defun my-perl-indent-and-syntax-check ()
-  (interactive)
-  (perl-mode-perltidy-buffer)
-  (flymake-start-syntax-check))
-
 (add-hook
  'cperl-mode-hook
  (lambda ()
@@ -189,7 +186,7 @@
      (my-load-perlysense)
 
      (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
-     (local-set-key (kbd "C-M-q") 'my-perl-indent-and-syntax-check)
+     (local-set-key (kbd "C-M-q") 'perl-mode-perltidy)
 
      ;; (add-hook 'before-save-hook #'perl-mode-perltidy-buffer t)
      (local-set-key (kbd "M-;") 'hippie-expand)
