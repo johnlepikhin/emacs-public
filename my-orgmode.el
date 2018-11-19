@@ -346,6 +346,12 @@
      (setq org-map-continue-from (outline-previous-heading)))
    "/DONE" 'file))
 
+(defun my-agenda-mode-setup ()
+  (hl-line-mode))
+
+(add-hook 'org-agenda-mode-hook 'my-agenda-mode-setup)
+
+
 ;; templates
 
 (custom-set-variables
