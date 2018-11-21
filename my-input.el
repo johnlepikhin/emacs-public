@@ -7,8 +7,25 @@
 
 (add-hook 'post-command-hook 'im-cursor-color-set)
 
-(global-set-key (kbd "s-\\") (lambda () (interactive) (deactivate-input-method)))
-(global-set-key (kbd "C-\\") (lambda () (interactive) (set-input-method 'russian-computer)))
+(defun my-update-input-method (is-ru)
+  (if is-ru
+      (progn
+        (set-input-method 'russian-computer)
+        (set-cursor-color "red"))
+    (progn
+      (deactivate-input-method)
+      (set-cursor-color "black"))))
+
+(defun my-select-input-eng ()
+  (my-update-input-method nil))
+
+(defun my-select-input-rus ()
+  (my-update-input-method t))
+
+;; (my-select-input-)
+
+; (global-set-key (kbd "s-\\") 'my-select-input-eng)
+; (global-set-key (kbd "C-\\") 'my-select-input-rus)
 
 (global-set-key (kbd "M-<tab>") (lambda () (interactive) (other-window 1)))
 
