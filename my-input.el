@@ -1,19 +1,15 @@
 
-(defun im-cursor-color-set nil
-  (set-cursor-color
-   (if current-input-method 
-       "red"
-     "black")))
-
-(add-hook 'post-command-hook 'im-cursor-color-set)
-
 (defun my-update-input-method (is-ru)
   (if is-ru
       (progn
+        (start-process "" nil "xkblayout-state" "set" "0")
         (set-input-method 'russian-computer)
+        (set-face-attribute 'mode-line nil :background "red")
         (set-cursor-color "red"))
     (progn
       (deactivate-input-method)
+      (start-process "" nil "xkblayout-state" "set" "0")
+      (set-face-attribute 'mode-line nil :background "light gray")
       (set-cursor-color "black"))))
 
 (defun my-select-input-eng ()
