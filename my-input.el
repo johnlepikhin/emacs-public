@@ -17,15 +17,15 @@
       (set-cursor-color "black"))))
 
 (defun my-select-input-eng ()
+  (interactive)
   (my-update-input-method nil))
 
 (defun my-select-input-rus ()
+  (interactive)
   (my-update-input-method t))
 
-;; (my-select-input-)
-
-; (global-set-key (kbd "s-\\") 'my-select-input-eng)
-; (global-set-key (kbd "C-\\") 'my-select-input-rus)
+(global-set-key (kbd "s-\\") 'my-select-input-eng)
+(global-set-key (kbd "C-\\") 'my-select-input-rus)
 
 (global-set-key (kbd "M-<tab>") (lambda () (interactive) (other-window 1)))
 
