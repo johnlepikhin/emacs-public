@@ -4,12 +4,12 @@
       (progn
         (start-process "" nil "xkblayout-state" "set" "0")
         (set-input-method 'russian-computer)
-        (set-face-attribute 'mode-line nil :background "red")
+        ;; (set-face-attribute 'mode-line nil :background "red")
         (set-cursor-color "red"))
     (progn
       (deactivate-input-method)
       (start-process "" nil "xkblayout-state" "set" "0")
-      (set-face-attribute 'mode-line nil :background "light gray")
+      ;; (set-face-attribute 'mode-line nil :background "light gray")
       (set-cursor-color "black"))))
 
 (defun my-select-input-eng ()
