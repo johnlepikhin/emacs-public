@@ -93,6 +93,7 @@
 (require 'ob-coq)
 (require 'ob-python)
 (require 'ob-ocaml)
+(require 'ob-http)
 (require 'package)
 
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
@@ -104,6 +105,7 @@
    (shell . t)
    (latex . t)
    (dot . t)
+   (http . t)
    (plantuml . t)
    (gnuplot 't)
    (emacs-lisp . t)))
