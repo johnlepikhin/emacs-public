@@ -9,6 +9,8 @@
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
+(setq org-hugo-external-file-extensions-allowed-for-copying '("jpg" "jpeg" "tiff" "png" "svg" "gif" "pdf" "odt" "doc" "ppt" "xls" "docx" "pptx" "xlsx" "org"))
+
 (defun my-org-hugo-add-printable-version (backend)
   (if (eq backend 'hugo)
       (let ((generate-printable (org-entry-get nil "HUGO_GENERATE_PRINTABLE"))
@@ -29,7 +31,7 @@
 
 (defun my-org-hugo-add-source-of-article (backend)
   (if (eq backend 'hugo)
-      (let ((generate-printable (org-entry-get nil "HUGO_ADD_ARTICLE_SOURCE"))
+      (let* ((generate-printable (org-entry-get nil "HUGO_ADD_ARTICLE_SOURCE"))
             (file-org-name (buffer-file-name))
             (file-org-shortname (file-name-nondirectory file-org-name)))
         (if (and generate-printable (string= generate-printable "t"))
@@ -39,7 +41,7 @@
                   (progn
                     (save-excursion
                       (goto-char (point-max))
-                      (insert (format "\n**Исходник статьи\n\nСсылка для скачивания: [[%s][%s]]."
+                      (insert (format "\n** Исходник статьи\n\nСсылка для скачивания: [[/%s][%s]]."
                                       file-org-shortname
                                       file-org-shortname)))
                         (org-set-property "HUGO_ADD_ARTICLE_SOURCE_ADDED" "t")
