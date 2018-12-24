@@ -50,6 +50,9 @@
       org-refile-targets '((org-agenda-files :maxlevel . 2))
       org-refile-use-outline-path 'file)
 
+(add-to-list 'org-src-lang-modes '("conf" . conf))
+(add-to-list 'org-src-lang-modes '("ini" . conf))
+
 (setq org-todo-keywords
       '((sequence "TODO(t)" "WAIT(w!)" "VERIFY(v!)" "|" "DONE(d!)" "DELEGATED(D!)" "CANCELED(c!)")))
 
