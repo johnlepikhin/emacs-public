@@ -110,6 +110,8 @@
    (gnuplot 't)
    (emacs-lisp . t)))
 
+(org-babel-lob-ingest "~/.dotfiles.conf.org")
+
 (defun org-global-props (&optional property buffer)
   "Get the plists of global org properties of current buffer."
   (unless property (setq property "PROPERTY"))
