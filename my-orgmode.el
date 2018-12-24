@@ -52,6 +52,7 @@
 
 (add-to-list 'org-src-lang-modes '("conf" . conf))
 (add-to-list 'org-src-lang-modes '("ini" . conf))
+(add-to-list 'org-src-lang-modes '("vim" . vimrc))
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "WAIT(w!)" "VERIFY(v!)" "|" "DONE(d!)" "DELEGATED(D!)" "CANCELED(c!)")))
