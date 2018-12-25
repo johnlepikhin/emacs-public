@@ -275,19 +275,11 @@
 
 (advice-add #'org-display-inline-images :after #'org-yt-display-inline-images)
 
-;; alerts
-
-; (require 'org-alert)
-; (setq alert-default-style 'libnotify)
-
 ;;
 
 (add-hook 'org-mode-hook 'org-password-manager-key-bindings)
 
 ;;
-
-(defvar my-org-default-file "~/org/personal/general-TODO.org")
-(defvar my-org-mailru-default-file "~/org/work/mail.ru/private/unsorted-TODO.org")
 
 (defun my-org-refile (file headline &optional arg)
   (let ((pos (save-excursion
@@ -296,22 +288,12 @@
     (org-refile arg nil (list headline file nil pos)))
   (switch-to-buffer (current-buffer)))
 
-
-
 (defun my-org-add-todo/non-interacitve (file title)
   "Add TODO record to file non-interactively"
   (with-temp-buffer
     (insert (concat "* TODO " title))
     (org-schedule t)
     (my-org-refile file "")))
-
-(defun my-org-add-todo (file)
-  "Interactively add new TODO record to specified file"
-  (interactive "fИмя файла: ")
-  (my-org-add-todo/non-interacitve file (read-from-minibuffer "Заголовок: ")))
-
-(global-set-key (kbd "C-c RET g") (lambda () (interactive) (my-org-add-todo my-org-default-file)))
-(global-set-key (kbd "C-c RET m") (lambda () (interactive) (my-org-add-todo my-org-mailru-default-file)))
 
 ;;
 
@@ -360,6 +342,8 @@
 (add-hook 'org-agenda-mode-hook 'my-agenda-mode-setup)
 
 ;; templates
+
+(setq org-capture-templates '())
 
 (add-to-list
  'org-capture-templates
