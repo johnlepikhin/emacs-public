@@ -367,4 +367,10 @@
    (file (lambda () (read-file-name "Как назвать файл экспы: " "~/org/personal/sport/")))
    (function sport/expedition-template)))
 
+(add-to-list
+ 'org-capture-templates
+ '("g" "Общий TODO" entry (file "~/org/personal/general-TODO.org")
+   "* TODO %?
+SCHEDULED: %t"))
+
 (provide 'my-orgmode)
