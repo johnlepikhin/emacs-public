@@ -40,6 +40,6 @@
 
 ;;
 
-
+(put 'narrow-to-region 'disabled nil)
 
 (provide 'my-input)
