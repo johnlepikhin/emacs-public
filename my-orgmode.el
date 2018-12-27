@@ -108,6 +108,7 @@
    ;; (sh . t)
    (shell . t)
    (latex . t)
+   (org . t)
    (dot . t)
    (http . t)
    (plantuml . t)
