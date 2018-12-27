@@ -25,7 +25,7 @@
 (setq org-bbdb-anniversary-field 'birthday)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.org\\.src$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.sorg$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (define-key global-map "\C-cc" 'org-capture)
