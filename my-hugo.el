@@ -9,7 +9,7 @@
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
-(setq org-hugo-external-file-extensions-allowed-for-copying '("jpg" "jpeg" "tiff" "png" "svg" "gif" "pdf" "odt" "doc" "ppt" "xls" "docx" "pptx" "xlsx" "org"))
+(setq org-hugo-external-file-extensions-allowed-for-copying '("jpg" "jpeg" "tiff" "png" "svg" "gif" "pdf" "odt" "doc" "ppt" "xls" "docx" "pptx" "xlsx" "sorg"))
 
 (defun my-org-hugo-add-printable-version (backend)
   (if (eq backend 'hugo)
@@ -41,7 +41,7 @@
                   (progn
                     (save-excursion
                       (goto-char (point-max))
-                      (insert (format "\n** Исходник статьи\n\nСсылка для скачивания: [[%s][%s]]."
+                      (insert (format "\n** Исходник статьи\n\nСсылка для скачивания: [[file:%s][%s]]."
                                       file-org-shortname
                                       file-org-shortname)))
                         (org-set-property "HUGO_ADD_ARTICLE_SOURCE_ADDED" "t")
