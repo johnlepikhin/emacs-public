@@ -29,26 +29,26 @@
                         (org-set-property "HUGO_GENERATE_PRINTABLE_ADDED" "t")
                         (save-buffer)))))))))
 
-(defun my-org-hugo-add-source-of-article (backend)
-  (if (eq backend 'hugo)
-      (let* ((generate-printable (org-entry-get nil "HUGO_ADD_ARTICLE_SOURCE"))
-            (file-org-name (buffer-file-name))
-            (file-org-shortname (file-name-nondirectory file-org-name)))
-        (if (and generate-printable (string= generate-printable "t"))
-            (progn
-              (find-file file-org-name)
-              (if (not (org-entry-get nil "HUGO_ADD_ARTICLE_SOURCE_ADDED"))
-                  (progn
-                    (save-excursion
-                      (goto-char (point-max))
-                      (insert (format "\n** Исходник статьи\n\nСсылка для скачивания: [[/%s][%s]]."
-                                      file-org-shortname
-                                      file-org-shortname)))
-                        (org-set-property "HUGO_ADD_ARTICLE_SOURCE_ADDED" "t")
-                        (save-buffer))))))))
+; (defun my-org-hugo-add-source-of-article (backend)
+;   (if (eq backend 'hugo)
+;       (let* ((generate-printable (org-entry-get nil "HUGO_ADD_ARTICLE_SOURCE"))
+;             (file-org-name (buffer-file-name))
+;             (file-org-shortname (file-name-nondirectory file-org-name)))
+;         (if (and generate-printable (string= generate-printable "t"))
+;             (progn
+;               (find-file file-org-name)
+;               (if (not (org-entry-get nil "HUGO_ADD_ARTICLE_SOURCE_ADDED"))
+;                   (progn
+;                     (save-excursion
+;                       (goto-char (point-max))
+;                       (insert (format "\n** Исходник статьи\n\nСсылка для скачивания: [[/%s][%s]]."
+;                                       file-org-shortname
+;                                       file-org-shortname)))
+;                         (org-set-property "HUGO_ADD_ARTICLE_SOURCE_ADDED" "t")
+;                         (save-buffer))))))))
 
 (add-hook 'org-export-before-processing-hook 'my-org-hugo-add-printable-version)
-(add-hook 'org-export-before-processing-hook 'my-org-hugo-add-source-of-article)
+;; (add-hook 'org-export-before-processing-hook 'my-org-hugo-add-source-of-article)
 (remove-hook 'org-export-before-parsing-hook 'my-org-hugo-add-printable-version)
 
 (defun my-org-hugo-twits-prepare (file)
