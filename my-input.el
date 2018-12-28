@@ -1,10 +1,9 @@
 
 (defun my-update-cursor ()
   (set-cursor-color
-   (if buffer-read-only "grey"
-     (if (string= current-input-method "russian-computer")
-         "red"
-       "black"))))
+   (if (string= current-input-method "russian-computer")
+       "red"
+     "black")))
 
 (add-hook 'buffer-list-update-hook 'my-update-cursor)
 
