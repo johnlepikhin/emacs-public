@@ -1,17 +1,14 @@
 
-(set-input-method 'arabic)
-
-(defun my-update-cursor
-    (if buffer-read-only "grey"
+; (defun my-update-cursor
+;     (if buffer-read-only "grey"
 
       
-input-method-alist
-
 (defun my-update-isearch-input-method ()
-  (setq isearch-input-method-function input-method-function
-        isearch-input-method-local-p t)
-  ; (setq input-method-function nil)
-  (isearch-update))
+  (if isearch-mode
+      (progn
+        (setq isearch-input-method-function input-method-function
+              isearch-input-method-local-p t)
+        (isearch-update))))
 
 (defun my-update-input-method (is-ru)
   (if is-ru
@@ -20,16 +17,16 @@ input-method-alist
         (set-input-method 'russian-computer)
         ;; (set-face-attribute 'mode-line nil :background "red")
         (set-cursor-color "red")
-        (my-update-isearch-input-method))
+        (my-update-isearch-input-method)
+        )
     (progn
       ;; (deactivate-input-method)
       (inactivate-input-method)
       (start-process "" nil "xkblayout-state" "set" "0")
       ;; (set-face-attribute 'mode-line nil :background "light gray")
       (set-cursor-color "black")
-      (my-update-isearch-input-method))))
-
-(deactivate-input-method)
+      (my-update-isearch-input-method)
+      )))
 
 (defun my-select-input-eng ()
   (interactive)
@@ -41,8 +38,8 @@ input-method-alist
 
 (global-set-key (kbd "s-\\") 'my-select-input-eng)
 (global-set-key (kbd "C-\\") 'my-select-input-rus)
-; (define-key isearch-mode-map (kbd "C-\\") 'my-select-input-rus)
-; (define-key isearch-mode-map (kbd "s-\\") 'my-select-input-eng)
+(define-key isearch-mode-map (kbd "C-\\") 'my-select-input-rus)
+(define-key isearch-mode-map (kbd "s-\\") 'my-select-input-eng)
 
 (global-set-key (kbd "M-<tab>") (lambda () (interactive) (other-window 1)))
 
