@@ -10,7 +10,7 @@ input-method-alist
 (defun my-update-isearch-input-method ()
   (setq isearch-input-method-function input-method-function
         isearch-input-method-local-p t)
-  (setq input-method-function nil)
+  ; (setq input-method-function nil)
   (isearch-update))
 
 (defun my-update-input-method (is-ru)
