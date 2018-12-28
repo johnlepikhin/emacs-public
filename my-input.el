@@ -1,4 +1,12 @@
 
+(set-input-method 'arabic)
+
+(defun my-update-cursor
+    (if buffer-read-only "grey"
+
+      
+input-method-alist
+      
 (defun my-update-input-method (is-ru)
   (if is-ru
       (progn
@@ -12,6 +20,8 @@
       ;; (set-face-attribute 'mode-line nil :background "light gray")
       (set-cursor-color "black"))))
 
+(deactivate-input-method)
+
 (defun my-select-input-eng ()
   (interactive)
   (my-update-input-method nil))
@@ -22,6 +32,7 @@
 
 (global-set-key (kbd "s-\\") 'my-select-input-eng)
 (global-set-key (kbd "C-\\") 'my-select-input-rus)
+(define-key isearch-mode-map (kbd "C-\\") 'my-select-input-rus)
 
 (global-set-key (kbd "M-<tab>") (lambda () (interactive) (other-window 1)))
 
