@@ -30,6 +30,10 @@
   (interactive)
   (my-update-input-method t))
 
+(global-set-key (kbd "<f31>") 'my-select-input-eng)
+(global-set-key (kbd "<f32>") 'my-select-input-rus)
+(define-key isearch-mode-map (kbd "<f31>") 'my-select-input-rus)
+(define-key isearch-mode-map (kbd "<f32>") 'my-select-input-eng)
 ; (global-set-key (kbd "<f31>") 'my-select-input-eng)
 ; (global-set-key (kbd "<f32>") 'my-select-input-rus)
 ; (define-key isearch-mode-map (kbd "<f31>") 'my-select-input-rus)
