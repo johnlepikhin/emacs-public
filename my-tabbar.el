@@ -21,8 +21,8 @@
  tabbar.el v1.7."
    (list (cond ((string-match "Org Agenda" (buffer-name)) "Org-TODO")
                 ((string-match "-TODO[.]org$" (buffer-name)) "Org-TODO")
-                ((string-match "[.]org$" (buffer-name)) "Org")
-                ((string-match "[.]org<" (buffer-name)) "Org")
+                ((string-match "[.]s?org$" (buffer-name)) "Org")
+                ((string-match "[.]s?org<" (buffer-name)) "Org")
                 ((string-equal "*Group*" (buffer-name)) "Gnus")
                 ((string-match "[*]Summary " (buffer-name)) "Gnus")
                 ((string-match "[*]Article " (buffer-name)) "Gnus")

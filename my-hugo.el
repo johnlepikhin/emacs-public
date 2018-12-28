@@ -91,7 +91,7 @@
                (and
                 (not (string-match "/[.]#" file))
                 (time-less-p newer-than (nth 5 (file-attributes file)))))
-             (directory-files-recursively "~/org/personal" "\\.org$"))))))
+             (directory-files-recursively "~/org/personal" "\\.s?org$"))))))
 
 ;; Hyphenation
 
