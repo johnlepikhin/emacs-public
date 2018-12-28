@@ -1,6 +1,6 @@
 
-(require 'intero)
+;; (require 'intero)
 
-(intero-global-mode)
+;; (intero-global-mode)
 
 (provide 'my-haskell)
