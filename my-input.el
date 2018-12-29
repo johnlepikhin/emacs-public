@@ -30,14 +30,10 @@
   (interactive)
   (my-update-input-method t))
 
-(global-set-key (kbd "<f31>") 'my-select-input-eng)
-(global-set-key (kbd "<f32>") 'my-select-input-rus)
-(define-key isearch-mode-map (kbd "<f31>") 'my-select-input-eng)
-(define-key isearch-mode-map (kbd "<f32>") 'my-select-input-rus)
-; (global-set-key (kbd "<f31>") 'my-select-input-eng)
-; (global-set-key (kbd "<f32>") 'my-select-input-rus)
-; (define-key isearch-mode-map (kbd "<f31>") 'my-select-input-rus)
-; (define-key isearch-mode-map (kbd "<f32>") 'my-select-input-eng)
+(global-set-key (kbd "<M-f11>") 'my-select-input-eng)
+(global-set-key (kbd "<M-f12>") 'my-select-input-rus)
+(define-key isearch-mode-map (kbd "<M-f11>") 'my-select-input-eng)
+(define-key isearch-mode-map (kbd "<M-f12>") 'my-select-input-rus)
 
 (global-set-key (kbd "M-<tab>") (lambda () (interactive) (other-window 1)))
 
