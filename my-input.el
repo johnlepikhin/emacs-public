@@ -1,9 +1,7 @@
 
 (defun my-update-cursor ()
   (set-cursor-color
-   (if (string= current-input-method "russian-computer")
-       "red"
-     "black")))
+   (if (string= current-input-method "russian-computer") "red" "black")))
 
 (add-hook 'buffer-list-update-hook 'my-update-cursor)
 
@@ -15,7 +13,6 @@
         (isearch-update))))
 
 (defun my-update-input-method (is-ru)
-  (start-process "" nil "xkblayout-state" "set" "0")
   (if is-ru
       (set-input-method 'russian-computer)
     (inactivate-input-method))
