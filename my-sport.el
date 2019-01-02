@@ -87,7 +87,9 @@
                "%date_2_weeks%" date-2-weeks
                (s-replace
                 "%date_1_week%" date-1-week
-                (s-replace "%date_start%" date-start src-tpl)))))))))
+                (s-replace
+                 "%date_1_day%" date-1-day
+                 (s-replace "%date_start%" date-start src-tpl))))))))))
     tpl))
 
 (defun my-sport-journal-add (type value notes)
