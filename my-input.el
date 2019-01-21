@@ -42,6 +42,15 @@
 
 (setq sentence-end-double-space nil)
 
+(defun delete-all-spaces ()
+  "Delete all spaces including newlines at a point"
+  (interactive)
+  (save-excursion
+    (skip-chars-backward "\r\n\t ")
+    (let ((start (point)))
+      (skip-chars-forward "\r\n\t ")
+      (delete-region start (point)))))
+
 (defun fill-sentences-in-paragraph ()
   "Fill the current paragraph with a newline after each sentence."
   (interactive)
@@ -49,14 +58,12 @@
     (save-restriction
       (mark-paragraph)
       (narrow-to-region (point) (mark))
-      (let ((has-prev nil))
-        (while (not (eobp))
-          (if has-prev (newline))
-          (fill-region-as-paragraph
-           (point)
-           (progn (forward-sentence) (point)))
-          (delete-horizontal-space)
-          (setq has-prev t))))))
+      (while (not (eobp))
+        (fill-region-as-paragraph
+         (point)
+         (progn (forward-sentence) (point)))
+        (delete-all-spaces)
+        (newline)))))
 
 ;; region expanding
 
