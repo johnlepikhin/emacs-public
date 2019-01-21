@@ -49,12 +49,14 @@
     (save-restriction
       (mark-paragraph)
       (narrow-to-region (point) (mark))
-      (while (not (eobp))
-	(fill-region-as-paragraph
-	 (point)
-	 (progn (forward-sentence) (point)))
-	(delete-horizontal-space)
-	(newline)))))
+      (let ((has-prev nil))
+        (while (not (eobp))
+          (if has-prev (newline))
+          (fill-region-as-paragraph
+           (point)
+           (progn (forward-sentence) (point)))
+          (delete-horizontal-space)
+          (setq has-prev t))))))
 
 ;; region expanding
 
