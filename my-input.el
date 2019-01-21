@@ -40,6 +40,20 @@
 
 (global-unset-key (kbd "C-z"))
 
+(defun fill-sentences-in-paragraph ()
+  "Fill the current paragraph with a newline after each sentence."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (mark-paragraph)
+      (narrow-to-region (point) (mark))
+      (while (not (eobp))
+	(fill-region-as-paragraph
+	 (point)
+	 (progn (forward-sentence) (point)))
+	(delete-horizontal-space)
+	(newline)))))
+
 ;; region expanding
 
 (require 'expand-region)
