@@ -40,6 +40,8 @@
 
 (global-unset-key (kbd "C-z"))
 
+(setq sentence-end-double-space nil)
+
 (defun fill-sentences-in-paragraph ()
   "Fill the current paragraph with a newline after each sentence."
   (interactive)
