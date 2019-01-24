@@ -190,7 +190,7 @@
   (my-load-perlysense)
 
   (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
-  (local-set-key (kbd "C-c d i") 'perltidy-subroutine)
+  (local-set-key (kbd "C-c i d") 'perltidy-subroutine)
   (local-set-key (kbd "C-c i b") 'perl-mode-perltidy)
   (local-set-key (kbd "TAB") 'my-perl-tab-indent)
 
