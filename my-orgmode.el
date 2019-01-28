@@ -358,4 +358,13 @@
    "* TODO %?
 SCHEDULED: %t"))
 
+(defun my-org-inherit-input-method ()
+  "Set the input method of this buffer to that of original's buffer."
+  (let* ((note-buffer (marker-buffer org-log-note-marker))
+         (im (with-current-buffer note-buffer
+               current-input-method)))
+    (set-input-method im)))
+
+(add-hook 'org-log-buffer-setup-hook 'my-org-inherit-input-method)
+
 (provide 'my-orgmode)
