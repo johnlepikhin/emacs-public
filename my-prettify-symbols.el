@@ -98,6 +98,7 @@
           (?≍ "eq"                   (cperl-mode))
           (?⇐ "= shift"              (cperl-mode))
 
+          (?λ "fun"                  (tuareg-mode))
 
           ,@(map 'list (lambda (c p) (list c (format "\\(\\\\%s\\({}\\)?\\)" p) `(,@texen)))
                  "$%_}&#{†‡¶©§…£^~*\\|{}•©†‡$…—–¡><ªº¶·¿“”‘’®§£™_〈〉"
