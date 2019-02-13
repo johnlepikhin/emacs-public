@@ -1,6 +1,6 @@
 #+MACRO: img_center (eval (concat "#+begin_img_center\n#+caption: " $1 "\n[[file:" (string-trim $2) "][file:" (string-trim $2) "]]\n#+end_img_center"))
 #+MACRO: img_left (eval (concat "#+begin_img_left\n#+caption: " $1 "\n[[file:" (string-trim $2) "][file:" (string-trim $2) "]]\n#+end_img_left"))
-#+MACRO: img_right (eval (concat "#+begin_img_right\n#+caption: $1\n[[file:" (string-trim $2) "][file:" (string-trim $2) "]]\n#+end_img_right"))
+#+MACRO: img_right (eval (concat "#+begin_img_right\n#+caption: " $1 "\n[[file:" (string-trim $2) "][file:" (string-trim $2) "]]\n#+end_img_right"))
 #+MACRO: meter (eval (concat $1 "\\nbsp{}м"))
 #+MACRO: kg (eval (concat $1 "\\nbsp{}кг"))
 #+MACRO: rub (eval (concat $1 "\\nbsp{}руб."))
