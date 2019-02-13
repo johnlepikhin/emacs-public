@@ -1,6 +1,7 @@
 
 (require 'calendar)
 (require 'russian-holidays)
+(require 'hydra)
 
 (setq home-directory (getenv "HOME"))
 
