@@ -4,7 +4,6 @@
 
 (require 'org)
 (require 'org-agenda)
-;; (require 'org-checklist)
 (require 'org-install)
 (require 'find-lisp)
 (require 'helm-org-rifle)
@@ -13,7 +12,6 @@
 (require 'seq)
 (require 'org-element)
 (require 'my-sport)
-;; (require 'git-auto-commit-mode)
 (require 'ox-latex)
 (require 'ispell)
 
