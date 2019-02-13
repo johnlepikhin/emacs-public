@@ -20,11 +20,13 @@
 (defun perl-mode-perltidy ()
   "Perltidy buffer or region if this is perl file."
   (interactive)
-  (save-excursion
-    (when (eq major-mode 'cperl-mode)
-      (if (use-region-p)
-          (perltidy-region (region-beginning) (region-end))
-        (perltidy-buffer)))))
+  (let ((saved-line (line-number-at-pos)))
+    (save-excursion
+      (when (eq major-mode 'cperl-mode)
+        (if (use-region-p)
+            (perltidy-region (region-beginning) (region-end))
+          (perltidy-buffer))))
+    (goto-line saved-line)))
 
 (defun my-perl-tab-indent ()
   (interactive)
