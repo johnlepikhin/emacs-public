@@ -32,9 +32,8 @@
   "Perltidy current subroutine keeping current position in the buffer as close as possible"
   (interactive)
   (let ((saved-line (line-number-at-pos)))
-    (save-excursion
-      (my-perltidy-subroutine)
-    (goto-line saved-line))))
+    (perltidy-subroutine)
+    (goto-line saved-line)))
 
 (defun my-perl-tab-indent ()
   (interactive)
