@@ -28,6 +28,14 @@
           (perltidy-buffer))))
     (goto-line saved-line)))
 
+(defun my-perltidy-subroutine ()
+  "Perltidy current subroutine keeping current position in the buffer as close as possible"
+  (interactive)
+  (let ((saved-line (line-number-at-pos)))
+    (save-excursion
+      (my-perltidy-subroutine)
+    (goto-line saved-line))))
+
 (defun my-perl-tab-indent ()
   (interactive)
   (if (use-region-p)
@@ -192,7 +200,7 @@
   (my-load-perlysense)
 
   (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
-  (local-set-key (kbd "C-c i d") 'perltidy-subroutine)
+  (local-set-key (kbd "C-c i d") 'my-perltidy-subroutine)
   (local-set-key (kbd "C-c i b") 'perl-mode-perltidy)
   (local-set-key (kbd "TAB") 'my-perl-tab-indent)
 
