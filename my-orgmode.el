@@ -14,6 +14,7 @@
 (require 'my-sport)
 (require 'ox-latex)
 (require 'ispell)
+(require 'filenotify)
 
 (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
 (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
@@ -30,11 +31,32 @@
 
 (setq org-log-into-drawer 't)
 
+(defvar my-org-inotify-handlers '() "List of file handlers to watch")
+
+(defun my-org-reload-from-disk ()
+  (interactive)
+  (org-reload)
+  (org-agenda-redo-all))
+
+(defun my-org-fill-inotify-handlers ()
+  (dolist (elt my-org-inotify-handlers)
+    (file-notify-rm-watch elt))
+  (setq my-org-inotify-handlers
+        (mapcar
+         (lambda (file)
+           (file-notify-add-watch
+            file
+            '(change attribute-change)
+            'my-org-reload-from-disk)) org-agenda-files)))
+
 (defun my-org-fill-files-list (&optional EXHAUSTIVE)
   (setq org-agenda-files
         (seq-remove
          (lambda (file) (string-match "[.]#" file))
-         (directory-files-recursively "~/org" "[.]org$"))))
+         (directory-files-recursively "~/org" "[.]org$")))
+  (my-org-fill-inotify-handlers))
+
+(my-org-fill-files-list)
 
 (run-with-timer 0 600 'my-org-fill-files-list)
 
