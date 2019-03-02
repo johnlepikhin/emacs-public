@@ -33,21 +33,24 @@
 
 (defvar my-org-inotify-handlers '() "List of file handlers to watch")
 
-(defun my-org-reload-from-disk ()
+(defun my-org-reload-from-disk (&optional event)
   (interactive)
   (org-reload)
-  (org-agenda-redo-all))
+  (org-agenda-redo-all t))
+
+(my-org-reload-from-disk)
 
 (defun my-org-fill-inotify-handlers ()
   (dolist (elt my-org-inotify-handlers)
     (file-notify-rm-watch elt))
   (setq my-org-inotify-handlers
-        (mapcar
-         (lambda (file)
-           (file-notify-add-watch
-            file
-            '(change attribute-change)
-            'my-org-reload-from-disk)) org-agenda-files)))
+        (list (mapcar
+               (lambda (file)
+                 (file-notify-add-watch
+                  file
+                  '(change attribute-change)
+                  'my-org-reload-from-disk))
+               org-agenda-files)))))
 
 (defun my-org-fill-files-list (&optional EXHAUSTIVE)
   (setq org-agenda-files
