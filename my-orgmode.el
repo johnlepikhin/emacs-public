@@ -35,10 +35,8 @@
 
 (defun my-org-reload-from-disk (&optional event)
   (interactive)
-  (org-reload)
-  (org-agenda-redo-all t))
-
-(my-org-reload-from-disk)
+  (with-current-buffer "*Org Agenda*"
+    (org-agenda-maybe-redo)))
 
 (defun my-org-fill-inotify-handlers ()
   (dolist (elt my-org-inotify-handlers)
@@ -50,7 +48,7 @@
                   file
                   '(change attribute-change)
                   'my-org-reload-from-disk))
-               org-agenda-files)))))
+               org-agenda-files))))
 
 (defun my-org-fill-files-list (&optional EXHAUSTIVE)
   (setq org-agenda-files
