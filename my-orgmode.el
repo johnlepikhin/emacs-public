@@ -13,6 +13,7 @@
 (require 'org-element)
 (require 'my-sport)
 (require 'ox-latex)
+(require 'ox-confluence)
 (require 'ispell)
 (require 'filenotify)
 
