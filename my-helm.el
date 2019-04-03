@@ -9,7 +9,9 @@
 (require 'helm-net)
 (require 'helm-org-rifle)
 (require 'helm-elisp)
-(require 'helm-perldoc)
+(require 'helm-descbinds)
+
+(helm-descbinds-mode)
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)

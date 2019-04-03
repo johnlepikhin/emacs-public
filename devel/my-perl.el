@@ -195,7 +195,7 @@
 (defun my-cperl-mode-setup ()
   (prettify-symbols-mode)
   (setq-local cperl-indent-level 4)
-  (local-set-key (kbd "C-h f") 'cperl-perldoc)
+  (helm-perldoc:setup)
   (my-load-perlysense)
 
   (local-set-key (kbd "C-o g v") 'my-perl-goto-vc-project)
