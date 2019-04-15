@@ -86,24 +86,17 @@
             (google-pbp-module pbp-module)
           (google-this-string nil err 'noconfirm))))))
 
-(defun my-flycheck-test ()
-  (message (flycheck-overlay-errors-at (point))))
-
-(global-set-key (kbd "C-c z") 'my-flycheck-test)
-
 (defun perlcritic-disable-for-line ()
   (interactive)
-  (let ((err (get-char-property (point) 'help-echo)))
-    (if err
-      (let ((pbp-module (perlcritic-extract-module err)))
-        (if pbp-module
-            (progn
-              (move-beginning-of-line nil)
-              (insert (concat "## no critic (" pbp-module) ")\n")
-              (indent-according-to-mode)
-              (move-end-of-line nil)
-              (insert "\n## use critic"))))
-      (message "No error found here"))))
+  (let ((error-id (flycheck-error-id (car (flycheck-overlay-errors-at (point))))))
+    (if error-id
+        (progn
+          (move-beginning-of-line nil)
+          (insert (concat "## no critic (" error-id) ")\n")
+          (indent-according-to-mode)
+          (move-end-of-line nil)
+          (insert "\n## use critic")))
+    (message "No error found here")))
 
 (defun perl-insert-sub-documentation-template ()
   (interactive)
