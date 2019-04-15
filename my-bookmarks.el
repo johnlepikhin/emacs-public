@@ -1,5 +1,5 @@
 
-(require 'bookmark+)
+(require 'bookmark-plus)
 
 ; nothing here
 
