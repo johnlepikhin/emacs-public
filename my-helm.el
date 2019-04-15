@@ -35,6 +35,7 @@
                    helm-source-bbdb
                    helm-source-etags-select
                    helm-source-grep-ag
+                   helm-source-bookmarks
                    ; helm-source-wikipedia-suggest
                    ; helm-source-google-suggest
                    ))
