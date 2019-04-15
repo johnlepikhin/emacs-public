@@ -1,4 +1,6 @@
 
+(add-to-list 'load-path "~/.emacs.d/public/patched")
+
 (defun start-devel ()
   (interactive)
   (if (not (boundp 'start-devel-done))
