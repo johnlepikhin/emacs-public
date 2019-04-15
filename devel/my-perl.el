@@ -86,6 +86,8 @@
             (google-pbp-module pbp-module)
           (google-this-string nil err 'noconfirm))))))
 
+(setq ssdasdasd (flycheck-overlay-errors-at (point)))
+
 (defun perlcritic-disable-for-line ()
   (interactive)
   (let ((err (get-char-property (point) 'help-echo)))
