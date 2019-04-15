@@ -159,22 +159,22 @@
 
 
         ;; ** Flymake Config **
-        ;; If you only want syntax check whenever you save, not continously
-        (setq flymake-no-changes-timeout 9999)
-        (setq flymake-start-syntax-check-on-newline nil)
+        ; ;; If you only want syntax check whenever you save, not continously
+        ; (setq flymake-no-changes-timeout 9999)
+        ; (setq flymake-start-syntax-check-on-newline nil)
 
-        ;; ** Code Coverage Visualization **
-        ;; If you have a Devel::CoverX::Covered database handy and want to
-        ;; display the sub coverage in the source, set this to t
-        (setq ps/enable-test-coverage-visualization nil)
+        ; ;; ** Code Coverage Visualization **
+        ; ;; If you have a Devel::CoverX::Covered database handy and want to
+        ; ;; display the sub coverage in the source, set this to t
+        ; (setq ps/enable-test-coverage-visualization nil)
 
-        ;; ** Color Config **
-        ;; Emacs named colors: http://www.geocities.com/kensanata/colors.html
-        ;; The following colors work fine with a white X11
-        ;; background. They may not look that great on a console with the
-        ;; default color scheme.
-        (set-face-background 'flymake-errline "antique white")
-        (set-face-background 'flymake-warnline "lavender")
+        ; ;; ** Color Config **
+        ; ;; Emacs named colors: http://www.geocities.com/kensanata/colors.html
+        ; ;; The following colors work fine with a white X11
+        ; ;; background. They may not look that great on a console with the
+        ; ;; default color scheme.
+        ; (set-face-background 'flymake-errline "antique white")
+        ; (set-face-background 'flymake-warnline "lavender")
         (set-face-background 'dropdown-list-face "lightgrey")
         (set-face-background 'dropdown-list-selection-face "grey")
 
