@@ -86,7 +86,10 @@
             (google-pbp-module pbp-module)
           (google-this-string nil err 'noconfirm))))))
 
-(setq ssdasdasd (flycheck-overlay-errors-at (point)))
+(defun my-flycheck-test ()
+  (message (flycheck-overlay-errors-at (point))))
+
+(global-set-key (kbd "C-c z") 'my-flycheck-test)
 
 (defun perlcritic-disable-for-line ()
   (interactive)
