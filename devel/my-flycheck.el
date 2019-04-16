@@ -13,7 +13,7 @@
   (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
 
 (setq flycheck-display-errors-function nil
-      flycheck-display-errors-delay 0.1)
+      flycheck-display-errors-delay 0)
 
 (provide 'my-flycheck)
 
