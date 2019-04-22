@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: sub-pod
+# key: sub-pod
+# --
+=item ${1:name}()
+
+
+  Params:
+    -
+
+  Returns:
+    -
+=cut
+sub $1 {
+
+    return;
+}
