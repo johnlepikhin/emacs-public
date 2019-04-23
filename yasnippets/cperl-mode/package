@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: package
+# key: package
+# --
+package ${1:package};
+
+use warnings FATAL => 'all';
+use strict;
+use Carp qw(croak confess);
+
+use base qw(Exporter);
+our @EXPORT_OK = qw();
+
+
+1;
+__END__
