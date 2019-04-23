@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: script
+# key: script
+# --
+#!/usr/bin/perl
+
+use warnings FATAL => 'all';
+use strict;
+use Carp qw(croak confess);
+
+use FindBin;
+use lib $FindBin::Bin;
+
+__END__
