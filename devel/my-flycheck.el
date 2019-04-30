@@ -12,6 +12,8 @@
 (with-eval-after-load 'flycheck
   (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
 
+(setq flycheck-global-modes '(not org-mode))
+
 (setq flycheck-display-errors-function nil
       flycheck-display-errors-delay 0)
 
