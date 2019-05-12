@@ -31,7 +31,8 @@
 (setq org-log-done t)
 
 (setq org-log-into-drawer 't
-      org-catch-invisible-edits 'error)
+      org-catch-invisible-edits 'error
+       org-cycle-separator-lines 0)
 
 (defvar my-org-inotify-handlers '() "List of file handlers to watch")
 
