@@ -364,18 +364,20 @@
    "/DONE" 'file))
 
 (defun my-org-clone-to-date ()
+  "Clone current subtree into specified file with all dates shifted to the same period."
   (interactive)
-  (org-copy-subtree)
-  (with-temp-buffer
-    (org-paste-subtree)
-    (let* ((title (message (nth 4 (org-heading-components))))
-           (orig-date (org-time-string-to-absolute (org-entry-get nil "SCHEDULED")))
-           (dest-date (org-time-string-to-absolute
-                       (org-read-date nil nil nil (format "Дата для '%s'" title))))
-           (offset (format "+%id" (- dest-date orig-date))))
-      (org-clone-subtree-with-time-shift 1 offset))
-    (org-cut-subtree)
-    (org-refile)))
+  (let* ((title (message (nth 4 (org-heading-components))))
+         (orig-date (org-time-string-to-absolute (org-entry-get nil "SCHEDULED")))
+         (dest-date (org-time-string-to-absolute
+                     (org-read-date nil nil nil (format "Дата для '%s'" title))))
+         (offset (format "+%id" (- dest-date orig-date))))
+    (org-copy-subtree)
+    (with-temp-buffer
+      (org-mode)
+      (org-paste-subtree)
+      (org-clone-subtree-with-time-shift 1 offset)
+      (org-forward-element)
+      (org-refile))))
 
 (defun my-agenda-mode-setup ()
   (hl-line-mode))
