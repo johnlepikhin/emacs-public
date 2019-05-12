@@ -363,6 +363,15 @@
      (setq org-map-continue-from (outline-previous-heading)))
    "/DONE" 'file))
 
+(defun my-org-clone-to-date ()
+  (interactive)
+  (let* ((title (message (nth 4 (org-heading-components))))
+        (orig-date (org-time-string-to-absolute (org-entry-get nil "SCHEDULED")))
+        (dest-date (org-time-string-to-absolute
+                    (org-read-date nil nil nil (format "Дата для '%s'" title))))
+        (offset (format "+%id" (- dest-date orig-date))))
+    (org-clone-subtree-with-time-shift 1 offset)))
+
 (defun my-agenda-mode-setup ()
   (hl-line-mode))
 
