@@ -6,7 +6,7 @@
 
 ;;; Code:
 
-(setq yas-snippet-dirs '("/home/evgenii/.emacs.d/public/yasnippets"))
+(setq yas-snippet-dirs (list (expand-file-name "~/.emacs.d/public/yasnippets")))
 
 (yas-global-mode 1)
 
