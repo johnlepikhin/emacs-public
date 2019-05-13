@@ -6,7 +6,7 @@
 
 ;;; Code:
 
-(add-to-list yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
+(add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
 
 (yas-global-mode 1)
 
