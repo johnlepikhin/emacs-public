@@ -32,7 +32,8 @@
 
 (setq org-log-into-drawer 't
       org-catch-invisible-edits 'error
-       org-cycle-separator-lines 0)
+      org-cycle-separator-lines 0
+      org-agenda-skip-scheduled-if-done 't)
 
 (defvar my-org-inotify-handlers '() "List of file handlers to watch")
 
