@@ -108,9 +108,12 @@
         ("CANCELED" . (:foreground "#006000" :weight bold))))
 
 (setq org-agenda-custom-commands
-             '(("d" agenda "Agenda for current day"
+             '(("C-d" agenda "Сегодня, все записи"
                 ((org-agenda-span 'day)
-                 (org-agenda-overriding-header "Today's plan")))))
+                 (org-agenda-overriding-header "Сегодня, все записи")))
+               ("d a" agenda "Сегодня, только активные"
+                ((org-agenda-span 'day)
+                 (org-agenda-overriding-header "Сегодня, только активные")))               ))
 
 (setq org-latex-default-packages-alist
       '(("utf8" "inputenc" t ("pdflatex"))
