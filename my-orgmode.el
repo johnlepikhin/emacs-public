@@ -56,9 +56,12 @@
           (org-set-property "DELAYED_TILL" delay))))))
 
 (defun my-org-agenda-skip-delayed ()
-  (let ((now (org-read-date t nil "" nil))
-        (delayed-till (org-read-date t nil (or (org-entry-get nil "DELAYED_TILL") "") nil)))
-      ((setq )tring> delayed-till now)))
+  (interactive)
+  (let (subtree-end (save-excursion (org-end-of-subtree t)))
+    (let ((past (format-time-string "%Y-%m-%d %H:%M" (time-add (current-time) -10)))
+          (delayed-till (org-read-date t nil (or (org-entry-get nil "DELAYED_TILL") "") nil)))
+      (message "%s > %s == %s" delayed-till past (if (string> delayed-till past) "t" "nil"))
+      (if (string> delayed-till past) subtree-end nil))))
 
 (defun my-org-reload-from-disk (&optional event)
   (interactive)
@@ -119,7 +122,7 @@
           (org-agenda-overriding-header "Сегодня, все записи")))
         ("da" agenda "Сегодня, только активные"
          ((org-agenda-span 'day)
-          (org-agenda-skip-function (lambda () 't))
+          (org-agenda-skip-function 'my-org-agenda-skip-delayed)
           (org-agenda-overriding-header "Сегодня, только активные")))))
 
 (setq org-latex-default-packages-alist
