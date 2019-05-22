@@ -6,6 +6,7 @@ package ${1:package};
 
 use warnings FATAL => 'all';
 use strict;
+use utf8;
 use Carp qw(croak confess);
 
 use base qw(Exporter);
