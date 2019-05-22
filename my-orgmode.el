@@ -37,6 +37,24 @@
 
 (defvar my-org-inotify-handlers '() "List of file handlers to watch")
 
+(defun my-org-agenda-delay-task ()
+  (interactive)
+  (org-agenda-check-no-diary)
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+		       (org-agenda-error)))
+	 (buffer (marker-buffer hdmarker))
+	 (pos (marker-position hdmarker))
+	 (inhibit-read-only t)
+	 newhead)
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+	(widen)
+	(goto-char pos)
+	(org-show-context 'agenda)
+        (let ((delay (org-read-date 't 'nil 'nil "Отложить до" 'nil
+                                    (format-time-string "%H:%M" (time-add (current-time) 3600)))))
+          (org-set-property "DELAYED_TILL" delay))))))
+
 (defun my-org-reload-from-disk (&optional event)
   (interactive)
   (with-current-buffer "*Org Agenda*"
@@ -92,7 +110,7 @@
 (setq org-agenda-custom-commands
              '(("d" agenda "Agenda for current day"
                 ((org-agenda-span 'day)
-                 (org-agenda-overriding-header "Today's Deadlines ")))))
+                 (org-agenda-overriding-header "Today's plan")))))
 
 (setq org-latex-default-packages-alist
       '(("utf8" "inputenc" t ("pdflatex"))
