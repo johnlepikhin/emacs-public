@@ -53,7 +53,8 @@
 	(org-show-context 'agenda)
         (let ((delay (org-read-date 't 'nil 'nil "Отложить до" 'nil
                                     (format-time-string "%H:%M" (time-add (current-time) 3600)))))
-          (org-set-property "DELAYED_TILL" delay))))))
+          (org-set-property "DELAYED_TILL" delay))))
+    (org-agenda-redo-all)))
 
 (defun my-org-agenda-skip-delayed ()
   (let ((now (format-time-string "%Y-%m-%d %H:%M" (time-add (current-time) 120)))
@@ -411,6 +412,7 @@
       (org-refile))))
 
 (defun my-agenda-mode-setup ()
+  (local-set-key (kbd "\C-c d") 'my-org-agenda-delay-task)
   (hl-line-mode))
 
 (add-hook 'org-agenda-mode-hook 'my-agenda-mode-setup)
