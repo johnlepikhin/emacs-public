@@ -55,6 +55,11 @@
                                     (format-time-string "%H:%M" (time-add (current-time) 3600)))))
           (org-set-property "DELAYED_TILL" delay))))))
 
+(defun my-org-agenda-skip-delayed ()
+  (let ((now (org-read-date t nil "" nil))
+        (delayed-till (org-read-date t nil (or (org-entry-get nil "DELAYED_TILL") "") nil)))
+      ((setq )tring> delayed-till now)))
+
 (defun my-org-reload-from-disk (&optional event)
   (interactive)
   (with-current-buffer "*Org Agenda*"
@@ -108,12 +113,14 @@
         ("CANCELED" . (:foreground "#006000" :weight bold))))
 
 (setq org-agenda-custom-commands
-             '(("C-d" agenda "Сегодня, все записи"
-                ((org-agenda-span 'day)
-                 (org-agenda-overriding-header "Сегодня, все записи")))
-               ("d a" agenda "Сегодня, только активные"
-                ((org-agenda-span 'day)
-                 (org-agenda-overriding-header "Сегодня, только активные")))               ))
+      '(("d" . "Сегодня")
+        ("dd" agenda "Сегодня, все записи"
+         ((org-agenda-span 'day)
+          (org-agenda-overriding-header "Сегодня, все записи")))
+        ("da" agenda "Сегодня, только активные"
+         ((org-agenda-span 'day)
+          (org-agenda-skip-function (lambda () 't))
+          (org-agenda-overriding-header "Сегодня, только активные")))))
 
 (setq org-latex-default-packages-alist
       '(("utf8" "inputenc" t ("pdflatex"))
