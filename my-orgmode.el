@@ -434,8 +434,8 @@ SCHEDULED: %t"))
 
 (add-to-list
  'org-capture-templates
- '("Pm" "(Protocol bookmark)" entry (file "~/org/personal/web-bookmarks.org")
-   "* TODO Взято из веба\n"))
+ '("Pm" "(Protocol bookmark)" entry (file+headline "~/org/personal/general-TODO.org" "Сохранено из браузера")
+   "* TODO Взято из веба: [[%:link][%:description]]\n  SCHEDULED: %^T\n\nДобавлено: %U\n\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n%?"))
 
 (add-to-list
  'org-capture-templates
