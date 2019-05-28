@@ -438,8 +438,15 @@ SCHEDULED: %t"))
 (add-to-list
  'org-capture-templates
  '("Pb" "(Protocol bookmark)" entry (file+datetree "~/org/personal/web-bookmarks.org")
-   "* %:description \nCaptured at %U\n[[%:link][%:description]]\n%?\n"))
+   "* Автозакладка : [[%:link][%:description]]\n%?\n"))
 
+(defun my-org-protocol-capture-link-advice (orig &rest args)
+  (make-frame-command)
+  (apply orig args)
+  (delete-frame))
+
+(advice-add 'org-protocol-capture :around
+            #'my-org-protocol-capture-link-advice)
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-org-inherit-input-method ()
