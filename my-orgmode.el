@@ -428,6 +428,27 @@
    "* TODO %?
 SCHEDULED: %t"))
 
+;; Связь с браузером
+
+(add-to-list
+ 'org-capture-templates
+ '("Pn" "(Protocol quote)" entry (file+headline "~/org/personal/general-TODO.org" "Notes from the web")
+   "* %:description\nCaptured at %u\n%c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n%?"))
+
+(add-to-list
+ 'org-capture-templates
+ '("Pb" "(Protocol bookmark)" entry (file+datetree "~/org/personal/web-bookmarks.org")
+   "* %:description \nCaptured at %U\n[[%:link][%:description]]\n%?\n"))
+
+(defun my-org-protocol-store-link-advice (orig &rest args)
+  (raise-frame)
+  (apply orig args))
+
+(advice-add 'org-protocol-store-link :around
+            #'my-org-protocol-store-link-advice)
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun my-org-inherit-input-method ()
   "Set the input method of this buffer to that of original's buffer."
   (let* ((note-buffer (marker-buffer org-log-note-marker))
