@@ -418,6 +418,7 @@
 
 (add-hook 'org-agenda-mode-hook 'my-agenda-mode-setup)
 
+;;;;;;;;;;;;;;;;;;;;;;;;
 ;; templates
 
 (setq org-capture-templates '())
@@ -432,21 +433,14 @@ SCHEDULED: %t"))
 
 (add-to-list
  'org-capture-templates
- '("Pn" "(Protocol quote)" entry (file+headline "~/org/personal/general-TODO.org" "Notes from the web")
+ '("Pm" "(Protocol quote)" entry (file+headline "~/org/personal/general-TODO.org" "Notes from the web")
    "* %:description\nCaptured at %u\n%c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n%?"))
 
 (add-to-list
  'org-capture-templates
- '("Pb" "(Protocol bookmark)" entry (file+datetree "~/org/personal/web-bookmarks.org")
-   "* Автозакладка : [[%:link][%:description]]\n%?\n"))
+ '("Pb" "(Protocol bookmark)" entry (file+olp+datetree "~/org/personal/web-bookmarks.org")
+   "* Закладка %U : [[%:link][%:description]]\n%?\n"))
 
-(defun my-org-protocol-capture-link-advice (orig &rest args)
-  (make-frame-command)
-  (apply orig args)
-  (delete-frame))
-
-(advice-add 'org-protocol-capture :around
-            #'my-org-protocol-capture-link-advice)
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-org-inherit-input-method ()
