@@ -440,13 +440,6 @@ SCHEDULED: %t"))
  '("Pb" "(Protocol bookmark)" entry (file+datetree "~/org/personal/web-bookmarks.org")
    "* %:description \nCaptured at %U\n[[%:link][%:description]]\n%?\n"))
 
-(defun my-org-protocol-store-link-advice (orig &rest args)
-  (raise-frame)
-  (apply orig args))
-
-(advice-add 'org-protocol-store-link :around
-            #'my-org-protocol-store-link-advice)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-org-inherit-input-method ()
