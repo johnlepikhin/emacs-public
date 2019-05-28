@@ -1,8 +1,10 @@
 
+;;; Code:
+
 (setq debug-on-error 't)
 
 (defun number-or-v (n v)
-  "Return v if n is not a number, or n otherwise"
+  "Return V if N is not a number, or n otherwise."
   (if (not (numberp n)) v n))
 
 (defun lst-number-or-v (lst pos v)
