@@ -59,39 +59,6 @@
         (cdr src)))
       (lambda (a b) (string< (nth 0 a) (nth 0 b)))))))
 
-(defun sport/expedition-template ()
-  (interactive)
-  (let* ((event (read-string "Название экспедиции: " nil))
-         (category (org-completing-read-no-i "Категория в org: " nil))
-         (date-input (org-read-date nil t nil "Начало экспедиции: "))
-         (date-fmt (car org-time-stamp-formats))
-         (date-5-months (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 30 5)))))
-         (date-1-month (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 30)))))
-         (date-2-weeks (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 7 2)))))
-         (date-1-week (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 7)))))
-         (date-1-day (format-time-string date-fmt (time-subtract date-input (seconds-to-time (* 86400 1)))))
-         (date-start (format-time-string date-fmt date-input))
-         (src-tpl (with-temp-buffer
-                    (insert-file-contents "~/org/personal/sport/организация-экспедиции.org.tpl")
-                    (buffer-string)))
-         (tpl
-          (s-replace
-           "%event%" event
-           (s-replace
-            "%category%" category
-            (s-replace
-             "%date_5_months%" date-5-months
-             (s-replace
-              "%date_1_month%" date-1-month
-              (s-replace
-               "%date_2_weeks%" date-2-weeks
-               (s-replace
-                "%date_1_week%" date-1-week
-                (s-replace
-                 "%date_1_day%" date-1-day
-                 (s-replace "%date_start%" date-start src-tpl))))))))))
-    tpl))
-
 (defun my-sport-journal-add (type value notes)
   (interactive
    (list

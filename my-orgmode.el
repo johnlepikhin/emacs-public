@@ -95,6 +95,7 @@
 (add-to-list 'org-modules 'org-gnus)
 (add-to-list 'org-modules 'org-mouse)
 (add-to-list 'org-modules 'org-attach-screenshot)
+(add-to-list 'org-modules 'org-protocol)
 
 (setq org-src-tab-acts-natively t
       org-refile-targets '((org-agenda-files :maxlevel . 2))
@@ -420,12 +421,6 @@
 ;; templates
 
 (setq org-capture-templates '())
-
-(add-to-list
- 'org-capture-templates
- '("e" "Экспедиция/мероприятие" plain
-   (file (lambda () (read-file-name "Как назвать файл экспы: " "~/org/personal/sport/")))
-   (function sport/expedition-template)))
 
 (add-to-list
  'org-capture-templates
