@@ -64,8 +64,9 @@
 
 (defun my-org-reload-from-disk (&optional event)
   (interactive)
-  (with-current-buffer "*Org Agenda*"
-    (org-agenda-maybe-redo)))
+  (ignore-errors
+    (with-current-buffer "*Org Agenda*"
+      (org-agenda-maybe-redo))))
 
 (defun my-org-fill-inotify-handlers ()
   (dolist (elt my-org-inotify-handlers)
@@ -433,8 +434,8 @@ SCHEDULED: %t"))
 
 (add-to-list
  'org-capture-templates
- '("Pm" "(Protocol quote)" entry (file+headline "~/org/personal/general-TODO.org" "Notes from the web")
-   "* %:description\nCaptured at %u\n%c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n%?"))
+ '("Pm" "(Protocol quote)" entry (file "~/org/personal/general-TODO.org")
+   "* TODO Взято из веба %U, %:description\n  SCHEDULED: %t\n\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n%?"))
 
 (add-to-list
  'org-capture-templates
