@@ -40,6 +40,8 @@
                    ; helm-source-google-suggest
                    ))
 
+(add-hook 'cperl-mode-hook 'helm-gtags-mode)
+
 (defun my-helm-search-all ()
   (interactive)
   (require 'helm-x-files)
