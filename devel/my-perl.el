@@ -115,6 +115,7 @@
   (local-set-key (kbd "\M-.") 'helm-etags-plus-select)
   (local-set-key (kbd "\M-,") 'helm-etags-plus-history-go-back))
 
+(add-hook 'cperl-mode-hook 'ggtags-mode)
 (add-hook 'cperl-mode-hook 'my-cperl-mode-setup)
 
 (setq cperl-highlight-variables-indiscriminately t)
