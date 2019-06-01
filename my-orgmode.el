@@ -400,7 +400,7 @@
 (defun my-org-clone-to-date ()
   "Clone current subtree into specified file with all dates shifted to the same period."
   (interactive)
-  (let* ((title (message (nth 4 (org-heading-components))))
+  (let* ((title (nth 4 (org-heading-components)))
          (orig-date (org-time-string-to-absolute (org-entry-get nil "SCHEDULED")))
          (dest-date (org-time-string-to-absolute
                      (org-read-date nil nil nil (format "Дата для '%s'" title))))
