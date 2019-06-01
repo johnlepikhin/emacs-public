@@ -1,8 +1,6 @@
 
 ;;; Code:
 
-(setq debug-on-error 't)
-
 (defun number-or-v (n v)
   "Return V if N is not a number, or N otherwise."
   (if (not (numberp n)) v n))
