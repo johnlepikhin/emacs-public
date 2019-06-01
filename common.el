@@ -80,8 +80,9 @@
 ;; different things
 
 (setq-default indent-tabs-mode nil)
-(setq line-number-mode t)
-(setq column-number-mode t)
+(setq line-number-mode t
+      column-number-mode t
+      show-paren-mode t)
 
 (require 'auto-complete)
 (require 'auto-complete-config)
