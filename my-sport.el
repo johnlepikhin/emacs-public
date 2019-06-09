@@ -85,9 +85,4 @@
     (insert
      (format "| [%s] | %s | | %s | %s |\n" (format-time-string "%F %R") type value notes))))
 
-(defun my-sport-journal-add-cookie (count)
-  "Добавить печенек в журнал"
-  (interactive "P")
-  (my-sport-journal-add "печенье" (prefix-numeric-value count) ""))
-
 (provide 'my-sport)
