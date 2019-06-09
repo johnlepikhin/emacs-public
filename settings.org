@@ -3,15 +3,18 @@
 #+LANGUAGE: ru
 #+PROPERTY: results silent
 
-Этот конфиг использую на всех десктопах и телефонах. Особенности:
- - Из него динамически подгружаются файлы:
-   * ~/.emacs.d/local/user-info.org : настройки email, имени пользователя и т.д.
-   * ~/.emacs.d/local/org-agenda.org : личные настройки шаблон
-   * ~/.emacs.d/local/org-capture.org
-   * ~/.emacs.d/local/gnus-accounts.org
-   * ~/.emacs.d/local/gnus-templates.org
+* Описание
 
-* Как подключать
+Этот конфиг использую на всех десктопах и телефонах.
+
+Из него динамически подгружаются файлы:
+ * ~/.emacs.d/local/user-info.org : настройки email, имени пользователя и т.д.
+ * ~/.emacs.d/local/org-agenda.org : личные настройки шаблонов agenda
+ * ~/.emacs.d/local/org-capture.org : личные шаблоны org-записей
+ * ~/.emacs.d/local/gnus-accounts.org : почтовые аккаунты
+ * ~/.emacs.d/local/gnus-templates.org : почтовые шаблоны
+
+** Как подключать
 
 В ~/.emacs надо написать:
 
@@ -23,8 +26,10 @@
 	(condition-case errinfo (org-babel-load-file ini-file)
 	  (error (message "Cannot load settings for file %s: %s" ini-file errinfo)))))
 
-(my-load-org-config "path/to/this/settings.org")
+(my-load-org-config "public/settings.org")
 #+END_EXAMPLE
+
+Здесь public/settings.org будет транслировано в ~/.emacs.d/public/settings.org, согласно значению user-emacs-directory.
 
 * Базовая конфигурация
 
@@ -1535,6 +1540,8 @@ Refile всего поддерева под курсором с подстано
 		 (prog-mode . flyspell-prog-mode))
   :commands (flyspell-buffer turn-on-flyspell)
   :config
+  ;; Используем hunspell
+  (setq ispell-program-name (executable-find "hunspell"))
   ;; Переключаем язык проверки по переключению раскладки
   (defadvice my-select-input-eng (after ispell-american activate) (ispell-change-dictionary "american"))
   (defadvice my-select-input-rus (after ispell-russian activate) (ispell-change-dictionary "russian"))
