@@ -3,6 +3,14 @@
 #+LANGUAGE: ru
 #+PROPERTY: results silent
 
+Этот конфиг использую на всех десктопах и телефонах. Особенности:
+ - Из него динамически подгружаются файлы:
+   * ~/.emacs.d/local/user-info.org : настройки email, имени пользователя и т.д.
+   * ~/.emacs.d/local/org-agenda.org : личные настройки шаблон
+   * ~/.emacs.d/local/org-capture.org
+   * ~/.emacs.d/local/gnus-accounts.org
+   * ~/.emacs.d/local/gnus-templates.org
+
 * Как подключать
 
 В ~/.emacs надо написать:
