@@ -1540,9 +1540,6 @@ Refile всего поддерева под курсором с подстано
 		 (prog-mode . flyspell-prog-mode))
   :commands (flyspell-buffer turn-on-flyspell)
   :config
-  ;; Используем hunspell
-  (if executable-find "hunspell")
-  (setq ispell-program-name (executable-find "hunspell"))
   ;; Переключаем язык проверки по переключению раскладки
   (defadvice my-select-input-eng (after ispell-american activate) (ispell-change-dictionary "american"))
   (defadvice my-select-input-rus (after ispell-russian activate) (ispell-change-dictionary "russian"))
