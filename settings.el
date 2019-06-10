@@ -607,7 +607,9 @@ This command does not push text to `kill-ring'."
 		 ;; автоматом считывать изменения с диска
 		 (org-mode . turn-on-auto-revert-mode)
 		 ;; автосохранение для org-буферов
-		 (auto-save . org-save-all-org-buffers))
+		 (auto-save . org-save-all-org-buffers)
+		 ;; автоперенос строк по умолчанию
+		 (org-mode . auto-fill-mode))
   :bind (:map my-bindings-map
               ("C-c l" . org-store-link))
   :config

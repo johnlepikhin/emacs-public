@@ -617,7 +617,10 @@ This command does not push text to `kill-ring'."
   (define-key 'help-command "P" 'cperl-perldoc-at-point)
   ;; я люблю smartparens. Извини, cperl-mode.
   (setq cperl-electric-parens nil)
+  ;; Символьное отображение синтаксиса
   (add-hook 'cperl-mode-hook 'my-cperl-init-prettify-symbols)
+  ;; Отступ равен 4
+  (setq cperl-indent-level 4)
   ;; Красные хэши меня всегда раздражали
   (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
 #+END_SRC
@@ -909,7 +912,9 @@ Perltidy для буфера, текущей функции, строчки и �
 		 ;; автоматом считывать изменения с диска
 		 (org-mode . turn-on-auto-revert-mode)
 		 ;; автосохранение для org-буферов
-		 (auto-save . org-save-all-org-buffers))
+		 (auto-save . org-save-all-org-buffers)
+		 ;; автоперенос строк по умолчанию
+		 (org-mode . auto-fill-mode))
   :bind (:map my-bindings-map
               ("C-c l" . org-store-link))
   :config
