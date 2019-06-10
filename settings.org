@@ -369,9 +369,11 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
-  :after (yasnippet-classic-snippets)
   :bind (:map my-bindings-map
               ("C-<tab>" . yas-expand))
+  :hook (cperl-mode . yas-minor-mode)
+  :commands (yas-minor-mode)
+  :after (yasnippet-classic-snippets)
   :config
   (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets")))
 
@@ -469,7 +471,6 @@ This command does not push text to `kill-ring'."
       company-transformers '(company-sort-by-occurrence
                              company-sort-by-backend-importance))
 #+END_SRC
-
 
 ** Tramp
 

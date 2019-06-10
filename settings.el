@@ -169,6 +169,16 @@
 
 (setq-default indent-tabs-mode nil)
 
+(use-package yasnippet
+  :bind (:map my-bindings-map
+              ("C-<tab>" . yas-expand))
+  :hook (cperl-mode . yas-minor-mode)
+  :after (yasnippet-classic-snippets)
+  :config
+  (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets")))
+
+(use-package yasnippet-classic-snippets)
+
 (defun my-delete-word (arg)
   "Delete characters forward until encountering the end of a word.
 With argument, do this that many times.
@@ -1396,12 +1406,3 @@ This command does not push text to `kill-ring'."
   :after (calendar)
   :config
   (setq calendar-holidays russian-holidays))
-
-(use-package yasnippet
-  :after (yasnippet-classic-snippets)
-  :bind (:map my-bindings-map
-              ("C-<tab>" . yas-expand))
-  :config
-  (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets")))
-
-(use-package yasnippet-classic-snippets)
