@@ -118,7 +118,7 @@
 (use-package
   which-key
   :config 
-  (setq which-key-idle-delay 0.01)
+  (setq which-key-idle-delay 1)
   (which-key-mode))
 
 (column-number-mode)
@@ -306,41 +306,42 @@ This command does not push text to `kill-ring'."
   :hook (flycheck-mode . flycheck-inline-mode))
 
 (defun my-cperl-init-prettify-symbols ()
-  (setq prettify-symbols-alist '(("<=" . ?≤)
-								 ("&&" . ?∧)
-								 ("||" . ?∨)
-								 ("!=" . ?≠)
-								 ("for" . ?∀)
-								 ("foreach" . ?∀)
-								 ("exists" . ?∃)
-								 ("undef" . ?∅)
-								 ("sub" . ?λ)
-								 ("return" . ?⊢)
-								 ("//" . ?⫽)
-								 ("my" . ?≡)
-								 ("delete" . ?❌)
-								 ("defined" . ?❓)
-								 ("!" . ?¬)
-								 ("not" . ?¬)
-								 ("join" . ?𝐉)
-								 ("grep" . ?𝐆)
-								 ("map" . ?𝐌)
-								 ("sort" . ?𝐒)
-								 (".." . ?⋰)
-								 ("next" . ?↰)
-								 ("last" . ?↴)
-								 ("while" . ?↻)
-								 ("if" . ?⑃)
-								 ("else" . ?⊻)
-								 ("int" . ?ℤ)
-								 ("keys" . ?𝐊)
-								 ("ne" . ?≭)
-								 ("eq" . ?≍)
-								 ("->" . ?→)
-								 ("=>" . ?⇒)
-								 ("=~" .?≈)
-								 ("!~" . ?≉)
-								 ("$self" . ?⋇)))
+  (setq prettify-symbols-alist
+		'(("<=" . ?≤)
+		  ("&&" . ?∧)
+		  ("||" . ?∨)
+		  ("!=" . ?≠)
+		  ("for" . ?∀)
+		  ("foreach" . ?∀)
+		  ("exists" . ?∃)
+		  ("undef" . ?∅)
+		  ("sub" . ?λ)
+		  ("return" . ?⊢)
+		  ("//" . ?⫽)
+		  ("my" . ?≡)
+		  ("delete" . ?❌)
+		  ("defined" . ?❓)
+		  ("!" . ?¬)
+		  ("not" . ?¬)
+		  ("join" . ?𝐉)
+		  ("grep" . ?𝐆)
+		  ("map" . ?𝐌)
+		  ("sort" . ?𝐒)
+		  (".." . ?⋰)
+		  ("next" . ?↰)
+		  ("last" . ?↴)
+		  ("while" . ?↻)
+		  ("if" . ?⑃)
+		  ("else" . ?⊻)
+		  ("int" . ?ℤ)
+		  ("keys" . ?𝐊)
+		  ("ne" . ?≭)
+		  ("eq" . ?≍)
+		  ("->" . ?→)
+		  ("=>" . ?⇒)
+		  ("=~" .?≈)
+		  ("!~" . ?≉)
+		  ("$self" . ?⋇)))
   (prettify-symbols-mode))
 
 (use-package
@@ -362,6 +363,11 @@ This command does not push text to `kill-ring'."
   (add-hook 'cperl-mode-hook 'my-cperl-init-prettify-symbols)
   ;; Красные хэши меня всегда раздражали
   (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
+
+(use-package
+  company-plsense
+  :after (cperl-mode)
+  :hook (cperl-mode-hook . company-mode))
 
 (use-package tuareg)
 
@@ -387,11 +393,6 @@ This command does not push text to `kill-ring'."
   (setq web-mode-enable-auto-pairing t)
   (setq web-mode-enable-auto-expanding t)
   (setq web-mode-enable-css-colorization t))
-
-(use-package
-  company-plsense
-  :after (cperl-mode)
-  :hook (cperl-mode-hook . company-mode))
 
 (defcustom perltidy-program "perltidy"
   "*Program name of perltidy"
@@ -568,6 +569,8 @@ This command does not push text to `kill-ring'."
   (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
   ;; При refile показывать также имя файла
   (setq org-refile-use-outline-path 'file)
+  ;; Люблю выделять по shift-стрелочки, даже в org-mode
+  (setq org-support-shift-select t)
 
   ;; Угадывать mode SRC-блоков по названию режимов
   (add-to-list 'org-src-lang-modes '("conf" . conf))
