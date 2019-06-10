@@ -167,6 +167,8 @@
 
 (setq sentence-end-double-space nil)
 
+(setq-default indent-tabs-mode nil)
+
 (defun my-delete-word (arg)
   "Delete characters forward until encountering the end of a word.
 With argument, do this that many times.
@@ -360,7 +362,10 @@ This command does not push text to `kill-ring'."
   (define-key 'help-command "P" 'cperl-perldoc-at-point)
   ;; я люблю smartparens. Извини, cperl-mode.
   (setq cperl-electric-parens nil)
+  ;; Символьное отображение синтаксиса
   (add-hook 'cperl-mode-hook 'my-cperl-init-prettify-symbols)
+  ;; Отступ равен 4
+  (setq cperl-indent-level 4)
   ;; Красные хэши меня всегда раздражали
   (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
 
@@ -386,10 +391,10 @@ This command does not push text to `kill-ring'."
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
   :init
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq js-indent-level 2)
+  (setq web-mode-markup-indent-offset 4)
+  (setq web-mode-code-indent-offset 4)
+  (setq web-mode-css-indent-offset 4)
+  (setq js-indent-level 4)
   (setq web-mode-enable-auto-pairing t)
   (setq web-mode-enable-auto-expanding t)
   (setq web-mode-enable-css-colorization t))
@@ -1393,10 +1398,10 @@ This command does not push text to `kill-ring'."
   (setq calendar-holidays russian-holidays))
 
 (use-package yasnippet
+  :after (yasnippet-classic-snippets)
   :bind (:map my-bindings-map
               ("C-<tab>" . yas-expand))
   :config
-  (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
-  (yas-global-mode 1))
+  (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets")))
 
 (use-package yasnippet-classic-snippets)

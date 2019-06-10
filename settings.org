@@ -359,6 +359,25 @@
 (setq sentence-end-double-space nil)
 #+END_SRC
 
+Мы презираем табулялцию в отступах:
+
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+** Yasnippet: разворачивание сниппетов
+
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+  :after (yasnippet-classic-snippets)
+  :bind (:map my-bindings-map
+              ("C-<tab>" . yas-expand))
+  :config
+  (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets")))
+
+(use-package yasnippet-classic-snippets)
+#+END_SRC
+
 ** Удаление без пополнения kill-ring
 
 Не люблю, когда удаляемые куски текста автоматом копируются в буфер обмена. Кусочки кода откуда-то спёр.
@@ -1920,15 +1939,3 @@ SCHEDULED, указывающий, когда мероприятие должн�
 
 #+END_SRC
 
-** Yasnippet: разворачивание сниппетов
-
-#+BEGIN_SRC emacs-lisp
-(use-package yasnippet
-  :bind (:map my-bindings-map
-              ("C-<tab>" . yas-expand))
-  :config
-  (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
-  (yas-global-mode 1))
-
-(use-package yasnippet-classic-snippets)
-#+END_SRC
