@@ -1392,7 +1392,7 @@ This command does not push text to `kill-ring'."
 
 (use-package yasnippet
   :bind (:map my-bindings-map
-              ("C-c y" . yas-expand))
+              ("C-<tab>" . yas-expand))
   :config
   (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
   (yas-global-mode 1))

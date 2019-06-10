@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: get_arg_opt
+# key: get_arg_opt
+# --
+my \$${1:paramname} = get_arg_opt $1 => $2, @_;
