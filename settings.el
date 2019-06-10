@@ -173,9 +173,11 @@
   :bind (:map my-bindings-map
               ("C-<tab>" . yas-expand))
   :hook (cperl-mode . yas-minor-mode)
+  :commands (yas-minor-mode)
   :after (yasnippet-classic-snippets)
   :config
-  (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets")))
+  (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
+  (yas-reload-all))
 
 (use-package yasnippet-classic-snippets)
 
