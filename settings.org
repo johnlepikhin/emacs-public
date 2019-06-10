@@ -249,13 +249,13 @@
   :config (golden-ratio-mode 1))
 #+END_SRC
 
-Подсказка по вводимым кнопкам:
+Подсказка по вводимым кнопкам. Отображать с задержкой в 1 секунду:
 
 #+BEGIN_SRC emacs-lisp
 (use-package
   which-key
   :config 
-  (setq which-key-idle-delay 0.01)
+  (setq which-key-idle-delay 1)
   (which-key-mode))
 #+END_SRC
 
@@ -483,7 +483,7 @@ This command does not push text to `kill-ring'."
   :config (helm-projectile-on))
 #+END_SRC
 
-** Ma git
+** Magit
 
 #+BEGIN_SRC emacs-lisp
 (use-package
@@ -504,7 +504,7 @@ This command does not push text to `kill-ring'."
         ggtags-oversize-limit (* 30 1024 1024)))
 #+END_SRC
 
-** Fly check
+** Flycheck
 
 #+BEGIN_SRC emacs-lisp
 (use-package
@@ -562,41 +562,42 @@ This command does not push text to `kill-ring'."
 
 #+BEGIN_SRC emacs-lisp
 (defun my-cperl-init-prettify-symbols ()
-  (setq prettify-symbols-alist '(("<=" . ?≤)
-								 ("&&" . ?∧)
-								 ("||" . ?∨)
-								 ("!=" . ?≠)
-								 ("for" . ?∀)
-								 ("foreach" . ?∀)
-								 ("exists" . ?∃)
-								 ("undef" . ?∅)
-								 ("sub" . ?λ)
-								 ("return" . ?⊢)
-								 ("//" . ?⫽)
-								 ("my" . ?≡)
-								 ("delete" . ?❌)
-								 ("defined" . ?❓)
-								 ("!" . ?¬)
-								 ("not" . ?¬)
-								 ("join" . ?𝐉)
-								 ("grep" . ?𝐆)
-								 ("map" . ?𝐌)
-								 ("sort" . ?𝐒)
-								 (".." . ?⋰)
-								 ("next" . ?↰)
-								 ("last" . ?↴)
-								 ("while" . ?↻)
-								 ("if" . ?⑃)
-								 ("else" . ?⊻)
-								 ("int" . ?ℤ)
-								 ("keys" . ?𝐊)
-								 ("ne" . ?≭)
-								 ("eq" . ?≍)
-								 ("->" . ?→)
-								 ("=>" . ?⇒)
-								 ("=~" .?≈)
-								 ("!~" . ?≉)
-								 ("$self" . ?⋇)))
+  (setq prettify-symbols-alist
+		'(("<=" . ?≤)
+		  ("&&" . ?∧)
+		  ("||" . ?∨)
+		  ("!=" . ?≠)
+		  ("for" . ?∀)
+		  ("foreach" . ?∀)
+		  ("exists" . ?∃)
+		  ("undef" . ?∅)
+		  ("sub" . ?λ)
+		  ("return" . ?⊢)
+		  ("//" . ?⫽)
+		  ("my" . ?≡)
+		  ("delete" . ?❌)
+		  ("defined" . ?❓)
+		  ("!" . ?¬)
+		  ("not" . ?¬)
+		  ("join" . ?𝐉)
+		  ("grep" . ?𝐆)
+		  ("map" . ?𝐌)
+		  ("sort" . ?𝐒)
+		  (".." . ?⋰)
+		  ("next" . ?↰)
+		  ("last" . ?↴)
+		  ("while" . ?↻)
+		  ("if" . ?⑃)
+		  ("else" . ?⊻)
+		  ("int" . ?ℤ)
+		  ("keys" . ?𝐊)
+		  ("ne" . ?≭)
+		  ("eq" . ?≍)
+		  ("->" . ?→)
+		  ("=>" . ?⇒)
+		  ("=~" .?≈)
+		  ("!~" . ?≉)
+		  ("$self" . ?⋇)))
   (prettify-symbols-mode))
 #+END_SRC
 
