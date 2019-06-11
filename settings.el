@@ -1215,6 +1215,8 @@ This command does not push text to `kill-ring'."
   :commands (gnus)
   :hook ((message-mode . turn-on-flyspell)
 		 (message-send . ispell-message)
+         (gnus-summary-mode . hl-line-mode)
+         (gnus-group-mode . hl-line-mode)
 		 (gnus-message-setup . mml-secure-message-sign-pgpmime))
   :bind (:map message-mode-map
               ("M-z" . my-gnus-zap-to-signature)
