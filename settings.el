@@ -1298,7 +1298,8 @@ This command does not push text to `kill-ring'."
 
   ;; Наводим красоты
   (setq gnus-group-line-format "%M%S%5y%6t: %(%g%)\n"
-		gnus-summary-line-format "%U%R %B %[%-23,23a%] %s\n")
+        gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
+		gnus-summary-line-format "%U%R %&user-date; %B %[%-23,23a%] %s\n")
 
   (when window-system
 	(setq gnus-sum-thread-tree-indent "  "
