@@ -417,10 +417,10 @@ This command does not push text to `kill-ring'."
 #+BEGIN_SRC emacs-lisp
 (use-package
   indent-guide
+  :hook (prog-mode . electric-indent-mode)
   :config
   (setq indent-guide-char "|")
-  (set-face-foreground 'indent-guide-face "darkgray")
-  (indent-guide-global-mode 1))
+  (set-face-foreground 'indent-guide-face "darkgray"))
 #+END_SRC
 
 ** Умные скобочки

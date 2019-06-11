@@ -208,10 +208,10 @@ This command does not push text to `kill-ring'."
 
 (use-package
   indent-guide
+  :hook (prog-mode . electric-indent-mode)
   :config
   (setq indent-guide-char "|")
-  (set-face-foreground 'indent-guide-face "darkgray")
-  (indent-guide-global-mode 1))
+  (set-face-foreground 'indent-guide-face "darkgray"))
 
 (use-package
   smartparens
@@ -282,21 +282,22 @@ This command does not push text to `kill-ring'."
   :config
   ;; Багфиксы, согласно проблеме https://github.com/flycheck/flycheck/issues/1278:
   ;; в :preface нельзя определять т.к. :preface обрабатывается до загрузки модуля
-  (advice-add 'flycheck-process-send-buffer
-              :override
-              (lambda (process)
-                (condition-case err
-                    (save-restriction
-                      (widen)
-                      (if flycheck-chunked-process-input
-                          (flycheck--process-send-buffer-contents-chunked process)
-                        (process-send-region process (point-min) (point-max)))
-                      (process-send-eof process))
-                  (error
-                   (let* ((checker (process-get process 'flycheck-checker))
-                          (type (flycheck-checker-get checker 'standard-input)))
-                     (when (or (not (eq type 'ignore-error)) (process-live-p process))
-                       (signal (car err) (cdr err))))))))
+  (advice-add
+   'flycheck-process-send-buffer
+   :override
+   (lambda (process)
+     (condition-case err
+         (save-restriction
+           (widen)
+           (if flycheck-chunked-process-input
+               (flycheck--process-send-buffer-contents-chunked process)
+             (process-send-region process (point-min) (point-max)))
+           (process-send-eof process))
+       (error
+        (let* ((checker (process-get process 'flycheck-checker))
+               (type (flycheck-checker-get checker 'standard-input)))
+          (when (or (not (eq type 'ignore-error)) (process-live-p process))
+            (signal (car err) (cdr err))))))))
   (flycheck-define-checker perl
     "A Perl syntax checker using the Perl interpreter.
 
