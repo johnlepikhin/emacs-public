@@ -535,37 +535,37 @@ This command does not push text to `kill-ring'."
   ;; Багфиксы, согласно проблеме https://github.com/flycheck/flycheck/issues/1278:
   ;; в :preface нельзя определять т.к. :preface обрабатывается до загрузки модуля
   (defun flycheck-process-send-buffer (process)
-	(condition-case err
-		(save-restriction
-		  (widen)
-		  (if flycheck-chunked-process-input
-			  (flycheck--process-send-buffer-contents-chunked process)
-			(process-send-region process (point-min) (point-max)))
-		  (process-send-eof process))
-	  (error
-	   (let* ((checker (process-get process 'flycheck-checker))
-			  (type (flycheck-checker-get checker 'standard-input)))
-		 (when (or (not (eq type 'ignore-error)) (process-live-p process))
-		   (signal (car err) (cdr err)))))))
+    (condition-case err
+        (save-restriction
+          (widen)
+          (if flycheck-chunked-process-input
+              (flycheck--process-send-buffer-contents-chunked process)
+            (process-send-region process (point-min) (point-max)))
+          (process-send-eof process))
+      (error
+       (let* ((checker (process-get process 'flycheck-checker))
+              (type (flycheck-checker-get checker 'standard-input)))
+         (when (or (not (eq type 'ignore-error)) (process-live-p process))
+           (signal (car err) (cdr err)))))))
   (flycheck-define-checker perl
-	"A Perl syntax checker using the Perl interpreter.
+    "A Perl syntax checker using the Perl interpreter.
 
     See URL `https://www.perl.org'."
-	:command ("perl" "-w" "-c"
-			  (option-list "-I" flycheck-perl-include-path)
-			  (option-list "-M" flycheck-perl-module-list concat))
-	:standard-input ignore-error
-	:error-patterns
-	((error line-start (minimal-match (message))
-			" at - line " line
-			(or "." (and ", " (zero-or-more not-newline))) line-end))
-	:modes (perl-mode cperl-mode)
-	:next-checkers (perl-perlcritic))
+    :command ("perl" "-w" "-c"
+              (option-list "-I" flycheck-perl-include-path)
+              (option-list "-M" flycheck-perl-module-list concat))
+    :standard-input ignore-error
+    :error-patterns
+    ((error line-start (minimal-match (message))
+            " at - line " line
+            (or "." (and ", " (zero-or-more not-newline))) line-end))
+    :modes (perl-mode cperl-mode)
+    :next-checkers (perl-perlcritic))
   (setq flycheck-global-modes '(not org-mode)
         flycheck-display-errors-function nil
         flycheck-display-errors-delay 0
-		;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
-		flycheck-checker-error-threshold 10000)
+        ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
+        flycheck-checker-error-threshold 10000)
   (global-flycheck-mode))
 #+END_SRC
 
