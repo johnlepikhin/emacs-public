@@ -208,7 +208,7 @@ This command does not push text to `kill-ring'."
 
 (use-package
   indent-guide
-  :hook (prog-mode . electric-indent-mode)
+  :hook (prog-mode . indent-guide-mode)
   :config
   (setq indent-guide-char "|")
   (set-face-foreground 'indent-guide-face "darkgray"))
