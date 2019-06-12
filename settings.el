@@ -241,13 +241,17 @@ This command does not push text to `kill-ring'."
               ("C-x u" . undo-tree-visualize))
   :config (global-undo-tree-mode 1))
 
-(setq company-idle-delay 0
-      company-echo-delay 0
-      company-dabbrev-downcase nil
-      company-minimum-prefix-length 2
-      company-selection-wrap-around t
-      company-transformers '(company-sort-by-occurrence
-                             company-sort-by-backend-importance))
+(use-package
+  company-plsense
+  :hook (prog-mode . company-mode)
+  :config
+  (setq company-idle-delay 0
+        company-echo-delay 0
+        company-dabbrev-downcase nil
+        company-minimum-prefix-length 2
+        company-selection-wrap-around t
+        company-transformers '(company-sort-by-occurrence
+                               company-sort-by-backend-importance)))
 
 (use-package
   tramp
@@ -389,11 +393,6 @@ This command does not push text to `kill-ring'."
 		cperl-tab-always-indent t)
   ;; Красные хэши меня всегда раздражали
   (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
-
-(use-package
-  company-plsense
-  :after (cperl-mode)
-  :hook (cperl-mode-hook . company-mode))
 
 (use-package tuareg)
 
@@ -1177,7 +1176,6 @@ This command does not push text to `kill-ring'."
         helm-M-x-fuzzy-match t
         helm-buffers-fuzzy-matching t
         helm-recentf-fuzzy-match t
-;        helm-move-to-line-cycle-in-source t
         projectile-completion-system 'helm)
   (setq helm-input-idle-delay 0.1)
   (setq my-helm-sources
