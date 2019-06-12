@@ -1160,6 +1160,7 @@ This command does not push text to `kill-ring'."
   :bind (:map my-bindings-map
               ("M-s M-s" . my-helm-search-all))
   :preface
+  (defvar my-helm-sources)
   ;; Функция ищет по всем подключенным источникам
   (defun my-helm-search-all ()
 	(interactive)
@@ -1169,7 +1170,6 @@ This command does not push text to `kill-ring'."
 			  (helm-make-source "Buffers" 'helm-source-buffers)))
 	  (helm :sources sources
 			:buffer "*helm completions*")))
-  (defvar my-helm-sources)
   :config
   (require 'helm-for-files)
   (require 'helm-elisp)
@@ -1177,7 +1177,7 @@ This command does not push text to `kill-ring'."
         helm-M-x-fuzzy-match t
         helm-buffers-fuzzy-matching t
         helm-recentf-fuzzy-match t
-        helm-move-to-line-cycle-in-source t
+;        helm-move-to-line-cycle-in-source t
         projectile-completion-system 'helm)
   (setq helm-input-idle-delay 0.1)
   (setq my-helm-sources
