@@ -242,7 +242,7 @@ This command does not push text to `kill-ring'."
   :config (global-undo-tree-mode 1))
 
 (use-package
-  company-plsense
+  company
   :hook (prog-mode . company-mode)
   :config
   (setq company-idle-delay 0
@@ -252,6 +252,11 @@ This command does not push text to `kill-ring'."
         company-selection-wrap-around t
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance)))
+
+(use-package company-flx
+  :after company
+  :config
+  (company-flx-mode +1))
 
 (use-package
   tramp
@@ -393,6 +398,10 @@ This command does not push text to `kill-ring'."
 		cperl-tab-always-indent t)
   ;; Красные хэши меня всегда раздражали
   (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
+
+(use-package
+  company-plsense
+  :hook (cperl-mode . company-mode))
 
 (use-package tuareg)
 
