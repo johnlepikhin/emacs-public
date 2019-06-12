@@ -683,8 +683,11 @@ This command does not push text to `kill-ring'."
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(use-package iedit)
+(use-package auto-complete)
+
 (use-package merlin
-  :after (tuareg)
+  :after (tuareg iedit auto-complete)
   :hook ((tuareg-mode . merlin-mode)
 		 (tuareg-mode . company-mode)))
 #+END_SRC
