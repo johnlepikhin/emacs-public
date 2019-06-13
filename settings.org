@@ -1026,6 +1026,7 @@ Perltidy для буфера, текущей функции, строчки и �
   ;; Настройки по умолчанию в теме leuven мне в этом месте не нравятся
   (face-spec-set 'org-agenda-structure '((t :height 1.17)))
   (face-spec-set 'org-agenda-date-today '((t :height 1.1)))
+  (face-spec-set 'org-agenda-date '((t :height 1.1)))
   (face-spec-set 'org-agenda-date-weekend '((t :height 1.1))))
 #+END_SRC
 
