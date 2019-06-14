@@ -406,7 +406,11 @@ This command does not push text to `kill-ring'."
 (use-package tuareg)
 
 (use-package merlin
-  :after (tuareg)
+  :init
+  ;; merlin сам их не объявил в зависимости, небольшой костыль
+  (use-package iedit)
+  (use-package auto-complete)
+  :after (tuareg iedit auto-complete)
   :hook ((tuareg-mode . merlin-mode)
 		 (tuareg-mode . company-mode)))
 
@@ -598,7 +602,7 @@ This command does not push text to `kill-ring'."
   (setq org-catch-invisible-edits 'error)
   ;; Задаем виды статусов для задач
   (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAIT(w!)" "VERIFY(v!)" "|" "DONE(d!)" "DELEGATED(D!)" "CANCELED(c!)")))
+      '((sequence "TODO(t)" "WAIT(w)" "VERIFY(v)" "|" "DONE(d)" "DELEGATED(D)" "CANCELED(c)")))
   ;; Разшить refile в мои org-файлы, в поддеревья до глубины 2
   (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
   ;; При refile показывать также имя файла
@@ -689,6 +693,7 @@ This command does not push text to `kill-ring'."
   ;; Настройки по умолчанию в теме leuven мне в этом месте не нравятся
   (face-spec-set 'org-agenda-structure '((t :height 1.17)))
   (face-spec-set 'org-agenda-date-today '((t :height 1.1)))
+  (face-spec-set 'org-agenda-date '((t :height 1.1)))
   (face-spec-set 'org-agenda-date-weekend '((t :height 1.1))))
 
 (defun my-agenda-delayed-tasks-setup ()
