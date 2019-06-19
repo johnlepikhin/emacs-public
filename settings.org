@@ -420,6 +420,8 @@
 
 *** Показывать отступы
 
+При подключении учесть, что на больших файлах (10k+ строк) емакс начинает заикаться. Проблема есть как минимум в cperl-mode.
+
  #+BEGIN_SRC emacs-lisp
  (use-package
    indent-guide
@@ -502,403 +504,403 @@
    :config (setq tramp-use-ssh-controlmaster-options nil))
  #+END_SRC
 
-* Разработка
-** Управление проектами
+** Разработка
+*** Управление проектами
 
-Подключаем projectile:
+ Подключаем projectile:
 
-#+BEGIN_SRC emacs-lisp
-  (use-package
-    projectile
-    :bind (:map projectile-mode-map
-                ("C-c p" . 'projectile-command-map))
-    :config (projectile-mode +1))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+   (use-package
+     projectile
+     :bind (:map projectile-mode-map
+                 ("C-c p" . 'projectile-command-map))
+     :config (projectile-mode +1))
+ #+END_SRC
 
-Подключаем helm к projectile
+ Подключаем helm к projectile
 
-#+BEGIN_SRC emacs-lisp
-(use-package
-  helm-projectile
-  :after (projectile helm)
-  :config (helm-projectile-on))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package
+   helm-projectile
+   :after (projectile helm)
+   :config (helm-projectile-on))
+ #+END_SRC
 
-** Magit
+*** Magit
 
-#+BEGIN_SRC emacs-lisp
-(use-package
-  magit
-  :bind (:map my-bindings-map
-              ("C-x g" . magit-status)))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package
+   magit
+   :bind (:map my-bindings-map
+               ("C-x g" . magit-status)))
+ #+END_SRC
 
-** Индекс по тэгам
+*** Индекс по тэгам
 
-#+BEGIN_SRC emacs-lisp
-(use-package ggtags
-  :hook (cperl-mode . ggtags-mode)
-  :config
-  (setq ggtags-sort-by-nearness nil
-        ggtags-navigation-mode-lighter nil
-        ggtags-mode-line-project-name nil
-        ggtags-oversize-limit (* 30 1024 1024)))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package ggtags
+   :hook (cperl-mode . ggtags-mode)
+   :config
+   (setq ggtags-sort-by-nearness nil
+         ggtags-navigation-mode-lighter nil
+         ggtags-mode-line-project-name nil
+         ggtags-oversize-limit (* 30 1024 1024)))
+ #+END_SRC
 
-** Flycheck
+*** Flycheck
 
-#+BEGIN_SRC emacs-lisp
-(use-package
-  flycheck
-  :config
-  ;; Багфиксы, согласно проблеме https://github.com/flycheck/flycheck/issues/1278:
-  ;; в :preface нельзя определять т.к. :preface обрабатывается до загрузки модуля
-  (advice-add
-   'flycheck-process-send-buffer
-   :override
-   (lambda (process)
-     (condition-case err
-         (save-restriction
-           (widen)
-           (if flycheck-chunked-process-input
-               (flycheck--process-send-buffer-contents-chunked process)
-             (process-send-region process (point-min) (point-max)))
-           (process-send-eof process))
-       (error
-        (let* ((checker (process-get process 'flycheck-checker))
-               (type (flycheck-checker-get checker 'standard-input)))
-          (when (or (not (eq type 'ignore-error)) (process-live-p process))
-            (signal (car err) (cdr err))))))))
-  (flycheck-define-checker perl
-    "A Perl syntax checker using the Perl interpreter.
+ #+BEGIN_SRC emacs-lisp
+ (use-package
+   flycheck
+   :config
+   ;; Багфиксы, согласно проблеме https://github.com/flycheck/flycheck/issues/1278:
+   ;; в :preface нельзя определять т.к. :preface обрабатывается до загрузки модуля
+   (advice-add
+    'flycheck-process-send-buffer
+    :override
+    (lambda (process)
+      (condition-case err
+          (save-restriction
+            (widen)
+            (if flycheck-chunked-process-input
+                (flycheck--process-send-buffer-contents-chunked process)
+              (process-send-region process (point-min) (point-max)))
+            (process-send-eof process))
+        (error
+         (let* ((checker (process-get process 'flycheck-checker))
+                (type (flycheck-checker-get checker 'standard-input)))
+           (when (or (not (eq type 'ignore-error)) (process-live-p process))
+             (signal (car err) (cdr err))))))))
+   (flycheck-define-checker perl
+     "A Perl syntax checker using the Perl interpreter.
 
-    See URL `https://www.perl.org'."
-    :command ("perl" "-w" "-c"
-              (option-list "-I" flycheck-perl-include-path)
-              (option-list "-M" flycheck-perl-module-list concat))
-    :standard-input ignore-error
-    :error-patterns
-    ((error line-start (minimal-match (message))
-            " at - line " line
-            (or "." (and ", " (zero-or-more not-newline))) line-end))
-    :modes (perl-mode cperl-mode)
-    :next-checkers (perl-perlcritic))
-  (setq flycheck-global-modes '(not org-mode)
-        flycheck-display-errors-function nil
-        flycheck-display-errors-delay 0
-        ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
-        flycheck-checker-error-threshold 10000)
-  (global-flycheck-mode))
-#+END_SRC
+     See URL `https://www.perl.org'."
+     :command ("perl" "-w" "-c"
+               (option-list "-I" flycheck-perl-include-path)
+               (option-list "-M" flycheck-perl-module-list concat))
+     :standard-input ignore-error
+     :error-patterns
+     ((error line-start (minimal-match (message))
+             " at - line " line
+             (or "." (and ", " (zero-or-more not-newline))) line-end))
+     :modes (perl-mode cperl-mode)
+     :next-checkers (perl-perlcritic))
+   (setq flycheck-global-modes '(not org-mode)
+         flycheck-display-errors-function nil
+         flycheck-display-errors-delay 0
+         ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
+         flycheck-checker-error-threshold 10000)
+   (global-flycheck-mode))
+ #+END_SRC
 
-Показывать ошибки прямо на месте, под строкой:
+ Показывать ошибки прямо на месте, под строкой:
 
-#+BEGIN_SRC emacs-lisp
-(use-package
-  flycheck-inline
-  :after (flycheck)
-  :hook (flycheck-mode . flycheck-inline-mode))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package
+   flycheck-inline
+   :after (flycheck)
+   :hook (flycheck-mode . flycheck-inline-mode))
+ #+END_SRC
 
-** Perl
+*** Perl
 
-Таблица символьного просмотра:
+ Таблица символьного просмотра:
 
-#+BEGIN_SRC emacs-lisp
-(defun my-cperl-init-prettify-symbols ()
-  (setq prettify-symbols-alist
-		'(("<=" . ?≤)
-		  ("&&" . ?∧)
-		  ("||" . ?∨)
-		  ("!=" . ?≠)
-		  ("for" . ?∀)
-		  ("foreach" . ?∀)
-		  ("exists" . ?∃)
-		  ("undef" . ?∅)
-		  ("sub" . ?λ)
-		  ("return" . ?⊢)
-		  ("//" . ?⫽)
-		  ("my" . ?≡)
-		  ("delete" . ?❌)
-		  ("defined" . ?❓)
-		  ("!" . ?¬)
-		  ("not" . ?¬)
-		  ("join" . ?𝐉)
-		  ("grep" . ?𝐆)
-		  ("map" . ?𝐌)
-		  ("sort" . ?𝐒)
-		  (".." . ?⋰)
-		  ("next" . ?↰)
-		  ("last" . ?↴)
-		  ("while" . ?↻)
-		  ("if" . ?⑃)
-		  ("else" . ?⊻)
-		  ("int" . ?ℤ)
-		  ("keys" . ?𝐊)
-		  ("ne" . ?≭)
-		  ("eq" . ?≍)
-		  ("->" . ?→)
-		  ("=>" . ?⇒)
-		  ("=~" .?≈)
-		  ("!~" . ?≉)
-		  ("$self" . ?⋇)))
-  (prettify-symbols-mode))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (defun my-cperl-init-prettify-symbols ()
+   (setq prettify-symbols-alist
+		 '(("<=" . ?≤)
+		   ("&&" . ?∧)
+		   ("||" . ?∨)
+		   ("!=" . ?≠)
+		   ("for" . ?∀)
+		   ("foreach" . ?∀)
+		   ("exists" . ?∃)
+		   ("undef" . ?∅)
+		   ("sub" . ?λ)
+		   ("return" . ?⊢)
+		   ("//" . ?⫽)
+		   ("my" . ?≡)
+		   ("delete" . ?❌)
+		   ("defined" . ?❓)
+		   ("!" . ?¬)
+		   ("not" . ?¬)
+		   ("join" . ?𝐉)
+		   ("grep" . ?𝐆)
+		   ("map" . ?𝐌)
+		   ("sort" . ?𝐒)
+		   (".." . ?⋰)
+		   ("next" . ?↰)
+		   ("last" . ?↴)
+		   ("while" . ?↻)
+		   ("if" . ?⑃)
+		   ("else" . ?⊻)
+		   ("int" . ?ℤ)
+		   ("keys" . ?𝐊)
+		   ("ne" . ?≭)
+		   ("eq" . ?≍)
+		   ("->" . ?→)
+		   ("=>" . ?⇒)
+		   ("=~" .?≈)
+		   ("!~" . ?≉)
+		   ("$self" . ?⋇)))
+   (prettify-symbols-mode))
+ #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(use-package
-  cperl-mode
-  :ensure-system-package perltidy
-  :after (flycheck tramp)
-  :bind (:map cperl-mode-map ())
-  :mode ("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode)
-  :interpreter (("perl"     . cperl-mode)
-                ("perl5"    . cperl-mode)
-                ("miniperl" . cperl-mode))
-  :config 
-  ;; perl := cperl
-  (defalias 'perl-mode 'cperl-mode)
-  ;; C-h P будет показывать perldoc на слово под курсором
-  (define-key 'help-command "P" 'cperl-perldoc-at-point)
-  ;; я люблю smartparens. Извини, cperl-mode.
-  (setq cperl-electric-parens nil)
-  ;; Символьное отображение синтаксиса
-  (add-hook 'cperl-mode-hook 'my-cperl-init-prettify-symbols)
-  ;; Отступ равен 4, не выпендриваться!
-  (setq cperl-indent-level 4
-		cperl-close-paren-offset -4
-		cperl-continued-statement-offset 4
-		cperl-indent-parens-as-block t
-		cperl-tab-always-indent t)
-  ;; Красные хэши меня всегда раздражали
-  (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package
+   cperl-mode
+   :ensure-system-package perltidy
+   :after (flycheck tramp)
+   :bind (:map cperl-mode-map ())
+   :mode ("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode)
+   :interpreter (("perl"     . cperl-mode)
+                 ("perl5"    . cperl-mode)
+                 ("miniperl" . cperl-mode))
+   :config 
+   ;; perl := cperl
+   (defalias 'perl-mode 'cperl-mode)
+   ;; C-h P будет показывать perldoc на слово под курсором
+   (define-key 'help-command "P" 'cperl-perldoc-at-point)
+   ;; я люблю smartparens. Извини, cperl-mode.
+   (setq cperl-electric-parens nil)
+   ;; Символьное отображение синтаксиса
+   (add-hook 'cperl-mode-hook 'my-cperl-init-prettify-symbols)
+   ;; Отступ равен 4, не выпендриваться!
+   (setq cperl-indent-level 4
+		 cperl-close-paren-offset -4
+		 cperl-continued-statement-offset 4
+		 cperl-indent-parens-as-block t
+		 cperl-tab-always-indent t)
+   ;; Красные хэши меня всегда раздражали
+   (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
+ #+END_SRC
 
-*** Автодополнение для Perl через PerlySense
+**** Автодополнение для Perl через PerlySense
 
-#+BEGIN_SRC emacs-lisp
-(use-package
-  company-plsense
-  :hook (cperl-mode . company-mode))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package
+   company-plsense
+   :hook (cperl-mode . company-mode))
+ #+END_SRC
 
-** Ocaml
+*** Ocaml
 
-#+BEGIN_SRC emacs-lisp
-(use-package tuareg)
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package tuareg)
+ #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(use-package merlin
-  :init
-  ;; merlin сам их не объявил в зависимости, небольшой костыль
-  (use-package iedit)
-  (use-package auto-complete)
-  :after (tuareg iedit auto-complete)
-  :hook ((tuareg-mode . merlin-mode)
-		 (tuareg-mode . company-mode)))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package merlin
+   :init
+   ;; merlin сам их не объявил в зависимости, небольшой костыль
+   (use-package iedit)
+   (use-package auto-complete)
+   :after (tuareg iedit auto-complete)
+   :hook ((tuareg-mode . merlin-mode)
+		  (tuareg-mode . company-mode)))
+ #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck-ocaml
-  :after (flycheck merlin)
-  :config
-  ;; ошибки от мерлина нам не нужны, ведь у нас есть flycheck
-  (setq merlin-error-after-save nil)
-  (flycheck-ocaml-setup))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package flycheck-ocaml
+   :after (flycheck merlin)
+   :config
+   ;; ошибки от мерлина нам не нужны, ведь у нас есть flycheck
+   (setq merlin-error-after-save nil)
+   (flycheck-ocaml-setup))
+ #+END_SRC
 
-** Веб-разработка
+*** Веб-разработка
 
-Подключаем web-mode (HTML, JS, CUSS в одном):
+ Подключаем web-mode (HTML, JS, CUSS в одном):
 
-#+BEGIN_SRC emacs-lisp
-(use-package web-mode
-  :mode ("\\.html$" . web-mode)
-  :init
-  (setq web-mode-markup-indent-offset 4)
-  (setq web-mode-code-indent-offset 4)
-  (setq web-mode-css-indent-offset 4)
-  (setq js-indent-level 4)
-  (setq web-mode-enable-auto-pairing t)
-  (setq web-mode-enable-auto-expanding t)
-  (setq web-mode-enable-css-colorization t))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package web-mode
+   :mode ("\\.html$" . web-mode)
+   :init
+   (setq web-mode-markup-indent-offset 4)
+   (setq web-mode-code-indent-offset 4)
+   (setq web-mode-css-indent-offset 4)
+   (setq js-indent-level 4)
+   (setq web-mode-enable-auto-pairing t)
+   (setq web-mode-enable-auto-expanding t)
+   (setq web-mode-enable-css-colorization t))
+ #+END_SRC
 
-** Форматирование
+*** Форматирование
 
-Perltidy.el, взято отсюда: https://www.emacswiki.org/emacs/perltidy.el
+ Perltidy.el, взято отсюда: https://www.emacswiki.org/emacs/perltidy.el
 
-#+BEGIN_SRC emacs-lisp
-(defcustom perltidy-program "perltidy"
-  "*Program name of perltidy"
-  :type 'string
-  :group 'perltidy)
+ #+BEGIN_SRC emacs-lisp
+ (defcustom perltidy-program "perltidy"
+   "*Program name of perltidy"
+   :type 'string
+   :group 'perltidy)
 
-(defcustom perltidy-program-params
-  '(;; I/O control
-    "--standard-output"
-    "--standard-error-output"
-    "--force-read-binary"
-    "--quiet"
+ (defcustom perltidy-program-params
+   '(;; I/O control
+     "--standard-output"
+     "--standard-error-output"
+     "--force-read-binary"
+     "--quiet"
 
-    ;; FORMATTING OPTIONS
-    "--no-check-syntax"
-    )
-  "*perltidy run options"
-  :type 'list
-  :group 'perltidy)
+     ;; FORMATTING OPTIONS
+     "--no-check-syntax"
+     )
+   "*perltidy run options"
+   :type 'list
+   :group 'perltidy)
 
-(defcustom perltidy-rcregex "\\.perltidyrc"
-  "perltidyrc file regex"
-  :type 'string
-  :group 'perltidy)
+ (defcustom perltidy-rcregex "\\.perltidyrc"
+   "perltidyrc file regex"
+   :type 'string
+   :group 'perltidy)
 
-(defmacro perltidy-save-point (&rest body)
-  (declare (indent 0) (debug t))
-  `(let ((old-point (point)))
-     ,@body
-     (goto-char old-point)))
+ (defmacro perltidy-save-point (&rest body)
+   (declare (indent 0) (debug t))
+   `(let ((old-point (point)))
+      ,@body
+      (goto-char old-point)))
 
-(defun perltidy-buffer ()
-  "Call perltidy for whole buffer."
-  (interactive)
-  (perltidy-region (point-min) (point-max)))
-;;;###autoload
-(defun perltidy-region (beg end)
-  "Tidy perl code in the region."
-  (interactive "r")
-  (or (get 'perltidy-program 'has-perltidy)
-      (if (executable-find perltidy-program)
-          (put 'perltidy-program 'has-perltidy t)
-        (error "Seem perltidy is not installed")))
-  (perltidy-save-point
+ (defun perltidy-buffer ()
+   "Call perltidy for whole buffer."
+   (interactive)
+   (perltidy-region (point-min) (point-max)))
+ ;;;###autoload
+ (defun perltidy-region (beg end)
+   "Tidy perl code in the region."
+   (interactive "r")
+   (or (get 'perltidy-program 'has-perltidy)
+       (if (executable-find perltidy-program)
+           (put 'perltidy-program 'has-perltidy t)
+         (error "Seem perltidy is not installed")))
+   (perltidy-save-point
 
-    (let ((old-perltidy-env (getenv "PERLTIDY"))
-          (remote? (tramp-tramp-file-p buffer-file-name))
-          (perltidyrc (perltidy-find-perltidyrc buffer-file-truename))
-          (pertidyrc-remote (expand-file-name "perltidyrc-remote" temporary-file-directory))
-          (perltidy-run-list perltidy-program-params)
-          )
+     (let ((old-perltidy-env (getenv "PERLTIDY"))
+           (remote? (tramp-tramp-file-p buffer-file-name))
+           (perltidyrc (perltidy-find-perltidyrc buffer-file-truename))
+           (pertidyrc-remote (expand-file-name "perltidyrc-remote" temporary-file-directory))
+           (perltidy-run-list perltidy-program-params)
+           )
 
-      (if (and (bound-and-true-p remote?)
-               perltidyrc)
-          (progn
-            (require 'tramp-sh)
-            (tramp-sh-handle-copy-file perltidyrc pertidyrc-remote t)
-            (setq perltidyrc pertidyrc-remote)
-            (setq perltidy-run-list
-                  (append perltidy-run-list
-                          (list (concat "-pro=" pertidyrc-remote))))))
+       (if (and (bound-and-true-p remote?)
+                perltidyrc)
+           (progn
+             (require 'tramp-sh)
+             (tramp-sh-handle-copy-file perltidyrc pertidyrc-remote t)
+             (setq perltidyrc pertidyrc-remote)
+             (setq perltidy-run-list
+                   (append perltidy-run-list
+                           (list (concat "-pro=" pertidyrc-remote))))))
 
-      (apply #'call-process-region
-             (append (list beg end perltidy-program
-                           t
-                           t
-                           t
-                           )
-                     perltidy-run-list)))
-    t))
+       (apply #'call-process-region
+              (append (list beg end perltidy-program
+                            t
+                            t
+                            t
+                            )
+                      perltidy-run-list)))
+     t))
 
-(defun perltidy-subroutine ()
-  "Call perltidy for subroutine at point."
-  (interactive)
+ (defun perltidy-subroutine ()
+   "Call perltidy for subroutine at point."
+   (interactive)
 
-  (save-excursion
-    (let ((current-point (point))
-          b e)
-      (setq b (progn (beginning-of-defun) (point)))
-      (when (and
-             (looking-at "\\s-*sub\\s-+")
-             (< b current-point)
-             (> (save-excursion
-                  (setq e (progn (end-of-defun) (point))))
-                current-point))
-        (perltidy-region b e)))))
+   (save-excursion
+     (let ((current-point (point))
+           b e)
+       (setq b (progn (beginning-of-defun) (point)))
+       (when (and
+              (looking-at "\\s-*sub\\s-+")
+              (< b current-point)
+              (> (save-excursion
+                   (setq e (progn (end-of-defun) (point))))
+                 current-point))
+         (perltidy-region b e)))))
 
-(defun perltidy-find-perltidyrc (&optional dir rcregex)
-  (unless dir (setq dir (buffer-file-name)))
-  (unless rcregex (setq rcregex perltidy-rcregex))
-  (setq dir (file-name-directory dir))
+ (defun perltidy-find-perltidyrc (&optional dir rcregex)
+   (unless dir (setq dir (buffer-file-name)))
+   (unless rcregex (setq rcregex perltidy-rcregex))
+   (setq dir (file-name-directory dir))
 
-  (let (rcfile)
-    (catch 'my-tag
-      (locate-dominating-file
-       dir
-       (lambda (parent)
-         (let ((rc (car (ignore-errors (directory-files parent t rcregex))))
-               (pparent (file-name-directory (directory-file-name parent))))
-           (setq rcfile rc)
-           (cond ((equal parent
-                         pparent)
-                  (if (= (length rc) 0)
-                      (throw 'my-tag rc)
-                    (throw 'my-tag nil)))
+   (let (rcfile)
+     (catch 'my-tag
+       (locate-dominating-file
+        dir
+        (lambda (parent)
+          (let ((rc (car (ignore-errors (directory-files parent t rcregex))))
+                (pparent (file-name-directory (directory-file-name parent))))
+            (setq rcfile rc)
+            (cond ((equal parent
+                          pparent)
+                   (if (= (length rc) 0)
+                       (throw 'my-tag rc)
+                     (throw 'my-tag nil)))
 
-                 ((and (= (length rc) 0)
-                       (file-exists-p    (expand-file-name "lib" pparent))
-                       (file-directory-p (expand-file-name "lib" pparent)))
-                  (setq rcfile (car (ignore-errors (directory-files pparent t rcregex))))
-                  (throw 'my-tag rcfile))
-                 (t rc))))))
-    rcfile))
-#+END_SRC
+                  ((and (= (length rc) 0)
+                        (file-exists-p    (expand-file-name "lib" pparent))
+                        (file-directory-p (expand-file-name "lib" pparent)))
+                   (setq rcfile (car (ignore-errors (directory-files pparent t rcregex))))
+                   (throw 'my-tag rcfile))
+                  (t rc))))))
+     rcfile))
+ #+END_SRC
 
-Perltidy для буфера, текущей функции, строчки и региона:
+ Perltidy для буфера, текущей функции, строчки и региона:
 
-#+BEGIN_SRC emacs-lisp
-(defun perl-mode-perltidy ()
-  "Perltidy buffer or region if this is perl file."
-  (interactive)
-  (let ((saved-line (line-number-at-pos)))
-    (save-excursion
-      (when (eq major-mode 'cperl-mode)
-        (if (use-region-p)
-            (perltidy-region (region-beginning) (region-end))
-          (perltidy-buffer))))
-    (goto-line saved-line)))
+ #+BEGIN_SRC emacs-lisp
+ (defun perl-mode-perltidy ()
+   "Perltidy buffer or region if this is perl file."
+   (interactive)
+   (let ((saved-line (line-number-at-pos)))
+     (save-excursion
+       (when (eq major-mode 'cperl-mode)
+         (if (use-region-p)
+             (perltidy-region (region-beginning) (region-end))
+           (perltidy-buffer))))
+     (goto-line saved-line)))
 
-(defun my-perltidy-subroutine ()
-  "Perltidy current subroutine keeping current position in the buffer as close as possible"
-  (interactive)
-  (let ((saved-line (line-number-at-pos)))
-    (perltidy-subroutine)
-    (goto-line saved-line)))
+ (defun my-perltidy-subroutine ()
+   "Perltidy current subroutine keeping current position in the buffer as close as possible"
+   (interactive)
+   (let ((saved-line (line-number-at-pos)))
+     (perltidy-subroutine)
+     (goto-line saved-line)))
 
-(defun my-perl-tab-indent ()
-  (interactive)
-  (if (use-region-p)
-      (perltidy-region (region-beginning) (region-end))
-    (cperl-indent-command)))
+ (defun my-perl-tab-indent ()
+   (interactive)
+   (if (use-region-p)
+       (perltidy-region (region-beginning) (region-end))
+     (cperl-indent-command)))
 
-(use-package
-  cperl-mode
-  :after (tramp)
-  :bind (:map cperl-mode-map
-              ("C-c i d" . my-perltidy-subroutine)
-              ("C-c i b" . perl-mode-perltidy)
-              ("TAB" . my-perl-tab-indent)))
-#+END_SRC
+ (use-package
+   cperl-mode
+   :after (tramp)
+   :bind (:map cperl-mode-map
+               ("C-c i d" . my-perltidy-subroutine)
+               ("C-c i b" . perl-mode-perltidy)
+               ("TAB" . my-perl-tab-indent)))
+ #+END_SRC
 
-Вставка JSON из буфера как Perl-структуры. Не спрашивайте, нужно для работы.
+ Вставка JSON из буфера как Perl-структуры. Не спрашивайте, нужно для работы.
 
-#+BEGIN_SRC emacs-lisp
-(defun my-perl-insert-json ()
-  (interactive)
-  (shell-command-on-region (point) (point) "xclip -o | json_to_perl.pl" t))
+ #+BEGIN_SRC emacs-lisp
+ (defun my-perl-insert-json ()
+   (interactive)
+   (shell-command-on-region (point) (point) "xclip -o | json_to_perl.pl" t))
 
-(use-package
-  cperl-mode
-  :bind (:map cperl-mode-map
-              ("C-c j" . my-perl-insert-json)))
-#+END_SRC
+ (use-package
+   cperl-mode
+   :bind (:map cperl-mode-map
+               ("C-c j" . my-perl-insert-json)))
+ #+END_SRC
 
-** Подсветка TODO/FIXME
+*** Подсветка TODO/FIXME
 
-#+BEGIN_SRC emacs-lisp
-(use-package fic-mode
-  :hook cperl-mode emacs-lisp-mode)
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package fic-mode
+   :hook cperl-mode emacs-lisp-mode)
+ #+END_SRC
 
 ** Org-mode
 *** Основные настройки
