@@ -602,7 +602,9 @@ This command does not push text to `kill-ring'."
   (setq org-catch-invisible-edits 'error)
   ;; Задаем виды статусов для задач
   (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAIT(w)" "VERIFY(v)" "|" "DONE(d)" "DELEGATED(D)" "CANCELED(c)")))
+      '((sequence "TODO(t)" "WAIT(w)" "VERIFY(v)" "|" "DONE(d)" "DELEGATED(D@)" "CANCELED(c@)")))
+  ;; Спрятать лог изменения статусов в LOGGER
+  (setq org-log-into-drawer t)
   ;; Разшить refile в мои org-файлы, в поддеревья до глубины 2
   (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
   ;; При refile показывать также имя файла

@@ -919,7 +919,7 @@
    (setq org-catch-invisible-edits 'error)
    ;; Задаем виды статусов для задач
    (setq org-todo-keywords
-       '((sequence "TODO(t!)" "WAIT(w!)" "VERIFY(v!)" "|" "DONE(d)" "DELEGATED(D)" "CANCELED(c!)")))
+       '((sequence "TODO(t)" "WAIT(w)" "VERIFY(v)" "|" "DONE(d)" "DELEGATED(D@)" "CANCELED(c@)")))
    ;; Спрятать лог изменения статусов в LOGGER
    (setq org-log-into-drawer t)
    ;; Разшить refile в мои org-файлы, в поддеревья до глубины 2
