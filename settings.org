@@ -1653,10 +1653,9 @@
           (prog-mode . flyspell-prog-mode))
    :commands (flyspell-buffer turn-on-flyspell)
    :config
-   ;; hunspell умеет одновременно несколько словарей
-   (setq ispell-program-name "hunspell")
-   ;; подключаем два словаря
-   (setq ispell-dictionary "en_US,ru_RU"))
+   ;; Переключаем язык проверки по переключению раскладки
+   (defadvice my-select-input-eng (after ispell-american activate) (ispell-change-dictionary "american"))
+   (defadvice my-select-input-rus (after ispell-russian activate) (ispell-change-dictionary "russian")))
  #+END_SRC
 
  Включаем ленивую проверку, когда ничего не происходит:
