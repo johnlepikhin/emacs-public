@@ -602,7 +602,7 @@ This command does not push text to `kill-ring'."
   (setq org-catch-invisible-edits 'error)
   ;; Задаем виды статусов для задач
   (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAIT(w)" "VERIFY(v)" "|" "DONE(d)" "DELEGATED(D@)" "CANCELED(c@)")))
+      '((sequence "TODO(t)" "WAIT(w)" "VERIFY(v)" "DELEGATED(D@)" "|" "DONE(d)" "CANCELED(c@)")))
   ;; Спрятать лог изменения статусов в LOGGER
   (setq org-log-into-drawer t)
   ;; Разшить refile в мои org-файлы, в поддеревья до глубины 2
@@ -1149,23 +1149,22 @@ This command does not push text to `kill-ring'."
 
 (use-package
   flyspell
-;  :ensure-system-package (ispell aspell-en aspell-ru)
+ ;  :ensure-system-package (ispell aspell-en aspell-ru)
   :hook ((text-mode . turn-on-flyspell)
-		 (prog-mode . flyspell-prog-mode))
+         (prog-mode . flyspell-prog-mode))
   :commands (flyspell-buffer turn-on-flyspell)
   :config
-  ;; Переключаем язык проверки по переключению раскладки
-  (defadvice my-select-input-eng (after ispell-american activate) (ispell-change-dictionary "american"))
-  (defadvice my-select-input-rus (after ispell-russian activate) (ispell-change-dictionary "russian"))
-
-  ;; Проверять все буферы, включая временные типа *scratch* и буферов Gnus
-  (setq flyspell-lazy-disallow-buffers nil))
+  ;; hunspell умеет одновременно несколько словарей
+  (setq ispell-program-name "hunspell")
+  ;; подключаем два словаря
+  (setq ispell-dictionary "en_US,ru_RU"))
 
 (use-package
   flyspell-lazy
   :config
   (setq flyspell-lazy-idle-seconds 1)
-  (flyspell-lazy-mode 1))
+  ;; Проверять все буферы, включая временные типа *scratch* и буферов Gnus
+  (setq flyspell-lazy-disallow-buffers nil)   (flyspell-lazy-mode 1))
 
 (use-package helm-org-rifle)
 
