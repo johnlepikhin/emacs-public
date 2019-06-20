@@ -698,7 +698,9 @@
    (use-package auto-complete)
    :after (tuareg iedit auto-complete)
    :hook ((tuareg-mode . merlin-mode)
-		  (tuareg-mode . company-mode)))
+          (tuareg-mode . company-mode))
+   :config
+   (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
  #+END_SRC
 
  #+BEGIN_SRC emacs-lisp
