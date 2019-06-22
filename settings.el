@@ -412,7 +412,9 @@ This command does not push text to `kill-ring'."
   (use-package auto-complete)
   :after (tuareg iedit auto-complete)
   :hook ((tuareg-mode . merlin-mode)
-		 (tuareg-mode . company-mode)))
+         (tuareg-mode . company-mode))
+  :config
+  (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
 
 (use-package flycheck-ocaml
   :after (flycheck merlin)
@@ -1225,18 +1227,27 @@ This command does not push text to `kill-ring'."
     (message "Checking new news from external sources... DONE")
     (gnus-group-get-new-news)))
 
+(defun my-gnus-message-setup ()
+  (when message-this-is-mail
+    (turn-off-auto-fill)
+    (setq
+     truncate-lines nil
+     word-wrap t
+     use-hard-newlines t)))
+
 (use-package
   gnus
   :commands (gnus)
   :hook ((message-mode . turn-on-flyspell)
-		 (message-send . ispell-message)
+         (message-send . ispell-message)
          (gnus-summary-mode . hl-line-mode)
          (gnus-group-mode . hl-line-mode)
-		 (gnus-message-setup . mml-secure-message-sign-pgpmime))
+         (gnus-message-setup . mml-secure-message-sign-pgpmime)
+         (message-setup . my-gnus-message-setup))
   :bind (:map message-mode-map
               ("M-z" . my-gnus-zap-to-signature)
-			  :map gnus-group-mode-map
-			  ("M-g" . my-gnus-update-news-external))
+              :map gnus-group-mode-map
+              ("M-g" . my-gnus-update-news-external))
   :config
   ;; Надо определить переменные
   (require 'gnus-msg)
@@ -1247,13 +1258,13 @@ This command does not push text to `kill-ring'."
 
   ;; Какой браузер использовать
   (setq gnus-button-url 'browse-url-generic
-		browse-url-generic-program "chromium"
-		browse-url-browser-function gnus-button-url)
+        browse-url-generic-program "chromium"
+        browse-url-browser-function gnus-button-url)
 
   ;; По умолчанию во всех группах делать копию отправляемого письма себе
   (setq gnus-parameters
-		'((".*"
-		   (gcc-self . t))))
+        '((".*"
+           (gcc-self . t))))
 
   ;; Перед сохранением аттача имеет смысл нажать [A C], чтобы вытянуть сообщение целиком
   (setq nnimap-fetch-partial-articles "text/")
@@ -1263,12 +1274,12 @@ This command does not push text to `kill-ring'."
 
   ;; Подключить дополнительные источники
   (setq gnus-secondary-select-methods
-		;; Получение через IMAP с локалхоста
-		'((nnimap "Mail"
-				  (nnimap-stream shell)
-				  (nnimap-shell-program "/usr/lib/dovecot/imap"))
-		  ;; UNIX mailbox
-		  (nnmbox "LocalMBOX")))
+        ;; Получение через IMAP с локалхоста
+        '((nnimap "Mail"
+                  (nnimap-stream shell)
+                  (nnimap-shell-program "/usr/lib/dovecot/imap"))
+          ;; UNIX mailbox
+          (nnmbox "LocalMBOX")))
 
   ;; Подгрузить приватный локальный конфиг для конкретного хоста
   (my-load-org-config "local/gnus-accounts.org")
@@ -1284,30 +1295,30 @@ This command does not push text to `kill-ring'."
 
   ;; Архивировать будем в IMAP
   (setq gnus-message-archive-method
-		'(nnimap "Mail"
-				 (nnimap-stream shell)
-				 (nnimap-shell-program "/usr/lib/dovecot/imap"))
-		;; ... в папку sent
-		gnus-message-archive-group "sent")
+        '(nnimap "Mail"
+                 (nnimap-stream shell)
+                 (nnimap-shell-program "/usr/lib/dovecot/imap"))
+        ;; ... в папку sent
+        gnus-message-archive-group "sent")
 
   ;; В наши трудные времена надо хотя бы сделать вид, что ты обеспечиваешь безопасность переписки
   (setq mml2015-use 'epg
-		;; немного дебага
-		mml2015-verbose t
-		;; шифровать и для себя
-		mml-secure-openpgp-encrypt-to-self t
-		;; проверять подпись и у зашифрованных сообщений(?)
-		mml-secure-openpgp-always-trust nil
-		;; кэшировать пароль от хранилища ключей
-		mml-secure-cache-passphrase t
-		;; кэшировать пароль от хранилища на 10 часов
-		mml-secure-passphrase-cache-expiry '36000
-		;; определять используемый ключ при подписи по адресу отправителя
-		mml-secure-openpgp-sign-with-sender t
-		;; всегда спрашивать, надо ли расшифровать зашифрованный парт письма
-		mm-decrypt-option nil
-		;; всегда проверять достоверность подписанного парта
-		mm-verify-option 'always)
+        ;; немного дебага
+        mml2015-verbose t
+        ;; шифровать и для себя
+        mml-secure-openpgp-encrypt-to-self t
+        ;; проверять подпись и у зашифрованных сообщений(?)
+        mml-secure-openpgp-always-trust nil
+        ;; кэшировать пароль от хранилища ключей
+        mml-secure-cache-passphrase t
+        ;; кэшировать пароль от хранилища на 10 часов
+        mml-secure-passphrase-cache-expiry '36000
+        ;; определять используемый ключ при подписи по адресу отправителя
+        mml-secure-openpgp-sign-with-sender t
+        ;; всегда спрашивать, надо ли расшифровать зашифрованный парт письма
+        mm-decrypt-option nil
+        ;; всегда проверять достоверность подписанного парта
+        mm-verify-option 'always)
 
   ;; зашифрованные парты и подписи надо показывать кнопкой
   (add-to-list 'gnus-buttonized-mime-types "multipart/signed")
@@ -1316,16 +1327,16 @@ This command does not push text to `kill-ring'."
   ;; Наводим красоты
   (setq gnus-group-line-format "%M%S%5y%6t: %(%g%)\n"
         gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
-		gnus-summary-line-format "%U%R %&user-date; %B %[%-23,23a%] %s\n")
+        gnus-summary-line-format "%U%R %&user-date; %B %[%-23,23a%] %s\n")
 
   (when window-system
-	(setq gnus-sum-thread-tree-indent "  "
-		  gnus-sum-thread-tree-root "● "
-		  gnus-sum-thread-tree-false-root "◯ "
-		  gnus-sum-thread-tree-single-indent "◎ "
-		  gnus-sum-thread-tree-vertical        "│"
-		  gnus-sum-thread-tree-leaf-with-other "├─► "
-		  gnus-sum-thread-tree-single-leaf     "╰─► "))
+    (setq gnus-sum-thread-tree-indent "  "
+          gnus-sum-thread-tree-root "● "
+          gnus-sum-thread-tree-false-root "◯ "
+          gnus-sum-thread-tree-single-indent "◎ "
+          gnus-sum-thread-tree-vertical        "│"
+          gnus-sum-thread-tree-leaf-with-other "├─► "
+          gnus-sum-thread-tree-single-leaf     "╰─► "))
   )
 
 (add-hook 'dired-mode-hook 'auto-revert-mode)
