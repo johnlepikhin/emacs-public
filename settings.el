@@ -1227,14 +1227,6 @@ This command does not push text to `kill-ring'."
     (message "Checking new news from external sources... DONE")
     (gnus-group-get-new-news)))
 
-(defun my-gnus-message-setup ()
-  (when message-this-is-mail
-    (turn-off-auto-fill)
-    (setq
-     truncate-lines nil
-     word-wrap t
-     use-hard-newlines t)))
-
 (use-package
   gnus
   :commands (gnus)
@@ -1242,8 +1234,7 @@ This command does not push text to `kill-ring'."
          (message-send . ispell-message)
          (gnus-summary-mode . hl-line-mode)
          (gnus-group-mode . hl-line-mode)
-         (gnus-message-setup . mml-secure-message-sign-pgpmime)
-         (message-setup . my-gnus-message-setup))
+         (gnus-message-setup . mml-secure-message-sign-pgpmime))
   :bind (:map message-mode-map
               ("M-z" . my-gnus-zap-to-signature)
               :map gnus-group-mode-map
