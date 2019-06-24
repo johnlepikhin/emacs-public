@@ -1227,10 +1227,16 @@ This command does not push text to `kill-ring'."
     (message "Checking new news from external sources... DONE")
     (gnus-group-get-new-news)))
 
+(defun my-message-mode-setup ()
+  (when message-this-is-mail
+    (turn-off-auto-fill)
+    (visual-line-mode)))
+
 (use-package
   gnus
   :commands (gnus)
   :hook ((message-mode . turn-on-flyspell)
+         (message-mode . my-message-mode-setup)
          (message-send . ispell-message)
          (gnus-summary-mode . hl-line-mode)
          (gnus-group-mode . hl-line-mode)

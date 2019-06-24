@@ -1748,11 +1748,21 @@
      (gnus-group-get-new-news)))
  #+END_SRC
 
+Настройка буфера написания сообщения:
+
+#+BEGIN_SRC emacs-lisp
+(defun my-message-mode-setup ()
+  (when message-this-is-mail
+    (turn-off-auto-fill)
+    (visual-line-mode)))
+#+END_SRC
+
  #+BEGIN_SRC emacs-lisp
  (use-package
    gnus
    :commands (gnus)
    :hook ((message-mode . turn-on-flyspell)
+          (message-mode . my-message-mode-setup)
           (message-send . ispell-message)
           (gnus-summary-mode . hl-line-mode)
           (gnus-group-mode . hl-line-mode)
