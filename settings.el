@@ -1229,8 +1229,10 @@ This command does not push text to `kill-ring'."
 
 (defun my-message-mode-setup ()
   (when message-this-is-mail
+    ;; Использовать логические строчки, не вставлять ньюлайны
     (turn-off-auto-fill)
-    (setq fill-column 140)
+    (setq fill-column 140
+          visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
     (visual-line-mode)
     (visual-fill-column-mode)))
 
