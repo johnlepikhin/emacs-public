@@ -1230,7 +1230,9 @@ This command does not push text to `kill-ring'."
 (defun my-message-mode-setup ()
   (when message-this-is-mail
     (turn-off-auto-fill)
-    (visual-line-mode)))
+    (setq fill-column 140)
+    (visual-line-mode)
+    (visual-fill-column-mode)))
 
 (use-package
   gnus
