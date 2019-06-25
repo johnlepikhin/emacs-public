@@ -325,7 +325,10 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package
-  ibuff)
+  ibuffer
+  :bind (:map my-bindings-map
+               ("C-x C-b" . ibuffer))
+  :hook ((ibuffer-mode . hl-line-mode)))
 #+END_SRC
 
 *** Настройки isearch

@@ -143,6 +143,12 @@
 
 (setq browse-url-browser-function 'browse-url-chromium)
 
+(use-package
+  ibuffer
+  :bind (:map my-bindings-map
+               ("C-x C-b" . ibuffer))
+  :hook ((ibuffer-mode . hl-line-mode)))
+
 (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
 
