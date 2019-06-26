@@ -429,6 +429,8 @@ This command does not push text to `kill-ring'."
   (setq merlin-error-after-save nil)
   (flycheck-ocaml-setup))
 
+(use-package proof-general)
+
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
   :init

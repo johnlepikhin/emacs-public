@@ -725,7 +725,9 @@
 *** Coq
 
 #+BEGIN_SRC emacs-lisp
-(use-package proof-general)
+(use-package proof-general
+  :config
+  (setq coq-prog-name "~/.opam/4.05.0/bin/coqtop -emacs"))
 #+END_SRC
 
 *** Веб-разработка
