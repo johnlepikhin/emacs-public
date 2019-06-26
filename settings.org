@@ -726,8 +726,9 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package proof-general
+  :mode ("\\.v$" . coq-mode)
   :config
-  (setq coq-prog-name "~/.opam/4.05.0/bin/coqtop -emacs"))
+  (setq coq-prog-name "/home/eugene/.opam/4.05.0/bin/coqtop -emacs"))
 #+END_SRC
 
 *** Веб-разработка
