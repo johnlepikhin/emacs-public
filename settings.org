@@ -722,6 +722,12 @@
    (flycheck-ocaml-setup))
  #+END_SRC
 
+*** Coq
+
+#+BEGIN_SRC emacs-lisp
+(use-package proof-general)
+#+END_SRC
+
 *** Веб-разработка
 
  Подключаем web-mode (HTML, JS, CUSS в одном):
