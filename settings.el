@@ -429,7 +429,10 @@ This command does not push text to `kill-ring'."
   (setq merlin-error-after-save nil)
   (flycheck-ocaml-setup))
 
-(use-package proof-general)
+(use-package proof-general
+  :mode ("\\.v$" . coq-mode)
+  :config
+  (setq coq-prog-name "/home/eugene/.opam/4.05.0/bin/coqtop -emacs"))
 
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
