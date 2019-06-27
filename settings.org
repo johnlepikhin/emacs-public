@@ -1484,6 +1484,12 @@
 
 *** Confluence
 
+#+BEGIN_SRC emacs-lisp
+(use-package
+  org-confluence
+  :commands (org-confluence-export))
+#+END_SRC
+
 ** Org babel (исполняемые кусочки кода в org-файлах)
 
  Org babel режимые, которые надо поддержать
