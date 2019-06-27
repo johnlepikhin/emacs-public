@@ -1482,6 +1482,8 @@
    :config (advice-add #'org-display-inline-images :after #'org-yt-display-inline-images))
  #+END_SRC
 
+*** Confluence
+
 ** Org babel (исполняемые кусочки кода в org-файлах)
 
  Org babel режимые, которые надо поддержать
