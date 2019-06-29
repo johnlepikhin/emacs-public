@@ -438,9 +438,9 @@ This command does not push text to `kill-ring'."
   :mode ("\\.v$" . coq-mode)
   :hook (coq-mode . my-coq-mode-setup)
   :config
-  (setq coq-double-hit-enable t)
   ;; Тут надо как-то более системно улучшить
-  (setq coq-prog-name "/home/eugene/.opam/4.05.0/bin/coqtop -emacs"))
+  (setq coq-prog-name "/home/eugene/.opam/4.05.0/bin/coqtop -emacs"
+        coq-double-hit-enable t))
 
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
