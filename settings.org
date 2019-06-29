@@ -728,15 +728,13 @@
 (defun my-coq-mode-setup ()
   (company-coq-mode)
   (setq-local company-minimum-prefix-length 1)
+  (setq coq-double-hit-enable t)
+  (golden-ratio-mode -1)
   (auto-complete-mode -1))
 
 (use-package proof-general
   :mode ("\\.v$" . coq-mode)
-  :hook (coq-mode . my-coq-mode-setup)
-  :config
-  ;; Тут надо как-то более системно улучшить
-  (setq coq-prog-name "/home/eugene/.opam/4.05.0/bin/coqtop -emacs"
-        coq-double-hit-enable t))
+  :hook (coq-mode . my-coq-mode-setup))
 #+END_SRC
 
 *** Веб-разработка

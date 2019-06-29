@@ -432,15 +432,12 @@ This command does not push text to `kill-ring'."
 (defun my-coq-mode-setup ()
   (company-coq-mode)
   (setq-local company-minimum-prefix-length 1)
+  (setq coq-double-hit-enable t)
   (auto-complete-mode -1))
 
 (use-package proof-general
   :mode ("\\.v$" . coq-mode)
-  :hook (coq-mode . my-coq-mode-setup)
-  :config
-  ;; Тут надо как-то более системно улучшить
-  (setq coq-prog-name "/home/eugene/.opam/4.05.0/bin/coqtop -emacs"
-        coq-double-hit-enable t))
+  :hook (coq-mode . my-coq-mode-setup))
 
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
