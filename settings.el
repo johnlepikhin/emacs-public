@@ -429,9 +429,17 @@ This command does not push text to `kill-ring'."
   (setq merlin-error-after-save nil)
   (flycheck-ocaml-setup))
 
+(defun my-coq-mode-setup ()
+  (company-coq-mode)
+  (setq-local company-minimum-prefix-length 1)
+  (auto-complete-mode -1))
+
 (use-package proof-general
   :mode ("\\.v$" . coq-mode)
+  :hook (coq-mode . my-coq-mode-setup)
   :config
+  (setq coq-double-hit-enable t)
+  ;; Тут надо как-то более системно улучшить
   (setq coq-prog-name "/home/eugene/.opam/4.05.0/bin/coqtop -emacs"))
 
 (use-package web-mode
