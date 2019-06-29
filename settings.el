@@ -433,6 +433,7 @@ This command does not push text to `kill-ring'."
   (company-coq-mode)
   (setq-local company-minimum-prefix-length 1)
   (setq coq-double-hit-enable t)
+  (golden-ratio-mode -1)
   (auto-complete-mode -1))
 
 (use-package proof-general
