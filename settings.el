@@ -113,15 +113,14 @@
 
 (use-package zoom
   :defer t
-     :config
-     (zoom-mode 1)
-     (setq zoom-size '(0.618 . 0.618)))
+  :config
+  (setq zoom-size '(0.618 . 0.618))
+  (zoom-mode 1))
 
 (use-package ace-window
-  :ensure t
   :defer t
-  :config
-  (global-set-key (kbd "M-o") 'ace-window))
+  :bind (:map my-bindings-map
+              ("M-o" . ace-window)))
 
 (use-package
   which-key
@@ -228,8 +227,8 @@ This command does not push text to `kill-ring'."
 
 (use-package
   indent-guide
-  :hooks ((prog-mode . indent-guide-mode)
-         (find-file . my-disable-indent-guide-mode-for-big-buffer)
+  :hook ((prog-mode . indent-guide-mode)
+         (find-file . my-disable-indent-guide-mode-for-big-buffer))
   :config
   (setq indent-guide-char "|")
   (set-face-foreground 'indent-guide-face "darkgray"))

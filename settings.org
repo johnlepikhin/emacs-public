@@ -253,18 +253,17 @@
  (use-package zoom
    :defer t
    :config
-   (zoom-mode 1)
-   (setq zoom-size '(0.618 . 0.618)))
+   (setq zoom-size '(0.618 . 0.618))
+   (zoom-mode 1))
  #+END_SRC
 
 Удобное хождение по окнам:
 
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window
-  :ensure t
   :defer t
-  :config
-  (global-set-key (kbd "M-o") 'ace-window))
+  :bind (:map my-bindings-map
+              ("M-o" . ace-window)))
 #+END_SRC
 
 Подсказка по вводимым кнопкам. Отображать с задержкой в 1 секунду:
@@ -455,8 +454,8 @@
  #+BEGIN_SRC emacs-lisp
  (use-package
    indent-guide
-   :hooks ((prog-mode . indent-guide-mode)
-          (find-file . my-disable-indent-guide-mode-for-big-buffer)
+   :hook ((prog-mode . indent-guide-mode)
+          (find-file . my-disable-indent-guide-mode-for-big-buffer))
    :config
    (setq indent-guide-char "|")
    (set-face-foreground 'indent-guide-face "darkgray"))
