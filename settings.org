@@ -430,12 +430,19 @@
 
 *** Показывать отступы
 
-При подключении учесть, что на больших файлах (10k+ строк) емакс начинает заикаться. Проблема есть как минимум в cperl-mode.
+Отключить режим для файлов больше 100K:
+
+#+BEGIN_SRC emacs-lisp
+(defun my-disable-indent-guide-mode-for-big-buffer ()
+  (when (> (buffer-size) 100000)
+    (indent-guide-mode -1)))
+#+END_SRC
 
  #+BEGIN_SRC emacs-lisp
  (use-package
    indent-guide
-   :hook (prog-mode . indent-guide-mode)
+   :hooks ((prog-mode . indent-guide-mode)
+          (find-file . my-disable-indent-guide-mode-for-big-buffer)
    :config
    (setq indent-guide-char "|")
    (set-face-foreground 'indent-guide-face "darkgray"))
