@@ -115,7 +115,7 @@
   :defer t
   :config
   (setq zoom-size '(0.618 . 0.618))
-  (zoom-mode 1))
+  (zoom-mode t))
 
 (use-package ace-window
   :defer t
