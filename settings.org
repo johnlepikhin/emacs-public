@@ -247,15 +247,27 @@
 
 ** Внешний вид
 
- Золотое сечение для расположения окон:
+Золотое сечение для расположения окон:
 
  #+BEGIN_SRC emacs-lisp
- (use-package 
-   golden-ratio
-   :config (golden-ratio-mode 1))
+ (use-package zoom
+   :defer t
+   :config
+   (zoom-mode 1)
+   (setq zoom-size '(0.618 . 0.618)))
  #+END_SRC
 
- Подсказка по вводимым кнопкам. Отображать с задержкой в 1 секунду:
+Удобное хождение по окнам:
+
+#+BEGIN_SRC emacs-lisp
+(use-package ace-window
+  :ensure t
+  :defer t
+  :config
+  (global-set-key (kbd "M-o") 'ace-window))
+#+END_SRC
+
+Подсказка по вводимым кнопкам. Отображать с задержкой в 1 секунду:
 
  #+BEGIN_SRC emacs-lisp
  (use-package
@@ -265,7 +277,7 @@
    (which-key-mode))
  #+END_SRC
 
- Показывать в минибуфере позицию в строке:
+Показывать в минибуфере позицию в строке:
 
  #+BEGIN_SRC emacs-lisp
  (column-number-mode)
@@ -435,7 +447,9 @@
 #+BEGIN_SRC emacs-lisp
 (defun my-disable-indent-guide-mode-for-big-buffer ()
   (when (> (buffer-size) 100000)
-    (indent-guide-mode -1)))
+    (progn
+      (message "Buffer is too big, disable guided indent mode")
+      (indent-guide-mode -1))))
 #+END_SRC
 
  #+BEGIN_SRC emacs-lisp

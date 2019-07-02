@@ -111,9 +111,17 @@
   :bind (:map my-bindings-map
               ("C-=" . er/expand-region)))
 
-(use-package 
-  golden-ratio
-  :config (golden-ratio-mode 1))
+(use-package zoom
+  :defer t
+     :config
+     (zoom-mode 1)
+     (setq zoom-size '(0.618 . 0.618)))
+
+(use-package ace-window
+  :ensure t
+  :defer t
+  :config
+  (global-set-key (kbd "M-o") 'ace-window))
 
 (use-package
   which-key
@@ -212,9 +220,16 @@ This command does not push text to `kill-ring'."
 (define-key my-bindings-map (kbd "<M-backspace>") 'my-backward-delete-word)
 (define-key my-bindings-map (kbd "<C-backspace>") 'my-backward-delete-word)
 
+(defun my-disable-indent-guide-mode-for-big-buffer ()
+  (when (> (buffer-size) 100000)
+    (progn
+      (message "Buffer is too big, disable guided indent mode")
+      (indent-guide-mode -1))))
+
 (use-package
   indent-guide
-  :hook (prog-mode . indent-guide-mode)
+  :hooks ((prog-mode . indent-guide-mode)
+         (find-file . my-disable-indent-guide-mode-for-big-buffer)
   :config
   (setq indent-guide-char "|")
   (set-face-foreground 'indent-guide-face "darkgray"))
@@ -251,6 +266,8 @@ This command does not push text to `kill-ring'."
   company
   :hook (prog-mode . company-mode)
   :config
+  ;; сначала ищем в gtags, а если не нашли — смотрим в abbrev
+  (add-to-list 'company-backends '(company-gtags :with company-dabbrev))
   (setq company-idle-delay 0
         company-echo-delay 0
         company-dabbrev-downcase nil
