@@ -1214,6 +1214,16 @@
 
 ** Org export
 
+*** Confluence
+
+#+BEGIN_SRC emacs-lisp
+(use-package
+  org
+  :defer t
+  :config
+  (require 'ox-confluence))
+#+END_SRC
+
 *** LaTeX
 
  #+BEGIN_SRC emacs-lisp
