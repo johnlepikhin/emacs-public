@@ -282,6 +282,15 @@
  (column-number-mode)
  #+END_SRC
 
+*** Imenu
+
+#+BEGIN_SRC emacs-lisp
+(use-package
+  imenu
+  :bind (:map my-bindings-map
+              ("M-'" . imenu-list-smart-toggle)))
+#+END_SRC
+
 ** Поведение
 
  Бэкапы не нужны:
