@@ -130,6 +130,11 @@
 
 (column-number-mode)
 
+(use-package
+  imenu
+  :bind (:map my-bindings-map
+              ("M-'" . imenu-list-smart-toggle)))
+
 (setq backup-inhibited t)
 
 (setq-default tab-width 4) 
@@ -818,6 +823,12 @@ This command does not push text to `kill-ring'."
       (org-clone-subtree-with-time-shift 1 offset)
       (org-forward-element)
       (org-refile))))
+
+(use-package
+  org
+  :defer t
+  :config
+  (require 'ox-confluence))
 
 (use-package
   org
