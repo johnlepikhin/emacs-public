@@ -251,10 +251,10 @@
 
  #+BEGIN_SRC emacs-lisp
  (use-package zoom
-   :defer t
+   :commands zoom-mode
    :config
-   (setq zoom-size '(0.618 . 0.618))
-   (zoom-mode t))
+   (setq zoom-size '(0.618 . 0.618)))
+ (zoom-mode t)
  #+END_SRC
 
 Удобное хождение по окнам:

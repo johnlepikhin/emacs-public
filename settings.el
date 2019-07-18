@@ -112,10 +112,10 @@
               ("C-=" . er/expand-region)))
 
 (use-package zoom
-  :defer t
+  :commands zoom-mode
   :config
-  (setq zoom-size '(0.618 . 0.618))
-  (zoom-mode t))
+  (setq zoom-size '(0.618 . 0.618)))
+(zoom-mode t)
 
 (use-package ace-window
   :defer t
