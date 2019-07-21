@@ -794,7 +794,7 @@ This command does not push text to `kill-ring'."
 	;; раз в 10 минут заново составлять список файлов, на случай появления новых
 	(run-with-timer 0 600 'my-org-fill-files-list)
 	;; 
-	(run-with-idle-timer 5 10 'my-org-agenda-redo)
+	(run-with-idle-timer 120 120 'my-org-agenda-redo)
 	(my-load-org-config "local/org-agenda.org"))
 
 (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
