@@ -286,14 +286,14 @@ This command does not push text to `kill-ring'."
 (use-package company-flx
   :after company
   :defer t
-  :config
+  :init
   (company-flx-mode +1))
 
 (use-package company-tabnine
   :ensure t
-  :after company
+  :after (company)
   :defer t
-  :config
+  :init
   (add-to-list 'company-backends #'company-tabnine))
 
 (use-package

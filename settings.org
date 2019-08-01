@@ -537,7 +537,7 @@
  (use-package company-flx
    :after company
    :defer t
-   :config
+   :init
    (company-flx-mode +1))
  #+END_SRC
 
@@ -546,9 +546,9 @@
 #+BEGIN_SRC emacs-lisp
 (use-package company-tabnine
   :ensure t
-  :after company
+  :after (company)
   :defer t
-  :config
+  :init
   (add-to-list 'company-backends #'company-tabnine))
 #+END_SRC
 
