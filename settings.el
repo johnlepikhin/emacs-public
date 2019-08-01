@@ -270,24 +270,31 @@ This command does not push text to `kill-ring'."
   company
   :hook (prog-mode . company-mode)
   :config
-  ;; экспериментируем с нейросетями
-  (add-to-list 'company-backends #'company-tabnine)
   ;; сначала ищем в gtags, а если не нашли — смотрим в abbrev
   (add-to-list 'company-backends '(company-gtags :with company-dabbrev))
+  ;; по кнопке TAB происходит и дополнение, и выбор варианта
   (company-tng-configure-default)
   (setq company-idle-delay 0
         company-echo-delay 0
         company-dabbrev-downcase nil
+        company-show-numbers t
         company-minimum-prefix-length 2
         company-selection-wrap-around t
-        company-show-numbers t
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance)))
 
 (use-package company-flx
   :after company
+  :defer t
   :config
   (company-flx-mode +1))
+
+(use-package company-tabnine
+  :ensure t
+  :after company
+  :defer t
+  :config
+  (add-to-list 'company-backends #'company-tabnine))
 
 (use-package
   tramp
