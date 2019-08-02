@@ -253,7 +253,7 @@
  (use-package zoom
    :commands zoom-mode
    :config
-   (add-to-list zoom-ignored-major-modes 'gnus-summary-mode)
+   (setq zoom-ignored-major-modes '(gnus-summary-mode))
    (setq zoom-size '(0.618 . 0.618)))
  (zoom-mode t)
  #+END_SRC
