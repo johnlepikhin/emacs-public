@@ -253,6 +253,7 @@
  (use-package zoom
    :commands zoom-mode
    :config
+   (add-to-list zoom-ignored-major-modes 'gnus-summary-mode)
    (setq zoom-size '(0.618 . 0.618)))
  (zoom-mode t)
  #+END_SRC
@@ -340,6 +341,16 @@
  #+BEGIN_SRC emacs-lisp
  (setq browse-url-browser-function 'browse-url-chromium)
  #+END_SRC
+
+Использовать ivy в качестве движка автодополнения имен буферов, файлов и т.д.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1)
+  (bind-key "C-c C-r" 'ivy-resume))
+#+END_SRC
 
 *** Правильный список буферов
 
