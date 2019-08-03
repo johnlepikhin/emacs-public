@@ -1,0 +1,6 @@
+#name : Source Code: Emacs Lisp
+#key : <sem
+# --
+#+BEGIN_SRC emacs-lisp>
+$0$>
+#+END_SRC$>
