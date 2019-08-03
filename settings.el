@@ -197,7 +197,7 @@
 (use-package yasnippet
   :bind (:map my-bindings-map
               ("C-<tab>" . yas-expand))
-  :hook (cperl-mode org-mode)
+  :hook ((cperl-mode org-mode) . yas-minor-mode)
   :commands (yas-minor-mode)
   :after (yasnippet-classic-snippets)
   :config
