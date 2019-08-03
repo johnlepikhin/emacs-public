@@ -114,6 +114,7 @@
 (use-package zoom
   :commands zoom-mode
   :config
+  (setq zoom-ignored-major-modes '(gnus-summary-mode))
   (setq zoom-size '(0.618 . 0.618)))
 (zoom-mode t)
 
@@ -155,6 +156,12 @@
 
 (setq browse-url-browser-function 'browse-url-chromium)
 
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1)
+  (bind-key "C-c C-r" 'ivy-resume))
+
 (use-package
   ibuffer
   :bind (:map my-bindings-map
@@ -190,7 +197,7 @@
 (use-package yasnippet
   :bind (:map my-bindings-map
               ("C-<tab>" . yas-expand))
-  :hook (cperl-mode . yas-minor-mode)
+  :hook (cperl-mode org-mode)
   :commands (yas-minor-mode)
   :after (yasnippet-classic-snippets)
   :config

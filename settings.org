@@ -418,7 +418,7 @@
  (use-package yasnippet
    :bind (:map my-bindings-map
                ("C-<tab>" . yas-expand))
-   :hook (cperl-mode . yas-minor-mode)
+   :hook (cperl-mode org-mode)
    :commands (yas-minor-mode)
    :after (yasnippet-classic-snippets)
    :config
@@ -551,6 +551,8 @@
    :init
    (company-flx-mode +1))
  #+END_SRC
+
+
 
 **** Нейросетевое автодополнение
 
