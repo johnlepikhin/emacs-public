@@ -136,6 +136,14 @@
   :bind (:map my-bindings-map
               ("M-'" . imenu-list-smart-toggle)))
 
+(menu-bar-mode -1)
+
+(defun my-toggle-menu-bar ()
+  (interactive)
+  (toggle-menu-bar-mode-from-frame 'toggle))
+
+(define-key my-bindings-map (kbd "<f10>") 'my-toggle-menu-bar)
+
 (setq backup-inhibited t)
 
 (setq-default tab-width 4) 
@@ -403,7 +411,7 @@ This command does not push text to `kill-ring'."
 		  (".." . ?⋰)
 		  ("next" . ?↰)
 		  ("last" . ?↴)
-		  ("while" . ?↻)
+		  ("while" . ?⟳)
 		  ("if" . ?⑃)
 		  ("else" . ?⊻)
 		  ("int" . ?ℤ)

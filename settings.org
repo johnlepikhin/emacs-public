@@ -299,7 +299,10 @@
 (menu-bar-mode -1)
 
 (defun my-toggle-menu-bar ()
-(toggle-menu-bar-mode-from-frame 'toggle))
+  (interactive)
+  (toggle-menu-bar-mode-from-frame 'toggle))
+
+(define-key my-bindings-map (kbd "<f10>") 'my-toggle-menu-bar)
 #+END_SRC
 
 
@@ -358,9 +361,10 @@
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :ensure t
+  :bind (:map my-bindings-map
+              ("C-c C-r" . ivy-resume))
   :config
-  (ivy-mode 1)
-  (bind-key "C-c C-r" 'ivy-resume))
+  (ivy-mode 1))
 #+END_SRC
 
 *** Правильный список буферов
