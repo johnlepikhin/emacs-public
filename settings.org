@@ -292,6 +292,17 @@
               ("M-'" . imenu-list-smart-toggle)))
 #+END_SRC
 
+
+*** Выключить menu-bar, показывать по F10
+
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode -1)
+
+(defun my-toggle-menu-bar ()
+(toggle-menu-bar-mode-from-frame 'toggle))
+#+END_SRC
+
+
 ** Поведение
 
  Бэкапы не нужны:
