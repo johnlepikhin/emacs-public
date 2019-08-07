@@ -811,6 +811,25 @@
   :hook (coq-mode . my-coq-mode-setup))
 #+END_SRC
 
+*** Golang
+
+#+BEGIN_SRC emacs-lisp
+(defun my-go-mode-setup ()
+  (yas-minor-mode)
+  (flycheck-mode)
+  (add-hook 'before-save-hook 'gofmt-before-save))
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package go-mode
+  :ensure t
+  :mode ("\\.go\\'" . go-mode)
+  :config
+  (add-hook 'go-mode-hook 'my-go-mode-setup))
+#+END_SRC
+
+
 *** Веб-разработка
 
  Подключаем web-mode (HTML, JS, CUSS в одном):

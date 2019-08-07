@@ -166,9 +166,10 @@
 
 (use-package ivy
   :ensure t
+  :bind (:map my-bindings-map
+              ("C-c C-r" . ivy-resume))
   :config
-  (ivy-mode 1)
-  (bind-key "C-c C-r" 'ivy-resume))
+  (ivy-mode 1))
 
 (use-package
   ibuffer
@@ -487,6 +488,17 @@ This command does not push text to `kill-ring'."
   :mode ("\\.v$" . coq-mode)
   :hook (coq-mode . my-coq-mode-setup))
 
+(defun my-go-mode-setup ()
+  (yas-minor-mode)
+  (flycheck-mode)
+  (add-hook 'before-save-hook 'gofmt-before-save))
+
+(use-package go-mode
+  :ensure t
+  :mode ("\\.go\\'" . go-mode)
+  :config
+  (add-hook 'go-mode-hook 'my-go-mode-setup))
+
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
   :init
@@ -666,6 +678,8 @@ This command does not push text to `kill-ring'."
   (setq org-edit-src-content-indentation 0)
   ;; Ругаться, если пытаемся редактировать невидимый (напр., схлопнутый) текст
   (setq org-catch-invisible-edits 'error)
+  ;; Хочу видеть дату+время, когда пункт был закрыт (CLOSED)
+  (setq org-log-done 'time)
   ;; Задаем виды статусов для задач
   (setq org-todo-keywords
       '((sequence "TODO(t)" "WAIT(w)" "VERIFY(v)" "DELEGATED(D@)" "|" "DONE(d)" "CANCELED(c@)")))
