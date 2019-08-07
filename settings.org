@@ -818,6 +818,7 @@
   (yas-minor-mode)
   (flycheck-mode)
   (add-hook 'before-save-hook 'gofmt-before-save)
+  (add-hook 'completion-at-point-functions 'go-complete-at-point)
   (go-eldoc-setup))
 #+END_SRC
 
@@ -836,6 +837,12 @@
 (use-package go-eldoc
   :ensure t
   :commands (go-eldoc-setup))
+#+END_SRC
+
+Автодополнение
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-go)
 #+END_SRC
 
 

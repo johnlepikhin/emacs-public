@@ -491,13 +491,19 @@ This command does not push text to `kill-ring'."
 (defun my-go-mode-setup ()
   (yas-minor-mode)
   (flycheck-mode)
-  (add-hook 'before-save-hook 'gofmt-before-save))
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (add-hook 'completion-at-point-functions 'go-complete-at-point)
+  (go-eldoc-setup))
 
 (use-package go-mode
   :ensure t
   :mode ("\\.go\\'" . go-mode)
   :config
   (add-hook 'go-mode-hook 'my-go-mode-setup))
+
+(use-package go-eldoc
+  :ensure t
+  :commands (go-eldoc-setup))
 
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
