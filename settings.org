@@ -817,7 +817,8 @@
 (defun my-go-mode-setup ()
   (yas-minor-mode)
   (flycheck-mode)
-  (add-hook 'before-save-hook 'gofmt-before-save))
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (go-eldoc-setup))
 #+END_SRC
 
 
@@ -827,6 +828,14 @@
   :mode ("\\.go\\'" . go-mode)
   :config
   (add-hook 'go-mode-hook 'my-go-mode-setup))
+#+END_SRC
+
+Документация
+
+#+BEGIN_SRC emacs-lisp
+(use-package go-eldoc
+  :ensure t
+  :commands (go-eldoc-setup))
 #+END_SRC
 
 
