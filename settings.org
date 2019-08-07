@@ -624,7 +624,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package multi-compile
-  :commands (multi-compile)
+  :commands (multi-compile multi-compile-run)
   :init
   (setq multi-compile-alist
         '((go-mode . (
