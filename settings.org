@@ -620,6 +620,22 @@
    :config (helm-projectile-on))
  #+END_SRC
 
+*** Сборки
+
+#+BEGIN_SRC emacs-lisp
+(use-package multi-compile
+  :commands (multi-compile)
+  :init
+  (setq multi-compile-alist
+        '((go-mode . (
+                      ("go-build" "go build -v"
+                       (locate-dominating-file buffer-file-name ".git"))
+                      ("go-build-and-run" "go build -v && echo 'build finish' && eval ./${PWD##*/}"
+                       (multi-compile-locate-file-dir ".git"))))
+          )))
+#+END_SRC
+
+
 *** Magit
 
  #+BEGIN_SRC emacs-lisp
@@ -829,7 +845,7 @@
   (flycheck-mode)
   (add-hook 'before-save-hook 'gofmt-before-save)
   (add-hook 'completion-at-point-functions 'go-complete-at-point)
-
+  (go-guru-hl-identifier-mode)
   (go-eldoc-setup))
 #+END_SRC
 
@@ -866,6 +882,14 @@
 (use-package go-rename
   :commands (go-rename))
 #+END_SRC
+
+Подсветка идентификаторов
+
+#+BEGIN_SRC emacs-lisp
+(use-package go-guru
+  :commands (go-guru-hl-identifier-mode))
+#+END_SRC
+
 
 
 *** Веб-разработка

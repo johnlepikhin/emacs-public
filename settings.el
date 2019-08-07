@@ -334,6 +334,17 @@ This command does not push text to `kill-ring'."
   :after (projectile helm)
   :config (helm-projectile-on))
 
+(use-package multi-compile
+  :commands (multi-compile)
+  :init
+  (setq multi-compile-alist
+        '((go-mode . (
+                      ("go-build" "go build -v"
+                       (locate-dominating-file buffer-file-name ".git"))
+                      ("go-build-and-run" "go build -v && echo 'build finish' && eval ./${PWD##*/}"
+                       (multi-compile-locate-file-dir ".git"))))
+          )))
+
 (use-package
   magit
   :bind (:map my-bindings-map
@@ -500,7 +511,7 @@ This command does not push text to `kill-ring'."
   (flycheck-mode)
   (add-hook 'before-save-hook 'gofmt-before-save)
   (add-hook 'completion-at-point-functions 'go-complete-at-point)
-
+  (go-guru-hl-identifier-mode)
   (go-eldoc-setup))
 
 (use-package go-mode
@@ -518,6 +529,12 @@ This command does not push text to `kill-ring'."
   :init
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-go)))
+
+(use-package go-rename
+  :commands (go-rename))
+
+(use-package go-guru
+  :commands (go-guru-hl-identifier-mode))
 
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
