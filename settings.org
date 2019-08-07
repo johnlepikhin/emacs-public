@@ -567,8 +567,6 @@
    (company-flx-mode +1))
  #+END_SRC
 
-
-
 **** Нейросетевое автодополнение
 
 #+BEGIN_SRC emacs-lisp
@@ -579,6 +577,18 @@
   :init
   (add-to-list 'company-backends #'company-tabnine))
 #+END_SRC
+
+**** Документация в company
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-quickhelp
+  :ensure t
+  :hook (global-company-mode . company-quickhelp-mode)
+  :commands (company-quickhelp-mode)
+  :defer t
+  :init (add-hook 'global-company-mode-hook #'company-quickhelp-mode))
+#+END_SRC
+
 
 *** Tramp
 
@@ -819,6 +829,7 @@
   (flycheck-mode)
   (add-hook 'before-save-hook 'gofmt-before-save)
   (add-hook 'completion-at-point-functions 'go-complete-at-point)
+
   (go-eldoc-setup))
 #+END_SRC
 
@@ -842,7 +853,18 @@
 Автодополнение
 
 #+BEGIN_SRC emacs-lisp
-(use-package company-go)
+(use-package company-go
+  :defer t
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-go)))
+#+END_SRC
+
+Рефакторинг
+
+#+BEGIN_SRC emacs-lisp
+(use-package go-rename
+  :commands (go-rename))
 #+END_SRC
 
 

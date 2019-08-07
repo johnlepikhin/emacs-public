@@ -312,6 +312,13 @@ This command does not push text to `kill-ring'."
   :init
   (add-to-list 'company-backends #'company-tabnine))
 
+(use-package company-quickhelp
+  :ensure t
+  :hook (global-company-mode . company-quickhelp-mode)
+  :commands (company-quickhelp-mode)
+  :defer t
+  :init (add-hook 'global-company-mode-hook #'company-quickhelp-mode))
+
 (use-package
   tramp
   :config (setq tramp-use-ssh-controlmaster-options nil))
@@ -493,6 +500,7 @@ This command does not push text to `kill-ring'."
   (flycheck-mode)
   (add-hook 'before-save-hook 'gofmt-before-save)
   (add-hook 'completion-at-point-functions 'go-complete-at-point)
+
   (go-eldoc-setup))
 
 (use-package go-mode
@@ -504,6 +512,12 @@ This command does not push text to `kill-ring'."
 (use-package go-eldoc
   :ensure t
   :commands (go-eldoc-setup))
+
+(use-package company-go
+  :defer t
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-go)))
 
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
