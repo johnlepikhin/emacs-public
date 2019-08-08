@@ -537,15 +537,17 @@ This command does not push text to `kill-ring'."
   :commands (go-guru-hl-identifier-mode))
 
 (use-package rust-mode
-  :after (flycheck tramp)
-  :hook (rust-mode . racer-activate)
+  :after (flycheck tramp racer)
   :mode ("\\.rs\\'" . rust-mode))
 
 (use-package racer
-  :after (rust-mode)
-  :commands (racer-activate)
+  :hook (rust-mode . racer-activate)
   :config
   (setq racer-rust-src-path "~/.local/share/rust_src/src"))
+
+(use-package flycheck-rust
+  :after (flycheck)
+  :hook (flycheck-mode . flycheck-rust-setup))
 
 (use-package web-mode
   :mode ("\\.html$" . web-mode)

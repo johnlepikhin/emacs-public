@@ -895,8 +895,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
-  :after (flycheck tramp)
-  :hook (rust-mode . racer-activate)
+  :after (flycheck tramp racer)
   :mode ("\\.rs\\'" . rust-mode))
 #+END_SRC
 
@@ -904,11 +903,17 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package racer
-  :after (rust-mode)
-  :defer t
-  :commands (racer-activate)
+  :hook (rust-mode . racer-activate)
   :config
   (setq racer-rust-src-path "~/.local/share/rust_src/src"))
+#+END_SRC
+
+**** Проверка синтаксиса на лету
+
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck-rust
+  :after (flycheck)
+  :hook (flycheck-mode . flycheck-rust-setup))
 #+END_SRC
 
 
