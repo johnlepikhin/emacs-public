@@ -1126,7 +1126,7 @@
   (toggle-read-only))
 
 (use-package ansi-color
-  :hook (compilation-filt))
+  :hook (compilation-filter . my-colorize-compilation-buffer))
 #+END_SRC
 
 
