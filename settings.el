@@ -335,7 +335,7 @@ This command does not push text to `kill-ring'."
   :config (helm-projectile-on))
 
 (use-package multi-compile
-  :commands (multi-compile)
+  :commands (multi-compile multi-compile-run)
   :init
   (setq multi-compile-alist
         '((go-mode . (
