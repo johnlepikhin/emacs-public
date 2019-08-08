@@ -725,6 +725,14 @@ This command does not push text to `kill-ring'."
 (use-package fic-mode
   :hook cperl-mode emacs-lisp-mode)
 
+(defun my-colorize-compilation-buffer ()
+  (toggle-read-only)
+  (ansi-color-apply-on-region compilation-filter-start (point))
+  (toggle-read-only))
+
+(use-package ansi-color
+  :hook (compilation-filter . my-colorize-compilation-buffer))
+
 (defun my-org-mode-basic-config ()
   ;; По умолчанию таски длятся 1 час
   (setq org-agenda-default-appointment-duration 60)
