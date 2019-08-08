@@ -891,6 +891,18 @@
 #+END_SRC
 
 
+*** Rust
+
+#+BEGIN_SRC emacs-lisp
+(defun my-rust-mode-setup ()
+  )
+
+(use-package rust-mode
+  :hooks (rust-mode . my-rust-mode-setup)
+  :mode ("\\.rs\\'" . rust-mode)
+  :config
+  )
+#+END_SRC
 
 *** Веб-разработка
 

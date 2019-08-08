@@ -1,0 +1,6 @@
+#name : Source Code: use-package
+#key : <sup
+# --
+#+BEGIN_SRC emacs-lisp
+(use-package $0$>)
+#+END_SRC
