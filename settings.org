@@ -1117,6 +1117,19 @@
    :hook cperl-mode emacs-lisp-mode)
  #+END_SRC
 
+*** Цветной compile buffer
+
+#+BEGIN_SRC emacs-lisp
+(defun my-colorize-compilation-buffer ()
+  (toggle-read-only)
+  (ansi-color-apply-on-region compilation-filter-start (point))
+  (toggle-read-only))
+
+(use-package ansi-color
+  :hook (compilation-filt))
+#+END_SRC
+
+
 ** Org-mode
 *** Основные настройки
 
