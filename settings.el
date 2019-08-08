@@ -536,6 +536,16 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
+(use-package rust-mode
+  :hooks ((rust-mode . my-rust-mode-setup)
+          (rust-mode . racer-activate))
+  :mode ("\\.rs\\'" . rust-mode))
+
+(use-package racer
+  :commands (racer-activate)
+  :config
+  (setq racer-rust-src-path "~/.local/share/rust_src/src"))
+
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
   :init
