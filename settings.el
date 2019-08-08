@@ -539,10 +539,10 @@ This command does not push text to `kill-ring'."
 (use-package rust-mode
   :after (flycheck tramp)
   :hook (rust-mode . racer-activate)
-;;         (flycheck-mode . flycheck-rust-setup))
   :mode ("\\.rs\\'" . rust-mode))
 
 (use-package racer
+  :after (rust-mode)
   :commands (racer-activate)
   :config
   (setq racer-rust-src-path "~/.local/share/rust_src/src"))
