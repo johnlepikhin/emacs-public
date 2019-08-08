@@ -536,8 +536,16 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
+(defun my-rust-compile-setup ()
+  (set (make-local-variable 'compile-command)
+       (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
+           "cargo run"
+         (format "rustc %s && %s" (buffer-file-name)
+                 (file-name-sans-extension (buffer-file-name))))))
+
 (use-package rust-mode
-  :after (flycheck tramp racer)
+  :after (flycheck tramp racer compile)
+  :hook (rust-mode . my-rust-compile-setup)
   :mode ("\\.rs\\'" . rust-mode))
 
 (use-package racer
