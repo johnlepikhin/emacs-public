@@ -895,8 +895,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
-  :hooks ((rust-mode . my-rust-mode-setup)
-          (rust-mode . racer-activate))
+  :hook (rust-mode . racer-activate)
   :mode ("\\.rs\\'" . rust-mode))
 #+END_SRC
 
