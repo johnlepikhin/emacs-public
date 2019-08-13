@@ -567,17 +567,6 @@
    (company-flx-mode +1))
  #+END_SRC
 
-**** Нейросетевое автодополнение
-
-#+BEGIN_SRC emacs-lisp
-(use-package company-tabnine
-  :ensure t
-  :after (company)
-  :defer t
-  :init
-  (add-to-list 'company-backends #'company-tabnine))
-#+END_SRC
-
 **** Документация в company
 
 #+BEGIN_SRC emacs-lisp

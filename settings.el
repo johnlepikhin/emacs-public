@@ -305,13 +305,6 @@ This command does not push text to `kill-ring'."
   :init
   (company-flx-mode +1))
 
-(use-package company-tabnine
-  :ensure t
-  :after (company)
-  :defer t
-  :init
-  (add-to-list 'company-backends #'company-tabnine))
-
 (use-package company-quickhelp
   :ensure t
   :hook (global-company-mode . company-quickhelp-mode)
