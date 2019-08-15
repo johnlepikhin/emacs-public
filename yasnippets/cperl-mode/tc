@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: testcase
+# key: tc
+# --
+testcase(name => q{${1:name}}, cb => \&${2:cb});
