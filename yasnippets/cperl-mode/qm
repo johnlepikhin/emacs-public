@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: qm
+# key: qm
+# --
+my \$q_${1:variable} = quotemeta \$$1;
