@@ -423,7 +423,7 @@ This command does not push text to `kill-ring'."
 		  (".." . ?⋰)
 		  ("next" . ?↰)
 		  ("last" . ?↴)
-		  ("while" . ?⟳)
+		  ("while" . ?⮍)
 		  ("if" . ?⎧)
 		  ("elsif" . ?⎨)
 		  ("else" . ?⎩)
@@ -435,7 +435,7 @@ This command does not push text to `kill-ring'."
 		  ("=>" . ?⇒)
 		  ("=~" .?≈)
 		  ("!~" . ?≉)
-		  ("$self" . ?⬤)))
+		  ("$self" . ?◆)))
   (prettify-symbols-mode))
 
 (use-package
