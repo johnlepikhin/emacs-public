@@ -596,6 +596,7 @@ This command does not push text to `kill-ring'."
   "Call perltidy for whole buffer."
   (interactive)
   (perltidy-region (point-min) (point-max)))
+
 ;;;###autoload
 (defun perltidy-region (beg end)
   "Tidy perl code in the region."
@@ -627,7 +628,7 @@ This command does not push text to `kill-ring'."
              (append (list beg end perltidy-program
                            t
                            t
-                           t
+                           nil
                            )
                      perltidy-run-list)))
     t))
@@ -684,7 +685,7 @@ This command does not push text to `kill-ring'."
         (if (use-region-p)
             (perltidy-region (region-beginning) (region-end))
           (perltidy-buffer))))
-    (goto-line saved-line)))
+    (forward-line saved-line)))
 
 (defun my-perltidy-subroutine ()
   "Perltidy current subroutine keeping current position in the buffer as close as possible"

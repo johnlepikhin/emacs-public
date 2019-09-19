@@ -1002,7 +1002,7 @@
               (append (list beg end perltidy-program
                             t
                             t
-                            t
+                            nil
                             )
                       perltidy-run-list)))
      t))
@@ -1063,7 +1063,7 @@
          (if (use-region-p)
              (perltidy-region (region-beginning) (region-end))
            (perltidy-buffer))))
-     (goto-line saved-line)))
+     (forward-line saved-line)))
 
  (defun my-perltidy-subroutine ()
    "Perltidy current subroutine keeping current position in the buffer as close as possible"
