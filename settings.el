@@ -586,12 +586,6 @@ This command does not push text to `kill-ring'."
   :type 'string
   :group 'perltidy)
 
-(defmacro perltidy-save-point (&rest body)
-  (declare (indent 0) (debug t))
-  `(let ((old-point (point)))
-     ,@body
-     (goto-char old-point)))
-
 (defun perltidy-buffer ()
   "Call perltidy for whole buffer."
   (interactive)
@@ -605,8 +599,6 @@ This command does not push text to `kill-ring'."
       (if (executable-find perltidy-program)
           (put 'perltidy-program 'has-perltidy t)
         (error "Seem perltidy is not installed")))
-  (perltidy-save-point
-
     (let ((old-perltidy-env (getenv "PERLTIDY"))
           (remote? (tramp-tramp-file-p buffer-file-name))
           (perltidyrc (perltidy-find-perltidyrc buffer-file-truename))
@@ -631,7 +623,7 @@ This command does not push text to `kill-ring'."
                            nil
                            )
                      perltidy-run-list)))
-    t))
+    t)
 
 (defun perltidy-subroutine ()
   "Call perltidy for subroutine at point."
