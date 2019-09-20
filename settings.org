@@ -394,21 +394,6 @@
 
 ** Редактирование
 
- ~C-;~ комментирует строку или регион:
-
- #+BEGIN_SRC emacs-lisp
- (defun comment-dwim-line-or-region ()
-   "[Un]comment line or region"
-   (interactive)
-   (if mark-active
-       (comment-dwim t)
-     (progn
-       (comment-line 1)
-       (forward-line -1))))
-
- (define-key my-bindings-map (kbd "C-;") 'comment-dwim-line-or-region)
- #+END_SRC
-
  Многострочный режим комментариев по умолчанию
 
  #+BEGIN_SRC emacs-lisp
