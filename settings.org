@@ -587,6 +587,18 @@
    :config (setq tramp-use-ssh-controlmaster-options nil))
  #+END_SRC
 
+*** drug-staff
+
+Таскаем выделенное или строчку по буферу
+
+#+BEGIN_SRC emacs-lisp
+(use-package drag-stuff
+  :bind (:map my-bindings-map
+              ("M-p" . drag-stuff-up)
+              ("M-n" . drag-stuff-down)))
+#+END_SRC
+
+
 ** Разработка
 *** Управление проектами
 
