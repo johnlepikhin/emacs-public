@@ -166,6 +166,7 @@
 
 (use-package ivy
   :ensure t
+  :defer t
   :bind (:map my-bindings-map
               ("C-c C-r" . ivy-resume))
   :config
@@ -185,17 +186,6 @@
 
 (define-key minibuffer-local-isearch-map (kbd "<left>") 'isearch-reverse-exit-minibuffer)
 (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer)
-
-(defun comment-dwim-line-or-region ()
-  "[Un]comment line or region"
-  (interactive)
-  (if mark-active
-      (comment-dwim t)
-    (progn
-      (comment-line 1)
-      (forward-line -1))))
-
-(define-key my-bindings-map (kbd "C-;") 'comment-dwim-line-or-region)
 
 (setq comment-style 'multi-line)
 
@@ -315,6 +305,11 @@ This command does not push text to `kill-ring'."
 (use-package
   tramp
   :config (setq tramp-use-ssh-controlmaster-options nil))
+
+(use-package drag-stuff
+  :bind (:map my-bindings-map
+              ("M-p" . drag-stuff-up)
+              ("M-n" . drag-stuff-down)))
 
 (use-package
   projectile
@@ -590,7 +585,6 @@ This command does not push text to `kill-ring'."
   "Call perltidy for whole buffer."
   (interactive)
   (perltidy-region (point-min) (point-max)))
-
 ;;;###autoload
 (defun perltidy-region (beg end)
   "Tidy perl code in the region."

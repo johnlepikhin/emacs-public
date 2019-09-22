@@ -361,6 +361,7 @@
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :ensure t
+  :defer t
   :bind (:map my-bindings-map
               ("C-c C-r" . ivy-resume))
   :config
