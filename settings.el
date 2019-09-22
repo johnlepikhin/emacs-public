@@ -165,12 +165,18 @@
 (setq browse-url-browser-function 'browse-url-chromium)
 
 (use-package ivy
-  :ensure t
-  :defer t
-  :bind (:map my-bindings-map
-              ("C-c C-r" . ivy-resume))
-  :config
-  (ivy-mode 1))
+  :defer 0.1
+  :diminish
+  :bind (("C-c C-r" . ivy-resume)
+         ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode))
+
+(use-package counsel
+  :after ivy
+  :config (counsel-mode))
 
 (use-package
   ibuffer

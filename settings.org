@@ -360,13 +360,31 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
-  :ensure t
-  :defer t
-  :bind (:map my-bindings-map
-              ("C-c C-r" . ivy-resume))
-  :config
-  (ivy-mode 1))
+  :defer 0.1
+  :diminish
+  :bind (("C-c C-r" . ivy-resume)
+         ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode))
+
+(use-package counsel
+  :after ivy
+  :config (counsel-mode))
 #+END_SRC
+
+Ищем swiper'ом:
+
+#+BEGIN_SRC emacs-lisp
+(use-package swiper
+  :after ivy
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)))
+#+END_SRC
+
+
+
 
 *** Правильный список буферов
 
