@@ -164,31 +164,6 @@
 
 (setq browse-url-browser-function 'browse-url-chromium)
 
-(use-package ivy
-  :defer 0.1
-  :diminish
-  :bind (("C-c C-r" . ivy-resume)
-         ("C-x B" . ivy-switch-buffer-other-window))
-  :custom
-  (ivy-count-format "(%d/%d) ")
-  (ivy-use-virtual-buffers t)
-  :config (ivy-mode))
-
-(use-package counsel
-  :after ivy
-  :config (counsel-mode))
-
-(use-package swiper
-  :after ivy
-  :bind (("C-s" . swiper)
-         ("C-r" . swiper)))
-
-(use-package
-  ibuffer
-  :bind (:map my-bindings-map
-               ("C-x C-b" . ibuffer))
-  :hook ((ibuffer-mode . hl-line-mode)))
-
 (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
 

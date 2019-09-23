@@ -358,43 +358,49 @@
 
 Использовать ivy в качестве движка автодополнения имен буферов, файлов и т.д.
 
-#+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :defer 0.1
-  :diminish
-  :bind (("C-c C-r" . ivy-resume)
-         ("C-x B" . ivy-switch-buffer-other-window))
-  :custom
-  (ivy-count-format "(%d/%d) ")
-  (ivy-use-virtual-buffers t)
-  :config (ivy-mode))
+[2019-09-23 Mon] закомментил т.к. тормозит на больших файлах.
 
-(use-package counsel
-  :after ivy
-  :config (counsel-mode))
-#+END_SRC
+# #+BEGIN_SRC emacs-lisp
+# (use-package ivy
+#   :defer 0.1
+#   :diminish
+#   :bind (("C-c C-r" . ivy-resume)
+#          ("C-x B" . ivy-switch-buffer-other-window))
+#   :custom
+#   (ivy-count-format "(%d/%d) ")
+#   (ivy-use-virtual-buffers t)
+#   :config (ivy-mode))
+
+# (use-package counsel
+#   :after ivy
+#   :config (counsel-mode))
+# #+END_SRC
 
 Ищем swiper'ом:
 
-#+BEGIN_SRC emacs-lisp
-(use-package swiper
-  :after ivy
-  :bind (("C-s" . swiper)
-         ("C-r" . swiper)))
-#+END_SRC
+[2019-09-23 Mon] закомментил т.к. тормозит на больших файлах.
+
+# #+BEGIN_SRC emacs-lisp
+# (use-package swiper
+#   :after ivy
+#   :bind (("C-s" . swiper)
+#          ("C-r" . swiper)))
+# #+END_SRC
 
 
 
 
 *** Правильный список буферов
 
-#+BEGIN_SRC emacs-lisp
-(use-package
-  ibuffer
-  :bind (:map my-bindings-map
-               ("C-x C-b" . ibuffer))
-  :hook ((ibuffer-mode . hl-line-mode)))
-#+END_SRC
+[2019-09-23 Mon] закомментил т.к. тормозит на больших файлах.
+
+#     #+BEGIN_SRC emacs-lisp
+# (use-package
+#   ibuffer
+#   :bind (:map my-bindings-map
+#                ("C-x C-b" . ibuffer))
+#   :hook ((ibuffer-mode . hl-line-mode)))
+# #+END_SRC
 
 *** Настройки isearch
 
