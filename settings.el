@@ -178,6 +178,11 @@
   :after ivy
   :config (counsel-mode))
 
+(use-package swiper
+  :after ivy
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)))
+
 (use-package
   ibuffer
   :bind (:map my-bindings-map
