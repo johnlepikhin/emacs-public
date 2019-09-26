@@ -453,7 +453,8 @@
    :commands (yas-minor-mode)
    :after (yasnippet-classic-snippets)
    :config
-
+   ;; Не надо пытаться развернуть сниппеты рекурсивно
+   (setq yas-triggers-in-field nil)
    ;; я не люблю, когда по tab-у мне пытаются что-то развернуть
    ;; (define-key yas-minor-mode-map (kbd "<tab>") nil)
    ;; (define-key yas-minor-mode-map (kbd "TAB") nil)
