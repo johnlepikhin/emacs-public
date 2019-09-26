@@ -182,10 +182,13 @@
 (use-package yasnippet
   :bind (:map my-bindings-map
               ("C-<tab>" . yas-expand))
-  :hook ((cperl-mode org-mode) . yas-minor-mode)
+                                        ;   :hook ((cperl-mode org-mode) . yas-minor-mode)
   :commands (yas-minor-mode)
   :after (yasnippet-classic-snippets)
   :config
+  ;; я не люблю, когда по tab-у мне пытаются что-то развернуть
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
   ;; подключить мой публичный репозиторий сниппетов
   (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
   ;; теперь надо всё перечитать
@@ -259,21 +262,21 @@ This command does not push text to `kill-ring'."
   :config (global-undo-tree-mode 1))
 
 (use-package
-  company
-  :hook (prog-mode . company-mode)
-  :config
-  ;; сначала ищем в gtags, а если не нашли — смотрим в abbrev
-  (add-to-list 'company-backends '(company-gtags :with company-dabbrev))
-  ;; по кнопке TAB происходит и дополнение, и выбор варианта
-  (company-tng-configure-default)
-  (setq company-idle-delay 0
-        company-echo-delay 0
-        company-dabbrev-downcase nil
-        company-show-numbers t
-        company-minimum-prefix-length 2
-        company-selection-wrap-around t
-        company-transformers '(company-sort-by-occurrence
-                               company-sort-by-backend-importance)))
+   company
+   :hook (prog-mode . company-mode)
+   :config
+   ;; сначала ищем в gtags, а если не нашли — смотрим в abbrev
+   (add-to-list 'company-backends '(company-gtags :with company-dabbrev))
+   ;; по кнопке TAB происходит и дополнение, и выбор варианта
+;;   (company-tng-configure-default)
+   (setq company-idle-delay 0
+         company-echo-delay 0
+         company-dabbrev-downcase nil
+         company-show-numbers t
+         company-minimum-prefix-length 2
+         company-selection-wrap-around t
+         company-transformers '(company-sort-by-occurrence
+                                company-sort-by-backend-importance)))
 
 (use-package company-flx
   :after company
