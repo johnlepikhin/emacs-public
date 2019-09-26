@@ -281,8 +281,7 @@ This command does not push text to `kill-ring'."
                                 company-sort-by-backend-importance)))
 
 (use-package company-flx
-  :after company
-  :defer t
+  :demand t
   :init
   (company-flx-mode +1))
 

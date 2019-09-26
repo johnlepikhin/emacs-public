@@ -574,6 +574,8 @@
 
 **** Автодополнение с неточным совпадением
 
+К сожалению, поддерживает не так много бэкендов company. Я использую только для lisp.
+
  #+BEGIN_SRC emacs-lisp
  (use-package company-flx
    :demand t
