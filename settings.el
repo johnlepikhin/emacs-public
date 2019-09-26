@@ -182,17 +182,16 @@
 (use-package yasnippet
   :bind 
   (:map my-bindings-map
-        ("C-<tab>" . yas-next-field-or-maybe-expand))
+        ("C-<tab>" . yas-expand))
   (:map yas-minor-mode-map
-        ("<tab>" . nil)
-        ("TAB" . nil))
+        ("<tab>" . yas-next-field-or-maybe-expand)
+        ("TAB" . yas-next-field-or-maybe-expand))
         ;; ("C-TAB" . yas-next-field-or-maybe-expand)
         ;; ("C-<tab>" . yas-next-field-or-maybe-expand))
   :hook ((cperl-mode org-mode) . yas-minor-mode)
   :commands (yas-minor-mode)
   :after (yasnippet-classic-snippets)
   :config
-
   ;; я не люблю, когда по tab-у мне пытаются что-то развернуть
   ;; (define-key yas-minor-mode-map (kbd "<tab>") nil)
   ;; (define-key yas-minor-mode-map (kbd "TAB") nil)
