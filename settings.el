@@ -183,26 +183,16 @@
   :bind 
   (:map my-bindings-map
         ("C-<tab>" . yas-expand))
+  ;; я не люблю, когда по tab-у мне пытаются что-то развернуть
   (:map yas-minor-mode-map
-        ("<tab>" . yas-next-field-or-maybe-expand)
-        ("TAB" . yas-next-field-or-maybe-expand))
-        ;; ("C-TAB" . yas-next-field-or-maybe-expand)
-        ;; ("C-<tab>" . yas-next-field-or-maybe-expand))
+        ("<tab>" . nil)
+        ("TAB" . nil))
   :hook ((cperl-mode org-mode) . yas-minor-mode)
   :commands (yas-minor-mode)
   :after (yasnippet-classic-snippets)
   :config
-  ;; я не люблю, когда по tab-у мне пытаются что-то развернуть
-  ;; (define-key yas-minor-mode-map (kbd "<tab>") nil)
-  ;; (define-key yas-minor-mode-map (kbd "TAB") nil)
-
-  ;; переходить на следующее поле по той же кнопке ctrl-tab
-  ;; (define-key yas-keymap (kbd "C-TAB") 'yas-next-field-or-maybe-expand)
-  ;; (define-key yas-keymap (kbd "C-<tab>") 'yas-next-field-or-maybe-expand)
-
   ;; подключить мой публичный репозиторий сниппетов
   (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
-
   ;; теперь надо всё перечитать
   (yas-reload-all))
 
