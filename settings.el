@@ -525,7 +525,9 @@ This command does not push text to `kill-ring'."
 (use-package rust-mode
   :after (flycheck tramp racer compile)
   :hook (rust-mode . my-rust-compile-setup)
-  :mode ("\\.rs\\'" . rust-mode))
+  :mode ("\\.rs\\'" . rust-mode)
+  :bind (:map my-bindings-map
+              ("C-c i b" . rust-format-buffer)))
 
 (use-package racer
   :hook (rust-mode . racer-activate)
