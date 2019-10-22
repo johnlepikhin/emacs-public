@@ -680,6 +680,7 @@
  (use-package
    flycheck
    :config
+   (setq flycheck-idle-change-delay 5)
    ;; Багфиксы, согласно проблеме https://github.com/flycheck/flycheck/issues/1278:
    ;; в :preface нельзя определять т.к. :preface обрабатывается до загрузки модуля
    (advice-add
