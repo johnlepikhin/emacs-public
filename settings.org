@@ -924,7 +924,7 @@
   :after (flycheck tramp racer compile)
   :hook (rust-mode . my-rust-compile-setup)
   :mode ("\\.rs\\'" . rust-mode)
-  :bind (:map my-bindings-map
+  :bind (:map rust-mode-map
               ("C-c i b" . rust-format-buffer)))
 #+END_SRC
 
