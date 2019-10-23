@@ -339,6 +339,7 @@ This command does not push text to `kill-ring'."
 (use-package
   flycheck
   :config
+  (setq flycheck-idle-change-delay 5)
   ;; Багфиксы, согласно проблеме https://github.com/flycheck/flycheck/issues/1278:
   ;; в :preface нельзя определять т.к. :preface обрабатывается до загрузки модуля
   (advice-add
@@ -526,7 +527,7 @@ This command does not push text to `kill-ring'."
   :after (flycheck tramp racer compile)
   :hook (rust-mode . my-rust-compile-setup)
   :mode ("\\.rs\\'" . rust-mode)
-  :bind (:map my-bindings-map
+  :bind (:map rust-mode-map
               ("C-c i b" . rust-format-buffer)))
 
 (use-package racer
