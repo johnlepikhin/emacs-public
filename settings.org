@@ -945,6 +945,14 @@
   :hook (flycheck-mode . flycheck-rust-setup))
 #+END_SRC
 
+*** Puppet
+
+#+BEGIN_SRC emacs-lisp
+(use-package puppet-mode
+  :config
+  (setq puppet-indent-level 2)
+  (setq puppet-include-indent 2))
+#+END_SRC
 
 *** Веб-разработка
 
