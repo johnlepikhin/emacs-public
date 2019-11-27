@@ -539,6 +539,11 @@ This command does not push text to `kill-ring'."
   :after (flycheck)
   :hook (flycheck-mode . flycheck-rust-setup))
 
+(use-package puppet-mode
+  :config
+  (setq puppet-indent-level 2)
+  (setq puppet-include-indent 2))
+
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
   :init
