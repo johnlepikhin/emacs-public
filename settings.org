@@ -2256,9 +2256,13 @@
 *** Финансы
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/public/org-expenses")
-(require 'org-expenses)
-(setq org-expenses/files "~/org/personal")
+(use-package
+  org-expenses
+  :load-path "~/.emacs.d/public/org-expenses"
+  :bind (:map my-bindings-map
+              ("C-c f" . org-expenses/expense-view))
+  :config
+  (setq org-expenses/files "~/org/personal"))
 #+END_SRC
 
 
