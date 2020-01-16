@@ -2252,6 +2252,16 @@
 
  #+END_SRC
 
+
+*** Финансы
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/public/org-expenses")
+(require 'org-expenses)
+(setq org-expenses/files "~/org/personal")
+#+END_SRC
+
+
 *** Вспомогательные функции
 
 #+BEGIN_SRC emacs-lisp
