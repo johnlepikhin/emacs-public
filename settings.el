@@ -1574,6 +1574,14 @@ This command does not push text to `kill-ring'."
   :config
   (setq calendar-holidays russian-holidays))
 
+(use-package
+  org-expenses
+  :load-path "~/.emacs.d/public/org-expenses"
+  :bind (:map my-bindings-map
+              ("C-c f" . org-expenses/expense-view))
+  :config
+  (setq org-expenses/files "~/org/personal"))
+
 (defun number-or-v (n v)
   "Return V if N is not a number, or N otherwise."
   (if (not (numberp n)) v n))
