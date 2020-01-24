@@ -909,7 +909,6 @@
   :commands (go-guru-hl-identifier-mode))
 #+END_SRC
 
-
 *** Rust
 
 #+BEGIN_SRC emacs-lisp
@@ -970,6 +969,13 @@
    (setq web-mode-enable-auto-expanding t)
    (setq web-mode-enable-css-colorization t))
  #+END_SRC
+
+*** SQL
+
+#+BEGIN_SRC emacs-lisp
+(use-package sql-indent
+  :commands sqlind-minor-mode)
+#+END_SRC
 
 *** Форматирование
 
