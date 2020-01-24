@@ -974,6 +974,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package sql-indent
+  :hook (sql-mode . sqlind-minor-mode)
   :commands sqlind-minor-mode)
 #+END_SRC
 
