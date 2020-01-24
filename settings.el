@@ -555,6 +555,10 @@ This command does not push text to `kill-ring'."
   (setq web-mode-enable-auto-expanding t)
   (setq web-mode-enable-css-colorization t))
 
+(use-package sql-indent
+  :hook (sql-mode . sqlind-minor-mode)
+  :commands sqlind-minor-mode)
+
 (defcustom perltidy-program "perltidy"
   "*Program name of perltidy"
   :type 'string
