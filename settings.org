@@ -953,7 +953,7 @@
   (setq puppet-include-indent 2))
 #+END_SRC
 
-*** Веб-разработка
+*** HTML
 
  Подключаем web-mode (HTML, JS, CUSS в одном):
 
@@ -969,6 +969,10 @@
    (setq web-mode-enable-auto-expanding t)
    (setq web-mode-enable-css-colorization t))
  #+END_SRC
+
+*** Javascript / ECMA / React
+
+
 
 *** SQL
 
