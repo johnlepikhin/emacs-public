@@ -22,7 +22,7 @@
 
 (require 'package)
 
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
@@ -554,6 +554,21 @@ This command does not push text to `kill-ring'."
   (setq web-mode-enable-auto-pairing t)
   (setq web-mode-enable-auto-expanding t)
   (setq web-mode-enable-css-colorization t))
+
+(use-package tide
+  :after (company flycheck)
+  :config
+  (define-key tide-mode-map (kbd "C-.") 'tide-jump-to-definition)
+  (define-key tide-mode-map (kbd "C-,") 'tide-jump-back))
+
+(use-package rjsx-mode
+  :mode ("\\.js" . rjsx-mode)
+  :mode ("\\.jsx" . rjsx-mode)
+  :hook (rjsx-mode . tide-setup)
+  :after (flycheck)
+  :config
+  (with-eval-after-load flycheck-mode
+    (flycheck-add-next-checker 'javascript-eslint 'append)))
 
 (use-package sql-indent
   :hook (sql-mode . sqlind-minor-mode)
