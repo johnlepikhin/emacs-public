@@ -972,7 +972,15 @@
 
 *** Javascript / ECMA / React
 
-
+#+BEGIN_SRC emacs-lisp
+(use-package rjsx-mode
+  :mode ("\\.js" . rjsx-mode)
+  :mode ("\\.jsx" . rjsx-mode)
+  :after (flycheck)
+  :config
+  (with-eval-after-load flycheck-mode
+    (flycheck-add-next-checker 'javascript-eslint 'append)))
+#+END_SRC
 
 *** SQL
 
