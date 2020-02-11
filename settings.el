@@ -563,7 +563,8 @@ This command does not push text to `kill-ring'."
   (define-key tide-mode-map (kbd "C-.") 'tide-jump-to-definition)
   (define-key tide-mode-map (kbd "C-,") 'tide-jump-back)
   (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
-  (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append))
+  (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+  (tide-hl-identifier-mode +1))
 
   (defun my-jsx-setup ()
   (flycheck-mode +1))
@@ -575,8 +576,7 @@ This command does not push text to `kill-ring'."
   :hook (rjsx-mode . my-jsx-setup)
   :config
   (setq js-indent-level 2)
-  (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
-  (flycheck-add-mode 'typescript-tslint 'rjsx-mode))
+  (flycheck-add-mode 'javascript-eslint 'rjsx-mode))
 
 (use-package sql-indent
   :hook (sql-mode . sqlind-minor-mode)
