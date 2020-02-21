@@ -516,24 +516,25 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
-(defun my-rust-buffer-setup ()
-  (message "test")
-  (add-hook 'before-save-hook 'rust-format-buffer nil 'local)
-  (set (make-local-variable 'compile-command)
-       (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
-           "cargo run"
-         (format "rustc %s && %s" (buffer-file-name)
-                 (file-name-sans-extension (buffer-file-name))))))
-
 (use-package rust-mode
   :after (flycheck tramp racer compile)
-  :hook (rust-mode . my-rust-buffer-setup)
-  :mode ("\\.rs\\'" . rust-mode)
+  ;; :hook (rust-mode . my-rust-buffer-setup)
+  :mode "\\.rs\\'"
   :bind (:map rust-mode-map
-              ("C-c i b" . rust-format-buffer)))
-  ;; :config
-  ;; (add-hook 'rust-mode-hook (lambda () (add-hook 'before-save-hook 'rust-format-buffer nil 'local))))
-  ;; (add-hook 'before-save-hook 'rust-format-buffer))
+              ("C-c i b" . rust-format-buffer))
+  :config
+  (defun my-rust-buffer-setup ()
+    (message "test")
+    (add-hook 'before-save-hook 'rust-format-buffer nil 'local)
+    (set (make-local-variable 'compile-command)
+         (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
+             "cargo run"
+           (format "rustc %s && %s" (buffer-file-name)
+                   (file-name-sans-extension (buffer-file-name))))))
+  (add-hook 'rust-mode-hook 'my-rust-buffer-setup))
+;; :config
+;; (add-hook 'rust-mode-hook (lambda () (add-hook 'before-save-hook 'rust-format-buffer nil 'local))))
+;; (add-hook 'before-save-hook 'rust-format-buffer))
 
 (use-package racer
   :hook (rust-mode . racer-activate)
