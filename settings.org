@@ -914,23 +914,18 @@
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
   :after (flycheck tramp racer compile)
-  ;; :hook (rust-mode . my-rust-buffer-setup)
   :mode "\\.rs\\'"
   :bind (:map rust-mode-map
               ("C-c i b" . rust-format-buffer))
   :config
+  (setq rust-format-on-save t)
   (defun my-rust-buffer-setup ()
-    (message "test")
-    (add-hook 'before-save-hook 'rust-format-buffer nil 'local)
     (set (make-local-variable 'compile-command)
          (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
              "cargo run"
            (format "rustc %s && %s" (buffer-file-name)
                    (file-name-sans-extension (buffer-file-name))))))
   (add-hook 'rust-mode-hook 'my-rust-buffer-setup))
-;; :config
-;; (add-hook 'rust-mode-hook (lambda () (add-hook 'before-save-hook 'rust-format-buffer nil 'local))))
-;; (add-hook 'before-save-hook 'rust-format-buffer))
 #+END_SRC
 
 **** Автодополнение
@@ -987,8 +982,6 @@
   :hook (tide-mode . my-tide-buffer-setup)
   :config
   (add-to-list 'company-backends 'company-tide)
-  ;; (add-hook 'tide-mode-hook (lambda () (add-hook 'before-save-hook 'tide-format-before-save nil 'local)))
-  ;; (add-hook 'before-save-hook 'tide-format-before-save)
   (define-key tide-mode-map (kbd "C-.") 'tide-jump-to-definition)
   (define-key tide-mode-map (kbd "C-,") 'tide-jump-back)
   (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
