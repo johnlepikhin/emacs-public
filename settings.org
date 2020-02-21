@@ -913,6 +913,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (defun my-rust-compile-setup ()
+  (add-hook 'before-save-hook 'rust-format-buffer nil 'local)
   (set (make-local-variable 'compile-command)
        (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
            "cargo run"
@@ -924,9 +925,9 @@
   :hook (rust-mode . my-rust-compile-setup)
   :mode ("\\.rs\\'" . rust-mode)
   :bind (:map rust-mode-map
-              ("C-c i b" . rust-format-buffer))
-  :config
-  (add-hook 'rust-mode-hook (lambda () (add-hook 'before-save-hook 'rust-format-buffer nil 'local))))
+              ("C-c i b" . rust-format-buffer)))
+  ;; :config
+  ;; (add-hook 'rust-mode-hook (lambda () (add-hook 'before-save-hook 'rust-format-buffer nil 'local))))
   ;; (add-hook 'before-save-hook 'rust-format-buffer))
 #+END_SRC
 
