@@ -1205,6 +1205,14 @@ This command does not push text to `kill-ring'."
   :ensure nil
   :config (advice-add #'org-display-inline-images :after #'org-yt-display-inline-images))
 
+(use-package org-mind-map
+  :init
+  (require 'ox-org)
+  :ensure t
+  :config
+  ;; Никогда не хочу получать маленькие картинки. У меня большой мозг и он генерирует большие карты
+  (setq org-mind-map-default-graph-attribs '()))
+
 (defun my-org-confirm-babel-evaluate (lang body)
   (not (or
         (string= lang "latex")
