@@ -516,7 +516,8 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
-(defun my-rust-compile-setup ()
+(defun my-rust-buffer-setup ()
+  (message "test")
   (add-hook 'before-save-hook 'rust-format-buffer nil 'local)
   (set (make-local-variable 'compile-command)
        (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
@@ -526,7 +527,7 @@ This command does not push text to `kill-ring'."
 
 (use-package rust-mode
   :after (flycheck tramp racer compile)
-  :hook (rust-mode . my-rust-compile-setup)
+  :hook (rust-mode . my-rust-buffer-setup)
   :mode ("\\.rs\\'" . rust-mode)
   :bind (:map rust-mode-map
               ("C-c i b" . rust-format-buffer)))
@@ -559,11 +560,15 @@ This command does not push text to `kill-ring'."
   (setq web-mode-enable-auto-expanding t)
   (setq web-mode-enable-css-colorization t))
 
+(defun my-tide-buffer-setup ()
+  (add-hook 'before-save-hook 'tide-format-before-save nil 'local))
+
 (use-package tide
   :after (company flycheck)
+  :hook (tide-mode . my-tide-buffer-setup)
   :config
   (add-to-list 'company-backends 'company-tide)
-  (add-hook 'tide-mode-hook (lambda () (add-hook 'before-save-hook 'tide-format-before-save nil 'local)))
+  ;; (add-hook 'tide-mode-hook (lambda () (add-hook 'before-save-hook 'tide-format-before-save nil 'local)))
   ;; (add-hook 'before-save-hook 'tide-format-before-save)
   (define-key tide-mode-map (kbd "C-.") 'tide-jump-to-definition)
   (define-key tide-mode-map (kbd "C-,") 'tide-jump-back)
@@ -571,7 +576,7 @@ This command does not push text to `kill-ring'."
   (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
   (tide-hl-identifier-mode +1))
 
-  (defun my-jsx-setup ()
+(defun my-jsx-setup ()
   (flycheck-mode +1))
 
 (use-package rjsx-mode
