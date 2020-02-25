@@ -564,8 +564,6 @@ This command does not push text to `kill-ring'."
   :hook (tide-mode . my-tide-buffer-setup)
   :config
   (add-to-list 'company-backends 'company-tide)
-  ;; (add-hook 'tide-mode-hook (lambda () (add-hook 'before-save-hook 'tide-format-before-save nil 'local)))
-  ;; (add-hook 'before-save-hook 'tide-format-before-save)
   (define-key tide-mode-map (kbd "C-.") 'tide-jump-to-definition)
   (define-key tide-mode-map (kbd "C-,") 'tide-jump-back)
   (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
