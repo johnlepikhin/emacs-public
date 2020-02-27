@@ -1448,7 +1448,9 @@ This command does not push text to `kill-ring'."
                   (nnimap-stream shell)
                   (nnimap-shell-program "/usr/lib/dovecot/imap"))
           ;; UNIX mailbox
-          (nnmbox "LocalMBOX")))
+          (nnmbox "LocalMBOX")
+          ;; Читаем RSS/Atom через ньюсгруппы
+          (nntp "news.gwene.org")))
 
   ;; Подгрузить приватный локальный конфиг для конкретного хоста
   (my-load-org-config "local/gnus-accounts.org")
