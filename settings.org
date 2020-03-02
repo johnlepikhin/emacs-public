@@ -2088,6 +2088,9 @@
    ;; Надо определить переменные
    (require 'gnus-msg)
 
+   ;; Выставить таймаут на коннект к NNTP
+   (setq nntp-connection-timeout 10)
+
    ;; Периодический полл источников
    (gnus-demon-add-handler 'gnus-demon-scan-news 1200 300)
    (gnus-demon-init)

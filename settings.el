@@ -733,7 +733,7 @@ This command does not push text to `kill-ring'."
               ("C-c j" . my-perl-insert-json)))
 
 (use-package fic-mode
-  :hook cperl-mode emacs-lisp-mode)
+  :hook cperl-mode emacs-lisp-mode rust-mode rjsx-mode)
 
 (defun my-colorize-compilation-buffer ()
   (toggle-read-only)
@@ -1420,6 +1420,9 @@ This command does not push text to `kill-ring'."
   :config
   ;; Надо определить переменные
   (require 'gnus-msg)
+
+  ;; Выставить таймаут на коннект к NNTP
+  (setq nntp-connection-timeout 10)
 
   ;; Периодический полл источников
   (gnus-demon-add-handler 'gnus-demon-scan-news 1200 300)
