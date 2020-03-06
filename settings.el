@@ -271,7 +271,7 @@ This command does not push text to `kill-ring'."
    (add-to-list 'company-backends '(company-gtags :with company-dabbrev))
    ;; по кнопке TAB происходит и дополнение, и выбор варианта
 ;;   (company-tng-configure-default)
-   (setq company-idle-delay 0
+   (setq company-idle-delay 0.5
          company-echo-delay 0
          company-dabbrev-downcase nil
          company-show-numbers t
