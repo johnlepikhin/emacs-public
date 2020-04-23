@@ -966,6 +966,7 @@ This command does not push text to `kill-ring'."
           ("" "textcomp" t)
           ("" "tabularx" t)
           ("" "amssymb" t)
+          ("" "listings" t)
           ("" "capt-of" nil)
           ("" "hyperref" nil)))
   ;; Файлы с этими расширениями считаются временными при экспорте и будут удалены
