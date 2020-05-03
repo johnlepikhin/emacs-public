@@ -2121,7 +2121,8 @@
            ;; UNIX mailbox
            (nnmbox "LocalMBOX")
            ;; Читаем RSS/Atom через ньюсгруппы
-           (nntp "news.gwene.org")))
+           (nntp "news.gwene.org"
+                 (nntp-connection-timeout 60))))
 
    ;; Подгрузить приватный локальный конфиг для конкретного хоста
    (my-load-org-config "local/gnus-accounts.org")
