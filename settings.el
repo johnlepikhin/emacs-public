@@ -20,6 +20,8 @@
 
 (load-theme 'leuven t)
 
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -180,14 +182,15 @@
 (setq-default indent-tabs-mode nil)
 
 (use-package yasnippet
-  :bind 
+  :ensure t
+  :bind
   (:map my-bindings-map
         ("C-<tab>" . yas-expand))
   ;; я не люблю, когда по tab-у мне пытаются что-то развернуть
   (:map yas-minor-mode-map
         ("<tab>" . nil)
         ("TAB" . nil))
-  :hook ((cperl-mode org-mode) . yas-minor-mode)
+  :hook ((prog-mode org-mode) . yas-minor-mode)
   :commands (yas-minor-mode)
   :after (yasnippet-classic-snippets)
   :config
@@ -280,6 +283,9 @@ This command does not push text to `kill-ring'."
          company-transformers '(company-sort-by-occurrence
                                 company-sort-by-backend-importance)))
 
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
 (use-package company-flx
   :demand t
   :init
@@ -296,10 +302,38 @@ This command does not push text to `kill-ring'."
   tramp
   :config (setq tramp-use-ssh-controlmaster-options nil))
 
-(use-package drag-stuff
-  :bind (:map my-bindings-map
-              ("M-p" . drag-stuff-up)
-              ("M-n" . drag-stuff-down)))
+(use-package edit-server
+  :config
+  (edit-server-start))
+
+(use-package lsp-mode
+  :after yasnippet
+  :commands lsp
+  :config 
+  (require 'lsp-clients))
+
+(use-package lsp-ui
+  :custom-face
+  (lsp-ui-sideline-code-action ((t (:foreground "green"))))
+  (lsp-ui-sideline-current-symbol ((t (:foreground "orange"))))
+  :preface
+  (defun ladicle/toggle-lsp-ui-doc ()
+    (interactive)
+    (if lsp-ui-doc-mode
+        (progn
+          (lsp-ui-doc-mode -1)
+          (lsp-ui-doc--hide-frame))
+      (lsp-ui-doc-mode 1)))
+  :bind
+  (:map lsp-mode-map
+        ("C-c C-r" . lsp-ui-peek-find-references)
+        ("C-c C-j" . lsp-ui-peek-find-definitions)
+        ("C-c i"   . lsp-ui-peek-find-implementation)
+        ("C-c m"   . lsp-ui-imenu)
+        ("C-c s"   . lsp-ui-sideline-mode)
+        ("C-c d"   . ladicle/toggle-lsp-ui-doc))
+  :custom
+  (lsp-ui-doc-enable nil))
 
 (use-package
   projectile
@@ -378,11 +412,6 @@ This command does not push text to `kill-ring'."
         ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
         flycheck-checker-error-threshold 10000)
   (global-flycheck-mode))
-
-(use-package
-  flycheck-inline
-  :after (flycheck)
-  :hook (flycheck-mode . flycheck-inline-mode))
 
 (defun my-cperl-init-prettify-symbols ()
   (setq prettify-symbols-alist
@@ -516,29 +545,31 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
-(use-package rust-mode
-  :after (flycheck tramp racer compile)
-  :mode "\\.rs\\'"
-  :bind (:map rust-mode-map
-              ("C-c i b" . rust-format-buffer))
-  :config
-  (setq rust-format-on-save t)
-  (defun my-rust-buffer-setup ()
-    (set (make-local-variable 'compile-command)
-         (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
-             "cargo run"
-           (format "rustc %s && %s" (buffer-file-name)
-                   (file-name-sans-extension (buffer-file-name))))))
-  (add-hook 'rust-mode-hook 'my-rust-buffer-setup))
+;; (defun my-rustic-buffer-setup ()
+;;   (set (make-local-variable 'compile-command)
+;;        (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
+;;            "cargo run"
+;;          (format "rustc %s && %s" (buffer-file-name)
+;;                  (file-name-sans-extension (buffer-file-name))))))
 
-(use-package racer
-  :hook (rust-mode . racer-activate)
+(use-package rustic
   :config
-  (setq racer-rust-src-path "~/.local/share/rust_src/src"))
+  (setq rustic-format-trigger 'on-save
+        lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer")
+        rustic-lsp-server 'rust-analyzer
+        lsp-rust-analyzer-cargo-watch-command "clippy"
+        rustic-flycheck-clippy-params "--message-format=json")
+  (push 'rustic-clippy flycheck-checkers)
+  (remove-hook 'rustic-mode-hook 'flycheck-mode))
+  ;; (add-hook 'rustic-mode-hook 'my-rust-buffer-setup))
 
-(use-package flycheck-rust
-  :after (flycheck)
-  :hook (flycheck-mode . flycheck-rust-setup))
+;; (use-package flycheck-rust
+;;   :after (flycheck)
+;;   :hook (flycheck-mode . flycheck-rust-setup)
+;;   :config
+;;   (flycheck-add-next-checker 'rust-cargo '(warning . rust-clippy)))
+;;   ;; (add-to-list 'flycheck-disabled-checkers 'rust)
+;;   ;; (add-to-list 'flycheck-disabled-checkers 'rust-cargo)
 
 (use-package puppet-mode
   :config
@@ -1227,10 +1258,10 @@ This command does not push text to `kill-ring'."
         (string= lang "plantuml"))))
 
 (use-package
-  org-babel
-  :ensure nil
-  :after
-  (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
+  babel
+  :ensure t
+  ;; :after
+  ;; (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
   :config
   ;; Не просить подтверждение для запуска SRC-блоков
   (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
@@ -1454,7 +1485,8 @@ This command does not push text to `kill-ring'."
           ;; UNIX mailbox
           (nnmbox "LocalMBOX")
           ;; Читаем RSS/Atom через ньюсгруппы
-          (nntp "news.gwene.org")))
+          (nntp "news.gwene.org"
+                (nntp-connection-timeout 60))))
 
   ;; Подгрузить приватный локальный конфиг для конкретного хоста
   (my-load-org-config "local/gnus-accounts.org")
