@@ -546,9 +546,6 @@ This command does not push text to `kill-ring'."
   :commands (go-guru-hl-identifier-mode))
 
 (use-package rustic
-  :bind
-  (:map rustic-mode-map
-        ("C-c C-e" . rustic-cargo-clippy))
   :custom
   (rustic-format-trigger 'on-save)
   (lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
