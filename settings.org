@@ -954,9 +954,6 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package rustic
-  :bind
-  (:map rustic-mode-map
-        ("C-c C-e" . rustic-cargo-clippy))
   :custom
   (rustic-format-trigger 'on-save)
   (lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
