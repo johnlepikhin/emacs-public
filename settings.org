@@ -950,75 +950,22 @@
   :commands (go-guru-hl-identifier-mode))
 #+END_SRC
 
-# *** Rust
-# 
-# #+BEGIN_SRC emacs-lisp
-# (defun my-rust-buffer-setup ()
-#   (set (make-local-variable 'compile-command)
-#        (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
-#            "cargo run"
-#          (format "rustc %s && %s" (buffer-file-name)
-#                  (file-name-sans-extension (buffer-file-name))))))
-# 
-# (use-package rust-mode
-#   :after (flycheck tramp racer compile)
-#   :mode "\\.rs\\'"
-#   :bind (:map rust-mode-map
-#               ("C-c i b" . rust-format-buffer))
-#   :config
-#   (setq rust-format-on-save t)
-#   (add-hook 'rust-mode-hook 'my-rust-buffer-setup))
-# #+END_SRC
-# 
-# **** Автодополнение
-# 
-# #+BEGIN_SRC emacs-lisp
-# (use-package racer
-#   :hook (rust-mode . racer-activate)
-#   :config
-#   (setq racer-rust-src-path "~/.local/share/rust_src/src"))
-# #+END_SRC
-# 
-# **** Проверка синтаксиса на лету
-# 
-# #+BEGIN_SRC emacs-lisp
-# (use-package flycheck-rust
-#   :after (flycheck)
-#   :hook (flycheck-mode . flycheck-rust-setup)
-#   :config
-#   (flycheck-add-next-checker 'rust-cargo '(warning . rust-clippy)))
-#   ;; (add-to-list 'flycheck-disabled-checkers 'rust)
-#   ;; (add-to-list 'flycheck-disabled-checkers 'rust-cargo)
-# #+end_SRC
-
 *** Rust
 
 #+BEGIN_SRC emacs-lisp
-;; (defun my-rustic-buffer-setup ()
-;;   (set (make-local-variable 'compile-command)
-;;        (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
-;;            "cargo run"
-;;          (format "rustc %s && %s" (buffer-file-name)
-;;                  (file-name-sans-extension (buffer-file-name))))))
-
 (use-package rustic
+  :bind
+  (:map rustic-mode-map
+        ("C-c C-e" . rustic-cargo-clippy))
+  :custom
+  (rustic-format-trigger 'on-save)
+  (lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
+  (rustic-lsp-server 'rust-analyzer)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (rustic-flycheck-clippy-params "--message-format=json")
   :config
-  (setq rustic-format-trigger 'on-save
-        lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer")
-        rustic-lsp-server 'rust-analyzer
-        lsp-rust-analyzer-cargo-watch-command "clippy"
-        rustic-flycheck-clippy-params "--message-format=json")
   (push 'rustic-clippy flycheck-checkers)
   (remove-hook 'rustic-mode-hook 'flycheck-mode))
-  ;; (add-hook 'rustic-mode-hook 'my-rust-buffer-setup))
-
-;; (use-package flycheck-rust
-;;   :after (flycheck)
-;;   :hook (flycheck-mode . flycheck-rust-setup)
-;;   :config
-;;   (flycheck-add-next-checker 'rust-cargo '(warning . rust-clippy)))
-;;   ;; (add-to-list 'flycheck-disabled-checkers 'rust)
-;;   ;; (add-to-list 'flycheck-disabled-checkers 'rust-cargo)
 #+END_SRC
  
 *** Puppet

@@ -545,31 +545,19 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
-;; (defun my-rustic-buffer-setup ()
-;;   (set (make-local-variable 'compile-command)
-;;        (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
-;;            "cargo run"
-;;          (format "rustc %s && %s" (buffer-file-name)
-;;                  (file-name-sans-extension (buffer-file-name))))))
-
 (use-package rustic
+  :bind
+  (:map rustic-mode-map
+        ("C-c C-e" . rustic-cargo-clippy))
+  :custom
+  (rustic-format-trigger 'on-save)
+  (lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
+  (rustic-lsp-server 'rust-analyzer)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (rustic-flycheck-clippy-params "--message-format=json")
   :config
-  (setq rustic-format-trigger 'on-save
-        lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer")
-        rustic-lsp-server 'rust-analyzer
-        lsp-rust-analyzer-cargo-watch-command "clippy"
-        rustic-flycheck-clippy-params "--message-format=json")
   (push 'rustic-clippy flycheck-checkers)
   (remove-hook 'rustic-mode-hook 'flycheck-mode))
-  ;; (add-hook 'rustic-mode-hook 'my-rust-buffer-setup))
-
-;; (use-package flycheck-rust
-;;   :after (flycheck)
-;;   :hook (flycheck-mode . flycheck-rust-setup)
-;;   :config
-;;   (flycheck-add-next-checker 'rust-cargo '(warning . rust-clippy)))
-;;   ;; (add-to-list 'flycheck-disabled-checkers 'rust)
-;;   ;; (add-to-list 'flycheck-disabled-checkers 'rust-cargo)
 
 (use-package puppet-mode
   :config
