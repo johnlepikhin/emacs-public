@@ -20,7 +20,7 @@
 
 (load-theme 'leuven t)
 
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.2")
 
 (require 'package)
 
@@ -548,7 +548,7 @@ This command does not push text to `kill-ring'."
 (use-package rustic
   :custom
   (rustic-format-trigger 'on-save)
-  (lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
+  (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
   (rustic-lsp-server 'rust-analyzer)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (rustic-flycheck-clippy-params "--message-format=json")
@@ -1067,6 +1067,27 @@ This command does not push text to `kill-ring'."
                'my-hugo-improvements))
 
 (defvar my-org-blog-path "~/org/personal" "Root path where to find blog articles")
+
+(defun my-org-hugo-twits-prepare (file)
+  (interactive)
+  (setq-local org-twit-counter 1)
+  (message "Preparing twits...")
+  (org-map-entries
+   (lambda ()
+     (when
+         (and
+          (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
+          (not (org-entry-get nil "EXPORT_FILE_NAME")))
+       (progn
+         (message (format "Preparing twit '%s'" (org-entry-get nil "ITEM")))
+         (org-todo 'done)
+         (org-set-property
+          "EXPORT_FILE_NAME"
+          (format "twit-%s-%i" (format-time-string "%F-%T") org-twit-counter))
+         (incf org-twit-counter))))
+   "twit"
+   (list file)))
+
 
 (defun my-org-hugo-export-file (f)
   (interactive)
