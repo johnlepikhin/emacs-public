@@ -1617,6 +1617,27 @@
  #+BEGIN_SRC emacs-lisp
  (defvar my-org-blog-path "~/org/personal" "Root path where to find blog articles")
 
+ (defun my-org-hugo-twits-prepare (file)
+   (interactive)
+   (setq-local org-twit-counter 1)
+   (message "Preparing twits...")
+   (org-map-entries
+    (lambda ()
+      (when
+          (and
+           (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
+           (not (org-entry-get nil "EXPORT_FILE_NAME")))
+        (progn
+          (message (format "Preparing twit '%s'" (org-entry-get nil "ITEM")))
+          (org-todo 'done)
+          (org-set-property
+           "EXPORT_FILE_NAME"
+           (format "twit-%s-%i" (format-time-string "%F-%T") org-twit-counter))
+          (incf org-twit-counter))))
+    "twit"
+    (list file)))
+
+
  (defun my-org-hugo-export-file (f)
    (interactive)
    (save-excursion
@@ -1638,7 +1659,6 @@
                  (not (string-match "/[.]#" file))
                  (time-less-p newer-than (nth 5 (file-attributes file)))))
               (directory-files-recursively my-org-blog-path "\\.s?org$"))))))
-
  #+END_SRC
 
 **** Экспорт embedded видео в Hugo. Не спрашивайте.
