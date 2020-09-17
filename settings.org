@@ -698,7 +698,7 @@
 
 Генератор машиночитаемых коммитов ([[https://www.conventionalcommits.org][conventional commits]]):
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 (defun my-magit-generate-conventional-commit-message ()
   "Generates commit message in a style inspired by https://www.conventionalcommits.org/en/v1.0.0/"
   (interactive)

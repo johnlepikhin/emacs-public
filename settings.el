@@ -357,11 +357,18 @@ This command does not push text to `kill-ring'."
                        (multi-compile-locate-file-dir ".git"))))
           )))
 
+(defun my-magit-generate-conventional-commit-message ()
+  "Generates commit message in a style inspired by https://www.conventionalcommits.org/en/v1.0.0/"
+  (interactive)
+  (let ((type (ido-completing-read "Type: " '("fix" "fix!" "feat" "feat!" "docs" "ci" "refactor" "refactor!") nil t))
+        (scope (ido-completing-read "Scope: " '("" "API" "UI" "backend") nil "")))
+    (insert (format "%s%s: " type (if (string= "" scope) "" (format "(%s)" scope))))))
+
 (use-package
   magit
    :bind (:map my-bindings-map
                ("C-x g" . magit-status))
-   :hook (git-commit-setup . my-generate-conventional-commit-message))
+   :hook (git-commit-setup . my-magit-generate-conventional-commit-message))
 
 (use-package ggtags
   :hook (cperl-mode . ggtags-mode)
