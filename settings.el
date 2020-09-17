@@ -359,8 +359,9 @@ This command does not push text to `kill-ring'."
 
 (use-package
   magit
-  :bind (:map my-bindings-map
-              ("C-x g" . magit-status)))
+   :bind (:map my-bindings-map
+               ("C-x g" . magit-status))
+   :hook (git-commit-setup . my-generate-conventional-commit-message))
 
 (use-package ggtags
   :hook (cperl-mode . ggtags-mode)

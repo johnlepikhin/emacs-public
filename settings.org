@@ -699,7 +699,7 @@
 Генератор машиночитаемых коммитов ([[https://www.conventionalcommits.org][conventional commits]]):
 
 #+BEGIN_SRC elisp
-(defun my-generate-conventional-commit-message ()
+(defun my-magit-generate-conventional-commit-message ()
   "Generates commit message in a style inspired by https://www.conventionalcommits.org/en/v1.0.0/"
   (interactive)
   (let ((type (ido-completing-read "Type: " '("fix" "fix!" "feat" "feat!" "docs" "ci" "refactor" "refactor!") nil t))
@@ -714,7 +714,7 @@
    magit
     :bind (:map my-bindings-map
                 ("C-x g" . magit-status))
-    :hook (git-commit-setup . my-generate-conventional-commit-message))
+    :hook (git-commit-setup . my-magit-generate-conventional-commit-message))
  #+END_SRC
 
 *** Индекс по тэгам
