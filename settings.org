@@ -629,9 +629,7 @@
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-mode
   :after yasnippet
-  :commands lsp
-  :config 
-  (require 'lsp-clients))
+  :commands lsp)
 
 (use-package lsp-ui
   :custom-face

@@ -308,9 +308,7 @@ This command does not push text to `kill-ring'."
 
 (use-package lsp-mode
   :after yasnippet
-  :commands lsp
-  :config 
-  (require 'lsp-clients))
+  :commands lsp)
 
 (use-package lsp-ui
   :custom-face
