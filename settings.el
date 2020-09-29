@@ -359,7 +359,7 @@ This command does not push text to `kill-ring'."
   "Generates commit message in a style inspired by https://www.conventionalcommits.org/en/v1.0.0/"
   (interactive)
   (let ((type (ido-completing-read "Type: " '("fix" "fix!" "feat" "feat!" "docs" "ci" "refactor" "refactor!") nil t))
-        (scope (ido-completing-read "Scope: " '("" "API" "UI" "backend") nil "")))
+        (scope (ido-completing-read "Scope: " '("" "API" "UI" "backend") nil nil "")))
     (insert (format "%s%s: " type (if (string= "" scope) "" (format "(%s)" scope))))))
 
 (use-package
