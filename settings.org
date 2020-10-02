@@ -973,8 +973,9 @@
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (rustic-flycheck-clippy-params "--message-format=json")
   :config
-  (push 'rustic-clippy flycheck-checkers)
-  (remove-hook 'rustic-mode-hook 'flycheck-mode))
+)
+  ;; (push 'rustic-clippy flycheck-checkers)
+  ;; (remove-hook 'rustic-mode-hook 'flycheck-mode))
 #+END_SRC
  
 *** Puppet

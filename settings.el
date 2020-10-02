@@ -559,8 +559,9 @@ This command does not push text to `kill-ring'."
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (rustic-flycheck-clippy-params "--message-format=json")
   :config
-  (push 'rustic-clippy flycheck-checkers)
-  (remove-hook 'rustic-mode-hook 'flycheck-mode))
+)
+  ;; (push 'rustic-clippy flycheck-checkers)
+  ;; (remove-hook 'rustic-mode-hook 'flycheck-mode))
 
 (use-package puppet-mode
   :config
