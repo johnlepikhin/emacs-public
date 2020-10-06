@@ -283,6 +283,7 @@ This command does not push text to `kill-ring'."
          company-transformers '(company-sort-by-occurrence
                                 company-sort-by-backend-importance)))
 
+;; Глючит паре с rustic
 ;; (use-package company-box
 ;;   :hook (company-mode . company-box-mode))
 
