@@ -578,8 +578,9 @@
          company-transformers '(company-sort-by-occurrence
                                 company-sort-by-backend-importance)))
 
-(use-package company-box
-  :hook (company-mode . company-box-mode))
+;; Глючит паре с rustic
+;; (use-package company-box
+;;   :hook (company-mode . company-box-mode))
 #+END_SRC
 
 **** Автодополнение с неточным совпадением

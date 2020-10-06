@@ -283,8 +283,8 @@ This command does not push text to `kill-ring'."
          company-transformers '(company-sort-by-occurrence
                                 company-sort-by-backend-importance)))
 
-(use-package company-box
-  :hook (company-mode . company-box-mode))
+;; (use-package company-box
+;;   :hook (company-mode . company-box-mode))
 
 (use-package company-flx
   :demand t
