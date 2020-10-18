@@ -825,12 +825,15 @@ This command does not push text to `kill-ring'."
   org
   :ensure nil
   :hook ((org-mode . turn-on-flyspell)
-		 ;; автоматом считывать изменения с диска
-		 (org-mode . turn-on-auto-revert-mode)
-		 ;; автосохранение для org-буферов
-		 (auto-save . org-save-all-org-buffers)
-		 ;; автоперенос строк по умолчанию
-		 (org-mode . auto-fill-mode))
+         ;; автоматом считывать изменения с диска
+         (org-mode . turn-on-auto-revert-mode)
+         ;; автосохранение для org-буферов
+         (auto-save . org-save-all-org-buffers)
+         ;; автоперенос строк по умолчанию
+         (org-mode . auto-fill-mode)
+         ;; выключить включенный теперь везде по умолчанию electric-indent-mode
+         ;; в org-mode он по нажатию enter вставляет строчку с отступом
+         (org-mode . (lambda () (electric-indent-mode -1))))
   :bind (:map my-bindings-map
               ("C-c l" . org-store-link))
   :config
