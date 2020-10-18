@@ -233,6 +233,7 @@ This command does not push text to `kill-ring'."
 (use-package
   indent-guide
   :hook ((prog-mode . indent-guide-mode)
+         (yaml-mode . indent-guide-mode)
          (find-file . my-disable-indent-guide-mode-for-big-buffer))
   :config
   (setq indent-guide-char "|")
