@@ -2,6 +2,8 @@
 
 (setq use-package-compute-statistics t)
 
+(use-package quelpa-use-package)
+
 (setq auto-revert-interval 1            ; Refresh buffers fast
       custom-file (make-temp-file "")   ; Discard customization's
       default-input-method "TeX"        ; Use TeX when toggling input method
@@ -369,6 +371,9 @@ This command does not push text to `kill-ring'."
    :bind (:map my-bindings-map
                ("C-x g" . magit-status))
    :hook (git-commit-setup . my-magit-generate-conventional-commit-message))
+
+(use-package conventional-changelog
+  :quelpa (conventional-changelog :fetcher github :repo "johnlepikhin/el-conventional-changelog"))
 
 (use-package ggtags
   :hook (cperl-mode . ggtags-mode)

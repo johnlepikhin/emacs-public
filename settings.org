@@ -732,6 +732,9 @@
   :quelpa (conventional-changelog :fetcher github :repo "johnlepikhin/el-conventional-changelog"))
 #+END_SRC
 
+#+RESULTS:
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24466 37134 710883 275000) :init (24466 37134 710879 842000) :config (24466 37134 710829 132000) :config-secs (0 0 5 487000) :init-secs (0 0 2422 647000) :use-package-secs (0 53 571255 214000)))
+
 
 *** Индекс по тэгам
 
