@@ -51,6 +51,12 @@
 (setq use-package-compute-statistics t)
 #+END_SRC
 
+Подключить возможность устанавливать пакеты из quelpa и гита.
+
+#+BEGIN_SRC emacs-lisp
+(use-package quelpa-use-package)
+#+END_SRC
+
 *** Внешний вид
 
  Некоторые оптимизации:
@@ -716,6 +722,16 @@
                 ("C-x g" . magit-status))
     :hook (git-commit-setup . my-magit-generate-conventional-commit-message))
  #+END_SRC
+
+*** Conventional changelog
+
+Моё поделие для управления версиями проекта и ведения Changelog.org.
+
+#+BEGIN_SRC emacs-lisp
+(use-package conventional-changelog
+  :quelpa (conventional-changelog :fetcher github :repo "johnlepikhin/el-conventional-changelog"))
+#+END_SRC
+
 
 *** Индекс по тэгам
 
