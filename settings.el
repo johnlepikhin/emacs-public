@@ -337,16 +337,6 @@ This command does not push text to `kill-ring'."
   :custom
   (lsp-ui-doc-enable nil))
 
-(use-package xref)
-(use-package gxref
-  :ensure t
-  :commands gxref-xref-backend
-  :bind ((:map kd/tags-map
-               ("c" . gxref-create-db)
-               ("u" . gxref-single-update-db)
-               ("U" . gxref-update-db)))
-  :init (add-to-list 'xref-backend-functions 'gxref-xref-backend))
-
 (use-package
   projectile
   :bind (:map projectile-mode-map

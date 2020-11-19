@@ -663,21 +663,6 @@
   (lsp-ui-doc-enable nil))
 #+END_SRC
 
-*** xref - хождение по коду
-
-#+BEGIN_SRC emacs-lisp
-(use-package xref)
-(use-package gxref
-  :ensure t
-  :commands gxref-xref-backend
-  :bind ((:map kd/tags-map
-               ("c" . gxref-create-db)
-               ("u" . gxref-single-update-db)
-               ("U" . gxref-update-db)))
-  :init (add-to-list 'xref-backend-functions 'gxref-xref-backend))
-#+END_SRC
-
-
 *** Управление проектами
 
  Подключаем projectile:
