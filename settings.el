@@ -1272,6 +1272,8 @@ This command does not push text to `kill-ring'."
   ;; Никогда не хочу получать маленькие картинки. У меня большой мозг и он генерирует большие карты
   (setq org-mind-map-default-graph-attribs '()))
 
+(require 'ox-man)
+
 (defun my-org-confirm-babel-evaluate (lang body)
   (not (or
         (string= lang "latex")
