@@ -1850,6 +1850,13 @@
   (setq org-mind-map-default-graph-attribs '()))
 #+END_SRC
 
+*** man pages
+
+#+BEGIN_SRC emacs-lisp
+(require 'ox-man)
+#+END_SRC
+
+
 ** Org babel (исполняемые кусочки кода в org-файлах)
 
 Org babel режимы, которые надо поддержать
