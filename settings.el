@@ -1478,6 +1478,10 @@ This command does not push text to `kill-ring'."
   ;; Надо определить переменные
   (require 'gnus-msg)
 
+  ;; Свежий gnus перестал самостоятельно находить
+  ;; Лечит ошибку: Mail source (file) error (Searching for program)
+  (setq mail-source-movemail-program "/usr/bin/movemail")
+
   ;; Выставить таймаут на коннект к NNTP
   (setq nntp-connection-timeout 10)
 
