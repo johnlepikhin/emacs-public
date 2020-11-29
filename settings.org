@@ -985,6 +985,42 @@
 
 *** Rust
 
+Символьная репрезентация кода
+
+ #+BEGIN_SRC emacs-lisp
+ (defun my-rust-init-prettify-symbols ()
+   (setq prettify-symbols-alist
+         '(("<=" . ?≤)
+           ("&&" . ?∧)
+           ("||" . ?∨)
+           ("!=" . ?≠)
+           ("for" . ?∀)
+           ("foreach" . ?∀)
+           ("None" . ?∅)
+           ("Some" . ?∈)
+           ("fn" . ?λ)
+           ("return" . ?⊢)
+           ("let" . ?≡)
+           ("!" . ?¬)
+           ("not" . ?¬)
+           ("join" . ?𝐉)
+           ("filter" . ?⊳)
+           ("map" . ?𝐌)
+           ("sort" . ?𝐒)
+           (".." . ?⋰)
+           ("continue" . ?↰)
+           ("break" . ?↴)
+           ("if" . ?⎧)
+           ("elsif" . ?⎨)
+           ("else" . ?⎩)
+           ("->" . ?→)
+           ("=>" . ?⇒)))
+   (prettify-symbols-mode))
+ #+END_SRC
+
+ #+RESULTS:
+ : my-cperl-init-prettify-symbols
+
 #+BEGIN_SRC emacs-lisp
 (use-package rustic
   :custom
