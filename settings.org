@@ -1013,6 +1013,8 @@
            ("if" . ?⎧)
            ("elsif" . ?⎨)
            ("else" . ?⎩)
+           ("enum" . ?ℕ)
+           ("struct" . ?𝐔)
            ("->" . ?→)
            ("=>" . ?⇒)))
    (prettify-symbols-mode))
@@ -1023,6 +1025,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package rustic
+  :hook ((rustic-mode . my-rust-init-prettify-symbols))
   :custom
   (rustic-format-trigger 'on-save)
   (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))

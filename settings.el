@@ -22,7 +22,7 @@
 
 (load-theme 'leuven t)
 
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.2")
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (require 'package)
 
@@ -558,7 +558,37 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
+(defun my-rust-init-prettify-symbols ()
+  (setq prettify-symbols-alist
+        '(("<=" . ?≤)
+          ("&&" . ?∧)
+          ("||" . ?∨)
+          ("!=" . ?≠)
+          ("for" . ?∀)
+          ("foreach" . ?∀)
+          ("None" . ?∅)
+          ("Some" . ?∈)
+          ("fn" . ?λ)
+          ("return" . ?⊢)
+          ("let" . ?≡)
+          ("!" . ?¬)
+          ("not" . ?¬)
+          ("join" . ?𝐉)
+          ("filter" . ?⊳)
+          ("map" . ?𝐌)
+          ("sort" . ?𝐒)
+          (".." . ?⋰)
+          ("continue" . ?↰)
+          ("break" . ?↴)
+          ("if" . ?⎧)
+          ("elsif" . ?⎨)
+          ("else" . ?⎩)
+          ("->" . ?→)
+          ("=>" . ?⇒)))
+  (prettify-symbols-mode))
+
 (use-package rustic
+  :hook ((rustic-mode . my-rust-init-prettify-symbols))
   :custom
   (rustic-format-trigger 'on-save)
   (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
