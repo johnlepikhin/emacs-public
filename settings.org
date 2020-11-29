@@ -1014,6 +1014,8 @@
            ("else" . ?⎩)
            ("enum" . ?ℕ)
            ("struct" . ?𝐔)
+           ("self" . ?☐)
+           ("pub" . ?☍)
            ("->" . ?→)
            ("=>" . ?⇒)))
    (prettify-symbols-mode))
