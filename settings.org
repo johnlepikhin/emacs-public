@@ -997,7 +997,7 @@
            ("for" . ?∀)
            ("foreach" . ?∀)
            ("None" . ?∅)
-		   ("Some" . ?∃)
+           ("Some" . ?∃)
            ("fn" . ?λ)
            ("return" . ?⊢)
            ("let" . ?≡)
@@ -1104,6 +1104,16 @@
   :hook (sql-mode . sqlind-minor-mode)
   :commands sqlind-minor-mode)
 #+END_SRC
+
+*** ERB mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package eruby-mode)
+#+END_SRC
+
+#+RESULTS:
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24517 22488 493751 312000) :init (24517 22488 493734 65000) :init-secs (0 0 108429 291000) :use-package-secs (0 31 295227 436000)))
+
 
 *** Форматирование
 
