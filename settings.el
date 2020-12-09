@@ -567,7 +567,7 @@ This command does not push text to `kill-ring'."
           ("for" . ?∀)
           ("foreach" . ?∀)
           ("None" . ?∅)
-		  ("Some" . ?∃)
+          ("Some" . ?∃)
           ("fn" . ?λ)
           ("return" . ?⊢)
           ("let" . ?≡)
