@@ -1105,6 +1105,14 @@
   :commands sqlind-minor-mode)
 #+END_SRC
 
+*** Python
+
+#+BEGIN_SRC emacs-lisp
+(use-package python-mode
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode))
+#+END_SRC
+
 *** Форматирование
 
  Perltidy.el, взято отсюда: https://www.emacswiki.org/emacs/perltidy.el
