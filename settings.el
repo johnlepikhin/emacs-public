@@ -868,7 +868,7 @@ This command does not push text to `kill-ring'."
          ;; автоматом считывать изменения с диска
          (org-mode . turn-on-auto-revert-mode)
          ;; автосохранение для org-буферов
-         (auto-save . org-save-all-org-buffers)
+         ;; (auto-save . org-save-all-org-buffers)
          ;; автоперенос строк по умолчанию
          (org-mode . auto-fill-mode)
          ;; выключить включенный теперь везде по умолчанию electric-indent-mode
