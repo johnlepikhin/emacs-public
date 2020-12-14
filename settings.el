@@ -651,6 +651,10 @@ This command does not push text to `kill-ring'."
   :hook (sql-mode . sqlind-minor-mode)
   :commands sqlind-minor-mode)
 
+(use-package python-mode
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode))
+
 (defcustom perltidy-program "perltidy"
   "*Program name of perltidy"
   :type 'string
