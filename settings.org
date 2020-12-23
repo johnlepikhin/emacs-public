@@ -1277,7 +1277,7 @@
 
  #+BEGIN_SRC emacs-lisp
  (use-package fic-mode
-   :hook cperl-mode emacs-lisp-mode rust-mode rjsx-mode)
+   :hook cperl-mode emacs-lisp-mode rust-mode rustic-mode rjsx-mode)
  #+END_SRC
 
 *** Цветной compile buffer
