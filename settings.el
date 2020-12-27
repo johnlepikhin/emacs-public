@@ -528,7 +528,9 @@ This command does not push text to `kill-ring'."
   :hook (rust-mode . my-rust-compile-setup)
   :mode ("\\.rs\\'" . rust-mode)
   :bind (:map rust-mode-map
-              ("C-c i b" . rust-format-buffer)))
+              ("C-c i b" . rust-format-buffer))
+  :config
+  (add-hook 'before-save-hook 'rust-format-buffer))
 
 (use-package racer
   :hook (rust-mode . racer-activate)
