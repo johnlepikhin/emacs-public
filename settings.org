@@ -41,15 +41,15 @@
 
  Все переменные здесь лексически локальны:
 
- #+BEGIN_SRC emacs-lisp
- (setq-local lexical-binding t)
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq-local lexical-binding t)
+#+END_SRC
 
- Собрать информацию по use-package. После загрузки можно позвать функци use-package-report и посмотреть.
+Собрать информацию по use-package. После загрузки можно позвать функци use-package-report и посмотреть.
 
- #+BEGIN_SRC emacs-lisp
- (setq use-package-compute-statistics t)
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq use-package-compute-statistics t)
+#+END_SRC
 
 *** Внешний вид
 
@@ -98,71 +98,77 @@
 
 *** Менеджер пакетов и зависимостей
 
- Подключить менеджер пакетов:
+Фикс для https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request/
 
- #+BEGIN_SRC emacs-lisp
- (require 'package)
+#+BEGIN_SRC emacs-lisp
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.2")
+#+END_SRC
 
- (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
- (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
- (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
- #+END_SRC
+Подключить менеджер пакетов:
 
- Прибить гвоздями указанные пакеты к репозиториям:
+#+BEGIN_SRC emacs-lisp
+(require 'package)
 
- #+BEGIN_SRC emacs-lisp
- (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
- #+END_SRC
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+#+END_SRC
 
- Поставить перечисленные пакеты, если не установлены:
+Прибить гвоздями указанные пакеты к репозиториям:
 
- #+BEGIN_SRC emacs-lisp
- (dolist (package
-          '(use-package))
-   (if (not (package-installed-p package))
-     (progn
-       (message "Installing package %s" package)
-     (package-refresh-contents)
-       (package-install package))))
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+#+END_SRC
 
- Настраиваем use-package:
+Поставить перечисленные пакеты, если не установлены:
 
- #+BEGIN_SRC emacs-lisp
- (require 'use-package)
- (setq use-package-always-ensure t)
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(dolist (package
+         '(use-package))
+  (if (not (package-installed-p package))
+    (progn
+      (message "Installing package %s" package)
+    (package-refresh-contents)
+      (package-install package))))
+#+END_SRC
 
- Больше дебага для use-package:
+Настраиваем use-package:
 
- #+BEGIN_SRC emacs-lisp
- (setq use-package-verbose t)
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(require 'use-package)
+(setq use-package-always-ensure t)
+#+END_SRC
 
- Я хочу указывать зависимости к системным пакетам при использовании use-package:
+Больше дебага для use-package:
 
- #+BEGIN_SRC emacs-lisp
- (use-package use-package-ensure-system-package
-   :ensure t)
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq use-package-verbose t)
+#+END_SRC
 
- Продублируем определение, подгружающее функции из ~/.emacs:
+Я хочу указывать зависимости к системным пакетам при использовании use-package:
 
- #+BEGIN_SRC emacs-lisp
- (defun my-load-org-config (subpath)
-   (let ((ini-file (expand-file-name subpath user-emacs-directory)))
-	 (condition-case errinfo
-		 (progn
-		   (org-babel-load-file ini-file)
-		   (message "Loaded config: %s" subpath))
-	   (error (message "Cannot load settings for file %s: %s" ini-file errinfo)))))
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package use-package-ensure-system-package
+  :ensure t)
+#+END_SRC
+
+Продублируем определение, подгружающее функции из ~/.emacs:
+
+#+BEGIN_SRC emacs-lisp
+(defun my-load-org-config (subpath)
+  (let ((ini-file (expand-file-name subpath user-emacs-directory)))
+	(condition-case errinfo
+		(progn
+		  (org-babel-load-file ini-file)
+		  (message "Loaded config: %s" subpath))
+	  (error (message "Cannot load settings for file %s: %s" ini-file errinfo)))))
+#+END_SRC
 
 *** Информация о пользователе
 
- #+BEGIN_SRC emacs-lisp
- (my-load-org-config "local/user-info.org")
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(my-load-org-config "local/user-info.org")
+#+END_SRC
 
 ** Настройки ввода
 
@@ -441,14 +447,15 @@
 
  #+BEGIN_SRC emacs-lisp
  (use-package yasnippet
-   :bind 
+   :ensure t
+   :bind
    (:map my-bindings-map
          ("C-<tab>" . yas-expand))
    ;; я не люблю, когда по tab-у мне пытаются что-то развернуть
    (:map yas-minor-mode-map
          ("<tab>" . nil)
          ("TAB" . nil))
-   :hook ((cperl-mode org-mode) . yas-minor-mode)
+   :hook ((prog-mode org-mode) . yas-minor-mode)
    :commands (yas-minor-mode)
    :after (yasnippet-classic-snippets)
    :config
@@ -553,8 +560,8 @@
 
 *** Автодополнение
 
- #+BEGIN_SRC emacs-lisp
- (use-package
+#+BEGIN_SRC emacs-lisp
+(use-package
    company
    :hook (prog-mode . company-mode)
    :config
@@ -562,7 +569,7 @@
    (add-to-list 'company-backends '(company-gtags :with company-dabbrev))
    ;; по кнопке TAB происходит и дополнение, и выбор варианта
 ;;   (company-tng-configure-default)
-   (setq company-idle-delay 0
+   (setq company-idle-delay 0.5
          company-echo-delay 0
          company-dabbrev-downcase nil
          company-show-numbers t
@@ -570,18 +577,21 @@
          company-selection-wrap-around t
          company-transformers '(company-sort-by-occurrence
                                 company-sort-by-backend-importance)))
- #+END_SRC
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+#+END_SRC
 
 **** Автодополнение с неточным совпадением
 
 К сожалению, поддерживает не так много бэкендов company. Я использую только для lisp.
 
- #+BEGIN_SRC emacs-lisp
- (use-package company-flx
-   :demand t
-   :init
-   (company-flx-mode +1))
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package company-flx
+  :demand t
+  :init
+  (company-flx-mode +1))
+#+END_SRC
 
 **** Документация в company
 
@@ -603,19 +613,50 @@
    :config (setq tramp-use-ssh-controlmaster-options nil))
  #+END_SRC
 
-*** drug-staff
 
-Таскаем выделенное или строчку по буферу
+*** Edit server: редактор для input'ов в браузере
 
-#+BEGIN_SRC emacs-lisp
-(use-package drag-stuff
-  :bind (:map my-bindings-map
-              ("M-p" . drag-stuff-up)
-              ("M-n" . drag-stuff-down)))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (use-package edit-server
+   :config
+   (edit-server-start))
+ #+END_SRC
 
 
 ** Разработка
+*** LSP
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-mode
+  :after yasnippet
+  :commands lsp
+  :config 
+  (require 'lsp-clients))
+
+(use-package lsp-ui
+  :custom-face
+  (lsp-ui-sideline-code-action ((t (:foreground "green"))))
+  (lsp-ui-sideline-current-symbol ((t (:foreground "orange"))))
+  :preface
+  (defun ladicle/toggle-lsp-ui-doc ()
+    (interactive)
+    (if lsp-ui-doc-mode
+        (progn
+          (lsp-ui-doc-mode -1)
+          (lsp-ui-doc--hide-frame))
+      (lsp-ui-doc-mode 1)))
+  :bind
+  (:map lsp-mode-map
+        ("C-c C-r" . lsp-ui-peek-find-references)
+        ("C-c C-j" . lsp-ui-peek-find-definitions)
+        ("C-c i"   . lsp-ui-peek-find-implementation)
+        ("C-c m"   . lsp-ui-imenu)
+        ("C-c s"   . lsp-ui-sideline-mode)
+        ("C-c d"   . ladicle/toggle-lsp-ui-doc))
+  :custom
+  (lsp-ui-doc-enable nil))
+#+END_SRC
+
 *** Управление проектами
 
  Подключаем projectile:
@@ -721,14 +762,14 @@
    (global-flycheck-mode))
  #+END_SRC
 
- Показывать ошибки прямо на месте, под строкой:
+ # Показывать ошибки прямо на месте, под строкой:
 
- #+BEGIN_SRC emacs-lisp
- (use-package
-   flycheck-inline
-   :after (flycheck)
-   :hook (flycheck-mode . flycheck-inline-mode))
- #+END_SRC
+ # #+BEGIN_SRC emacs-lisp
+ # (use-package
+ #   flycheck-inline
+ #   :after (flycheck)
+ #   :hook (flycheck-mode . flycheck-inline-mode))
+ # #+END_SRC
 
 *** Perl
 
@@ -912,40 +953,18 @@
 *** Rust
 
 #+BEGIN_SRC emacs-lisp
-(defun my-rust-compile-setup ()
-  (set (make-local-variable 'compile-command)
-       (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
-           "cargo run"
-         (format "rustc %s && %s" (buffer-file-name)
-                 (file-name-sans-extension (buffer-file-name))))))
-
-(use-package rust-mode
-  :after (flycheck tramp racer compile)
-  :hook (rust-mode . my-rust-compile-setup)
-  :mode ("\\.rs\\'" . rust-mode)
-  :bind (:map rust-mode-map
-              ("C-c i b" . rust-format-buffer))
+(use-package rustic
+  :custom
+  (rustic-format-trigger 'on-save)
+  (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
+  (rustic-lsp-server 'rust-analyzer)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (rustic-flycheck-clippy-params "--message-format=json")
   :config
-  (add-hook 'before-save-hook 'rust-format-buffer))
+  (push 'rustic-clippy flycheck-checkers)
+  (remove-hook 'rustic-mode-hook 'flycheck-mode))
 #+END_SRC
-
-**** Автодополнение
-
-#+BEGIN_SRC emacs-lisp
-(use-package racer
-  :hook (rust-mode . racer-activate)
-  :config
-  (setq racer-rust-src-path "~/.local/share/rust_src/src"))
-#+END_SRC
-
-**** Проверка синтаксиса на лету
-
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck-rust
-  :after (flycheck)
-  :hook (flycheck-mode . flycheck-rust-setup))
-#+END_SRC
-
+ 
 *** Puppet
 
 #+BEGIN_SRC emacs-lisp
@@ -975,18 +994,21 @@
 *** Javascript / ECMA / React
 
 #+BEGIN_SRC emacs-lisp
+(defun my-tide-buffer-setup ()
+  (add-hook 'before-save-hook 'tide-format-before-save nil 'local))
+
 (use-package tide
   :after (company flycheck)
+  :hook (tide-mode . my-tide-buffer-setup)
   :config
   (add-to-list 'company-backends 'company-tide)
-  (add-hook 'before-save-hook 'tide-format-before-save)
   (define-key tide-mode-map (kbd "C-.") 'tide-jump-to-definition)
   (define-key tide-mode-map (kbd "C-,") 'tide-jump-back)
   (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
   (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
   (tide-hl-identifier-mode +1))
 
-  (defun my-jsx-setup ()
+(defun my-jsx-setup ()
   (flycheck-mode +1))
 
 (use-package rjsx-mode
@@ -1171,7 +1193,7 @@
 
  #+BEGIN_SRC emacs-lisp
  (use-package fic-mode
-   :hook cperl-mode emacs-lisp-mode)
+   :hook cperl-mode emacs-lisp-mode rust-mode rjsx-mode)
  #+END_SRC
 
 *** Цветной compile buffer
@@ -1329,7 +1351,7 @@
 
 *** Отложенные таски
 
- Иногда хочется спрятать таск из агенды на определенное время, чтобы глаза его мои не видели.
+ Иногда хочется спрятать таск из агенды на определенное время, чтобы глаза мои его не видели.
 
  Вешаем в agenda-буфере на кнопку C-d функционал откладывания таска:
 
@@ -1485,6 +1507,7 @@
            ("" "textcomp" t)
            ("" "tabularx" t)
            ("" "amssymb" t)
+           ("" "listings" t)
            ("" "capt-of" nil)
            ("" "hyperref" nil)))
    ;; Файлы с этими расширениями считаются временными при экспорте и будут удалены
@@ -1594,6 +1617,27 @@
  #+BEGIN_SRC emacs-lisp
  (defvar my-org-blog-path "~/org/personal" "Root path where to find blog articles")
 
+ (defun my-org-hugo-twits-prepare (file)
+   (interactive)
+   (setq-local org-twit-counter 1)
+   (message "Preparing twits...")
+   (org-map-entries
+    (lambda ()
+      (when
+          (and
+           (not (string= (string-trim (org-entry-get nil "ITEM")) ""))
+           (not (org-entry-get nil "EXPORT_FILE_NAME")))
+        (progn
+          (message (format "Preparing twit '%s'" (org-entry-get nil "ITEM")))
+          (org-todo 'done)
+          (org-set-property
+           "EXPORT_FILE_NAME"
+           (format "twit-%s-%i" (format-time-string "%F-%T") org-twit-counter))
+          (incf org-twit-counter))))
+    "twit"
+    (list file)))
+
+
  (defun my-org-hugo-export-file (f)
    (interactive)
    (save-excursion
@@ -1615,7 +1659,6 @@
                  (not (string-match "/[.]#" file))
                  (time-less-p newer-than (nth 5 (file-attributes file)))))
               (directory-files-recursively my-org-blog-path "\\.s?org$"))))))
-
  #+END_SRC
 
 **** Экспорт embedded видео в Hugo. Не спрашивайте.
@@ -1772,7 +1815,7 @@
 
 ** Org babel (исполняемые кусочки кода в org-файлах)
 
- Org babel режимые, которые надо поддержать
+Org babel режимы, которые надо поддержать
 
  #+BEGIN_SRC emacs-lisp
  (defun my-org-confirm-babel-evaluate (lang body)
@@ -1784,10 +1827,10 @@
          (string= lang "plantuml"))))
 
  (use-package
-   org-babel
-   :ensure nil
-   :after
-   (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
+   babel
+   :ensure t
+   ;; :after
+   ;; (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
    :config
    ;; Не просить подтверждение для запуска SRC-блоков
    (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
@@ -2086,6 +2129,9 @@
    ;; Надо определить переменные
    (require 'gnus-msg)
 
+   ;; Выставить таймаут на коннект к NNTP
+   (setq nntp-connection-timeout 10)
+
    ;; Периодический полл источников
    (gnus-demon-add-handler 'gnus-demon-scan-news 1200 300)
    (gnus-demon-init)
@@ -2113,7 +2159,10 @@
                    (nnimap-stream shell)
                    (nnimap-shell-program "/usr/lib/dovecot/imap"))
            ;; UNIX mailbox
-           (nnmbox "LocalMBOX")))
+           (nnmbox "LocalMBOX")
+           ;; Читаем RSS/Atom через ньюсгруппы
+           (nntp "news.gwene.org"
+                 (nntp-connection-timeout 60))))
 
    ;; Подгрузить приватный локальный конфиг для конкретного хоста
    (my-load-org-config "local/gnus-accounts.org")
