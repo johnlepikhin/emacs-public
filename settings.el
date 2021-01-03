@@ -649,11 +649,7 @@ This command does not push text to `kill-ring'."
   :hook (sql-mode . sqlind-minor-mode)
   :commands sqlind-minor-mode)
 
-(use-package rx
-  :defer t)
-
 (use-package python-mode
-  :after (rx)
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python" . python-mode))
 
