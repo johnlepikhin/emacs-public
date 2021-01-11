@@ -598,6 +598,7 @@ This command does not push text to `kill-ring'."
   (rustic-lsp-server 'rust-analyzer)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (rustic-flycheck-clippy-params "--message-format=json")
+  (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
   :config
 )
   ;; (push 'rustic-clippy flycheck-checkers)
