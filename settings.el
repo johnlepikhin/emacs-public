@@ -337,6 +337,8 @@ This command does not push text to `kill-ring'."
   :custom
   (lsp-ui-doc-enable nil))
 
+(use-package company-lsp :commands company-lsp)
+
 (use-package
   projectile
   :bind (:map projectile-mode-map
@@ -604,20 +606,11 @@ This command does not push text to `kill-ring'."
   ;; (push 'rustic-clippy flycheck-checkers)
   ;; (remove-hook 'rustic-mode-hook 'flycheck-mode))
 
-(use-package cc-mode
-  :defer t
-  :init
-  (defun my-c-hook ()
-    (setf c-basic-offset 4)
-    (c-set-offset 'substatement-open 0)
-    (c-set-offset 'case-label '+)
-    (c-set-offset 'access-label '/)
-    (c-set-offset 'label '/))
+(use-package ccls
+  :hook ((c-mode c++-mode objc-mode cuda-mode) .
+         (lambda () (require 'ccls) (lsp)))
   :config
-  (add-hook 'c-mode-hook #'my-c-hook)
-  (add-hook 'c++-mode-hook #'my-c-hook)
-  (add-to-list 'c-default-style '(c-mode . "k&r"))
-  (add-to-list 'c-default-style '(c++-mode . "k&r")))
+  (setq ccls-executable "/snap/bin/ccls"))
 
 (use-package puppet-mode
   :config
