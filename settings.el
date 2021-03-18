@@ -22,7 +22,7 @@
 
 (load-theme 'leuven t)
 
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (require 'package)
 
