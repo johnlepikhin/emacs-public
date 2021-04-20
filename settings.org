@@ -1147,12 +1147,11 @@
 #+BEGIN_SRC emacs-lisp
 (use-package jedi
   :ensure t
-  :hook (python-mode . jedi:setup)
-  :hook (python-mode . jedi:ac-setup))
+  :hook (python-mode . jedi:setup))
 #+END_SRC
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24702 33425 600678 59000) :init (24702 33425 600648 412000) :init-secs (0 0 119 674000) :use-package-secs (0 0 337 201000)))
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24702 34310 374769 344000) :init (24702 34310 374749 494000) :init-secs (0 0 54 817000) :use-package-secs (0 0 238 620000) :config (24702 34310 374725 840000) :config-secs (0 0 12 857000)))
 
 
 *** Форматирование

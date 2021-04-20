@@ -677,6 +677,10 @@ This command does not push text to `kill-ring'."
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python" . python-mode))
 
+(use-package jedi
+  :ensure t
+  :hook (python-mode . jedi:setup))
+
 (defcustom perltidy-program "perltidy"
   "*Program name of perltidy"
   :type 'string
