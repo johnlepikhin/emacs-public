@@ -560,6 +560,7 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
+<<<<<<< HEAD
 (defun my-rust-init-prettify-symbols ()
   (setq prettify-symbols-alist
         '(("<=" . ?≤)
@@ -592,6 +593,28 @@ This command does not push text to `kill-ring'."
           ("=>" . ?⇒)))
   (prettify-symbols-mode))
 
+=======
+<<<<<<< HEAD
+(defun my-rust-compile-setup ()
+  (set (make-local-variable 'compile-command)
+       (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
+           "cargo run"
+         (format "rustc %s && %s" (buffer-file-name)
+                 (file-name-sans-extension (buffer-file-name))))))
+
+(use-package rust-mode
+  :after (flycheck tramp racer compile)
+  :hook (rust-mode . my-rust-compile-setup)
+  :mode ("\\.rs\\'" . rust-mode)
+  :bind (:map rust-mode-map
+              ("C-c i b" . rust-format-buffer))
+  :config
+  (add-hook 'before-save-hook 'rust-format-buffer))
+
+(use-package racer
+  :hook (rust-mode . racer-activate)
+=======
+>>>>>>> eb0ca4100f22d465cc0e7da672fbdafc386311bb
 (use-package rustic
   :hook ((rustic-mode . my-rust-init-prettify-symbols))
   :custom
@@ -600,6 +623,7 @@ This command does not push text to `kill-ring'."
   (rustic-lsp-server 'rust-analyzer)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (rustic-flycheck-clippy-params "--message-format=json")
+<<<<<<< HEAD
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
   :config
 )
@@ -615,6 +639,9 @@ This command does not push text to `kill-ring'."
     (c-set-offset 'case-label '+)
     (c-set-offset 'access-label '/)
     (c-set-offset 'label '/))
+=======
+>>>>>>> 4c69492771c5f27ac0ccf233009d313b8f086aa1
+>>>>>>> eb0ca4100f22d465cc0e7da672fbdafc386311bb
   :config
   (add-hook 'c-mode-hook #'my-c-hook)
   (add-hook 'c++-mode-hook #'my-c-hook)
