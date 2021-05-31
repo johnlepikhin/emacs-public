@@ -1570,7 +1570,7 @@ This command does not push text to `kill-ring'."
 
   ;; Какой браузер использовать
   (setq gnus-button-url 'browse-url-generic
-        browse-url-generic-program "chromium"
+        browse-url-generic-program "firefox"
         browse-url-browser-function gnus-button-url)
 
   ;; По умолчанию во всех группах делать копию отправляемого письма себе
@@ -1587,14 +1587,12 @@ This command does not push text to `kill-ring'."
   ;; Подключить дополнительные источники
   (setq gnus-secondary-select-methods
         ;; Получение через IMAP с локалхоста
-        '((nnimap "Mail"
-                  (nnimap-stream shell)
-                  (nnimap-shell-program "/usr/lib/dovecot/imap"))
+        '(
           ;; UNIX mailbox
           (nnmbox "LocalMBOX")
           ;; Читаем RSS/Atom через ньюсгруппы
           (nntp "news.gwene.org"
-                (nntp-connection-timeout 60))))
+                (nntp-connection-timeout 120))))
 
   ;; Подгрузить приватный локальный конфиг для конкретного хоста
   (my-load-org-config "local/gnus-accounts.org")
