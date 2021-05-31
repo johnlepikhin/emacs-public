@@ -1111,6 +1111,14 @@
    (setq web-mode-enable-css-colorization t))
  #+END_SRC
 
+*** YAML
+
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :mode ("\\.yaml$" . yaml-mode))
+#+END_SRC
+
+
 *** Javascript / ECMA / React
 
 #+BEGIN_SRC emacs-lisp
