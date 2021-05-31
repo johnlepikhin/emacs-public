@@ -429,6 +429,16 @@
  (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer)
  #+END_SRC
 
+*** visual-fill-column
+
+Необходимо например для Gnus
+
+#+BEGIN_SRC emacs-lisp
+(use-package visual-fill-column
+  :defer t)
+#+END_SRC
+
+
 ** Редактирование
 
  Многострочный режим комментариев по умолчанию
@@ -2303,6 +2313,7 @@ Org babel режимы, которые надо поддержать
  (use-package
    gnus
    :commands (gnus)
+   :after (visual-fill-column)
    :hook ((message-mode . turn-on-flyspell)
           (message-mode . my-message-mode-setup)
           (message-send . ispell-message)
