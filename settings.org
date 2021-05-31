@@ -661,8 +661,6 @@
         ("C-c d"   . ladicle/toggle-lsp-ui-doc))
   :custom
   (lsp-ui-doc-enable nil))
-
-(use-package company-lsp :commands company-lsp)
 #+END_SRC
 
 *** Управление проектами
@@ -685,6 +683,15 @@
    :after (projectile helm)
    :config (helm-projectile-on))
  #+END_SRC
+
+*** Документирование
+
+#+BEGIN_SRC emacs-lisp
+(use-package eldoc
+  :diminish eldoc-mode
+  :config (add-hook 'prog-mode-hook 'eldoc-mode))
+#+END_SRC
+
 
 *** Сборки
 
@@ -1037,9 +1044,7 @@
   (rustic-flycheck-clippy-params "--message-format=json")
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
   :config
-)
-  ;; (push 'rustic-clippy flycheck-checkers)
-  ;; (remove-hook 'rustic-mode-hook 'flycheck-mode))
+  (my-load-org-config "local/rust.org"))
 #+END_SRC
  
 *** C/C++
@@ -1162,6 +1167,55 @@
 #+BEGIN_SRC emacs-lisp
 (use-package haskell-snippets)
 #+END_SRC
+
+*** Lisp/Scheme
+
+#+BEGIN_SRC emacs-lisp
+(use-package paredit
+  :hook ((emacs-lisp-mode . paredit-mode)
+         (lisp-mode . paredit-mode)
+         (scheme-mode . paredit-mode)))
+#+END_SRC
+
+# **** Scheme
+
+# #+BEGIN_SRC emacs-lisp
+# (use-package geiser
+#     :after (ac-geiser)
+#     :defer
+#     :config
+#      (add-to-list 'geiser-guile-load-path "~/guix"))
+
+# (use-package ac-geiser
+#     :after (auto-complete)
+#     :defer)
+# #+END_SRC
+
+
+# #+BEGIN_SRC emacs-lisp
+# (setq scheme-program-name "guile")
+# #+END_SRC
+
+**** Guix
+
+#+BEGIN_SRC emacs-lisp
+(use-package guix
+  :ensure nil
+  ;; :hook (scheme-mode . (global-guix-prettify 'guix-devel))
+  :config
+  (setq guix-directory "~/guix")
+  (add-hook 'after-init-hook 'global-guix-prettify-mode)
+  (add-hook 'scheme-mode-hook 'guix-devel-mode)
+  (with-eval-after-load 'geiser-guile
+    ;; NOTE: "~/.config/guix/latest/" is invaild,
+    ;; use "~/.config/guix/latest" instead.
+    (add-to-list 'geiser-guile-load-path
+                 (concat (file-name-directory (locate-library "geiser.el"))
+                         "scheme/guile"))
+    (add-to-list 'geiser-guile-load-path "~/.config/guix/latest")
+    (add-to-list 'geiser-guile-load-path "~/guix")))
+#+END_SRC
+
 
 *** Форматирование
 
@@ -1610,16 +1664,6 @@
  #+END_SRC
 
 ** Org export
-
-*** Confluence
-
-#+BEGIN_SRC emacs-lisp
-(use-package
-  org
-  :defer t
-  :config
-  (require 'ox-confluence))
-#+END_SRC
 
 *** LaTeX
 
@@ -2102,14 +2146,14 @@ Org babel режимы, которые надо поддержать
 
 ** Прочие Org-фичи
 
-*** Менеджер паролей
+# *** Менеджер паролей
 
- #+BEGIN_SRC emacs-lisp
- (use-package
-   org-password-manager
-   :after (org)
-   :hook (org-mode . org-password-manager-key-bindings))
- #+END_SRC
+#  #+BEGIN_SRC emacs-lisp
+#  (use-package
+#    org-password-manager
+#    :after (org)
+#    :hook (org-mode . org-password-manager-key-bindings))
+#  #+END_SRC
 
 *** Таблицы
 

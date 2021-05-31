@@ -337,8 +337,6 @@ This command does not push text to `kill-ring'."
   :custom
   (lsp-ui-doc-enable nil))
 
-(use-package company-lsp :commands company-lsp)
-
 (use-package
   projectile
   :bind (:map projectile-mode-map
@@ -349,6 +347,10 @@ This command does not push text to `kill-ring'."
   helm-projectile
   :after (projectile helm)
   :config (helm-projectile-on))
+
+(use-package eldoc
+  :diminish eldoc-mode
+  :config (add-hook 'prog-mode-hook 'eldoc-mode))
 
 (use-package multi-compile
   :commands (multi-compile multi-compile-run)
@@ -560,7 +562,6 @@ This command does not push text to `kill-ring'."
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
 
-<<<<<<< HEAD
 (defun my-rust-init-prettify-symbols ()
   (setq prettify-symbols-alist
         '(("<=" . ?≤)
@@ -593,28 +594,6 @@ This command does not push text to `kill-ring'."
           ("=>" . ?⇒)))
   (prettify-symbols-mode))
 
-=======
-<<<<<<< HEAD
-(defun my-rust-compile-setup ()
-  (set (make-local-variable 'compile-command)
-       (if (locate-dominating-file (buffer-file-name) "Cargo.toml")
-           "cargo run"
-         (format "rustc %s && %s" (buffer-file-name)
-                 (file-name-sans-extension (buffer-file-name))))))
-
-(use-package rust-mode
-  :after (flycheck tramp racer compile)
-  :hook (rust-mode . my-rust-compile-setup)
-  :mode ("\\.rs\\'" . rust-mode)
-  :bind (:map rust-mode-map
-              ("C-c i b" . rust-format-buffer))
-  :config
-  (add-hook 'before-save-hook 'rust-format-buffer))
-
-(use-package racer
-  :hook (rust-mode . racer-activate)
-=======
->>>>>>> eb0ca4100f22d465cc0e7da672fbdafc386311bb
 (use-package rustic
   :hook ((rustic-mode . my-rust-init-prettify-symbols))
   :custom
@@ -623,12 +602,9 @@ This command does not push text to `kill-ring'."
   (rustic-lsp-server 'rust-analyzer)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (rustic-flycheck-clippy-params "--message-format=json")
-<<<<<<< HEAD
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
   :config
-)
-  ;; (push 'rustic-clippy flycheck-checkers)
-  ;; (remove-hook 'rustic-mode-hook 'flycheck-mode))
+  (my-load-org-config "local/rust.org"))
 
 (use-package cc-mode
   :defer t
@@ -639,9 +615,6 @@ This command does not push text to `kill-ring'."
     (c-set-offset 'case-label '+)
     (c-set-offset 'access-label '/)
     (c-set-offset 'label '/))
-=======
->>>>>>> 4c69492771c5f27ac0ccf233009d313b8f086aa1
->>>>>>> eb0ca4100f22d465cc0e7da672fbdafc386311bb
   :config
   (add-hook 'c-mode-hook #'my-c-hook)
   (add-hook 'c++-mode-hook #'my-c-hook)
@@ -707,6 +680,31 @@ This command does not push text to `kill-ring'."
 (use-package jedi
   :ensure t
   :hook (python-mode . jedi:setup))
+
+(use-package haskell-mode)
+
+(use-package haskell-snippets)
+
+(use-package paredit
+  :hook ((emacs-lisp-mode . paredit-mode)
+         (lisp-mode . paredit-mode)
+         (scheme-mode . paredit-mode)))
+
+(use-package guix
+  :ensure nil
+  ;; :hook (scheme-mode . (global-guix-prettify 'guix-devel))
+  :config
+  (setq guix-directory "~/guix")
+  (add-hook 'after-init-hook 'global-guix-prettify-mode)
+  (add-hook 'scheme-mode-hook 'guix-devel-mode)
+  (with-eval-after-load 'geiser-guile
+    ;; NOTE: "~/.config/guix/latest/" is invaild,
+    ;; use "~/.config/guix/latest" instead.
+    (add-to-list 'geiser-guile-load-path
+                 (concat (file-name-directory (locate-library "geiser.el"))
+                         "scheme/guile"))
+    (add-to-list 'geiser-guile-load-path "~/.config/guix/latest")
+    (add-to-list 'geiser-guile-load-path "~/guix")))
 
 (defcustom perltidy-program "perltidy"
   "*Program name of perltidy"
@@ -1064,12 +1062,6 @@ This command does not push text to `kill-ring'."
       (org-clone-subtree-with-time-shift 1 offset)
       (org-forward-element)
       (org-refile))))
-
-(use-package
-  org
-  :defer t
-  :config
-  (require 'ox-confluence))
 
 (use-package
   org
@@ -1442,11 +1434,6 @@ This command does not push text to `kill-ring'."
       (org-clone-subtree-with-time-shift 1 offset)
       (org-forward-element)
       (org-refile))))
-
-(use-package
-  org-password-manager
-  :after (org)
-  :hook (org-mode . org-password-manager-key-bindings))
 
 (defun my-org-mode-on-save-buffer-setup ()
   (add-hook 'before-save-hook #'org-table-iterate-buffer-tables nil 'make-it-local))
