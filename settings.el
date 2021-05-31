@@ -601,7 +601,7 @@ This command does not push text to `kill-ring'."
   :hook ((rustic-mode . my-rust-init-prettify-symbols))
   :custom
   (rustic-format-trigger 'on-save)
-  (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
+  ;; (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
   (rustic-lsp-server 'rust-analyzer)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (rustic-flycheck-clippy-params "--message-format=json")
