@@ -177,6 +177,9 @@
 (define-key minibuffer-local-isearch-map (kbd "<left>") 'isearch-reverse-exit-minibuffer)
 (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer)
 
+(use-package visual-fill-column
+  :defer t)
+
 (setq comment-style 'multi-line)
 
 (setq sentence-end-double-space nil)
@@ -1605,14 +1608,6 @@ This command does not push text to `kill-ring'."
 
   ;; Отправленные сообщения метить прочитанными (TODO работает ли?)
   (setq gnus-gcc-mark-as-read t)
-
-  ;; Архивировать будем в IMAP
-  (setq gnus-message-archive-method
-        '(nnimap "Mail"
-                 (nnimap-stream shell)
-                 (nnimap-shell-program "/usr/lib/dovecot/imap"))
-        ;; ... в папку sent
-        gnus-message-archive-group "sent")
 
   ;; В наши трудные времена надо хотя бы сделать вид, что ты обеспечиваешь безопасность переписки
   (setq mml2015-use 'epg

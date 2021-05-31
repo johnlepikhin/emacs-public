@@ -2313,7 +2313,6 @@ Org babel режимы, которые надо поддержать
  (use-package
    gnus
    :commands (gnus)
-   :after (visual-fill-column)
    :hook ((message-mode . turn-on-flyspell)
           (message-mode . my-message-mode-setup)
           (message-send . ispell-message)
@@ -2376,14 +2375,6 @@ Org babel режимы, которые надо поддержать
 
    ;; Отправленные сообщения метить прочитанными (TODO работает ли?)
    (setq gnus-gcc-mark-as-read t)
-
-   ;; Архивировать будем в IMAP
-   (setq gnus-message-archive-method
-         '(nnimap "Mail"
-                  (nnimap-stream shell)
-                  (nnimap-shell-program "/usr/lib/dovecot/imap"))
-         ;; ... в папку sent
-         gnus-message-archive-group "sent")
 
    ;; В наши трудные времена надо хотя бы сделать вид, что ты обеспечиваешь безопасность переписки
    (setq mml2015-use 'epg
