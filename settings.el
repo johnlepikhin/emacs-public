@@ -646,6 +646,9 @@ This command does not push text to `kill-ring'."
   (setq web-mode-enable-auto-expanding t)
   (setq web-mode-enable-css-colorization t))
 
+(use-package yaml-mode
+  :mode ("\\.yaml$" . yaml-mode))
+
 (defun my-tide-buffer-setup ()
   (add-hook 'before-save-hook 'tide-format-before-save nil 'local))
 
