@@ -26,8 +26,8 @@
 
 (require 'package)
 
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
@@ -601,10 +601,8 @@ This command does not push text to `kill-ring'."
   :hook ((rustic-mode . my-rust-init-prettify-symbols))
   :custom
   (rustic-format-trigger 'on-save)
-  ;; (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
   (rustic-lsp-server 'rust-analyzer)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (rustic-flycheck-clippy-params "--message-format=json")
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
   :config
   (my-load-org-config "local/rust.org"))
@@ -690,11 +688,6 @@ This command does not push text to `kill-ring'."
 (use-package haskell-mode)
 
 (use-package haskell-snippets)
-
-(use-package paredit
-  :hook ((emacs-lisp-mode . paredit-mode)
-         (lisp-mode . paredit-mode)
-         (scheme-mode . paredit-mode)))
 
 (use-package guix
   :ensure nil
