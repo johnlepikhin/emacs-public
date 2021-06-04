@@ -4,6 +4,8 @@
 
 (use-package quelpa-use-package)
 
+(setenv "PATH" (concat "/home/evgenii/bin:" (getenv "PATH")))
+
 (setq auto-revert-interval 1            ; Refresh buffers fast
       custom-file (make-temp-file "")   ; Discard customization's
       default-input-method "TeX"        ; Use TeX when toggling input method
