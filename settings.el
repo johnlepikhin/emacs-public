@@ -606,6 +606,7 @@ This command does not push text to `kill-ring'."
   (rustic-lsp-server 'rust-analyzer)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
+  (lsp-rust-analyzer-lru-capacity 20)
   :config
   (my-load-org-config "local/rust.org"))
 
