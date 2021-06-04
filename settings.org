@@ -1048,10 +1048,8 @@
   :hook ((rustic-mode . my-rust-init-prettify-symbols))
   :custom
   (rustic-format-trigger 'on-save)
-  ;; (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
   (rustic-lsp-server 'rust-analyzer)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (rustic-flycheck-clippy-params "--message-format=json")
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
   :config
   (my-load-org-config "local/rust.org"))
@@ -1186,14 +1184,15 @@
 (use-package haskell-snippets)
 #+END_SRC
 
-*** Lisp/Scheme
+# *** Lisp/Scheme
 
-#+BEGIN_SRC emacs-lisp
-(use-package paredit
-  :hook ((emacs-lisp-mode . paredit-mode)
-         (lisp-mode . paredit-mode)
-         (scheme-mode . paredit-mode)))
-#+END_SRC
+# Закомментил т.к. пока не научился этим пользоваться
+# #+BEGIN_SRC emacs-lisp
+# (use-package paredit
+#   :hook ((emacs-lisp-mode . paredit-mode)
+#          (lisp-mode . paredit-mode)
+#          (scheme-mode . paredit-mode)))
+# #+END_SRC
 
 # **** Scheme
 
