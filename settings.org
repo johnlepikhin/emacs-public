@@ -676,7 +676,9 @@
         ("C-c s"   . lsp-ui-sideline-mode)
         ("C-c d"   . ladicle/toggle-lsp-ui-doc))
   :custom
-  (lsp-ui-doc-enable nil))
+  (lsp-ui-doc-enable nil)
+  (read-process-output-max (* 1024 1024))
+  (gc-cons-threshold (* 1024 4096)))
 #+END_SRC
 
 *** Управление проектами
@@ -1047,7 +1049,7 @@
  #+END_SRC
 
  #+RESULTS:
- : my-cperl-init-prettify-symbols
+ : my-rust-init-prettify-symbols
 
 #+BEGIN_SRC emacs-lisp
 (use-package rustic
