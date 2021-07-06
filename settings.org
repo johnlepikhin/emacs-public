@@ -678,7 +678,7 @@
   :custom
   (lsp-ui-doc-enable nil)
   (read-process-output-max (* 1024 1024))
-  (gc-cons-threshold (* 1024 4096)))
+  (gc-cons-threshold (* 1024 10240)))
 #+END_SRC
 
 *** Управление проектами

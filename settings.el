@@ -340,7 +340,9 @@ This command does not push text to `kill-ring'."
         ("C-c s"   . lsp-ui-sideline-mode)
         ("C-c d"   . ladicle/toggle-lsp-ui-doc))
   :custom
-  (lsp-ui-doc-enable nil))
+  (lsp-ui-doc-enable nil)
+  (read-process-output-max (* 1024 1024))
+  (gc-cons-threshold (* 1024 10240)))
 
 (use-package
   projectile
@@ -650,7 +652,18 @@ This command does not push text to `kill-ring'."
 (use-package yaml-mode
   :mode ("\\.yaml$" . yaml-mode))
 
+(defun my-use-eslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/eslint/bin/eslint.js"
+                                        root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
+
 (defun my-tide-buffer-setup ()
+  (add-hook 'flycheck-mode-hook #'my-use-eslint-from-node-modules)
   (add-hook 'before-save-hook 'tide-format-before-save nil 'local))
 
 (use-package tide
