@@ -1475,9 +1475,13 @@ This command does not push text to `kill-ring'."
          (prog-mode . flyspell-prog-mode))
   :commands (flyspell-buffer turn-on-flyspell)
   :config
-  ;; Переключаем язык проверки по переключению раскладки
+  ;; Использовать aspell, если доступен
+  (when (executable-find "aspell")
+    (setq ispell-program-name "aspell")
+    (setq ispell-list-command "--list"))
+  ;; ;; Переключаем язык проверки по переключению раскладки
   (defadvice my-select-input-eng (after ispell-american activate) (ispell-change-dictionary "american"))
-  (defadvice my-select-input-rus (after ispell-russian activate) (ispell-change-dictionary "russian")))
+  (defadvice my-select-input-rus (after ispell-russian activate) (ispell-change-dictionary "ru")))
 
 (use-package
   flyspell-lazy
