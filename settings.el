@@ -282,7 +282,7 @@ This command does not push text to `kill-ring'."
    (add-to-list 'company-backends '(company-gtags :with company-dabbrev))
    ;; по кнопке TAB происходит и дополнение, и выбор варианта
 ;;   (company-tng-configure-default)
-   (setq company-idle-delay 0.5
+   (setq company-idle-delay 0.1
          company-echo-delay 0
          company-dabbrev-downcase nil
          company-show-numbers t
@@ -342,7 +342,9 @@ This command does not push text to `kill-ring'."
   :custom
   (lsp-ui-doc-enable nil)
   (read-process-output-max (* 1024 1024))
-  (gc-cons-threshold (* 1024 10240)))
+  (gc-cons-threshold (* 1024 10240))
+  :config
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor"))
 
 (use-package
   projectile
@@ -601,12 +603,26 @@ This command does not push text to `kill-ring'."
           ("=>" . ?⇒)))
   (prettify-symbols-mode))
 
+(defun my-rustic-ini ()
+  ;; so that run C-c C-c C-r works without having to confirm, but don't try to
+  ;; save rust buffers that are not file visiting. Once
+  ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
+  ;; no longer be necessary.
+  (when buffer-file-name
+    (setq-local buffer-save-without-query t)))
+
 (use-package rustic
-  :hook ((rustic-mode . my-rust-init-prettify-symbols))
+  :hook ((rustic-mode . my-rust-init-prettify-symbols)
+         (rustic-mode . my-rustic-init))
+  :bind (:map rustic-mode-map
+              ("M-j" . lsp-ui-imenu)
+              ("M-?" . lsp-find-references)
+              ("C-c C-c a" . lsp-execute-code-action)
+              ("C-c C-c r" . lsp-rename))
   :custom
   (rustic-format-trigger 'on-save)
   (rustic-lsp-server 'rust-analyzer)
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  ;; (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
   (lsp-rust-analyzer-lru-capacity 20)
   :config
@@ -697,19 +713,27 @@ This command does not push text to `kill-ring'."
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python" . python-mode))
 
-(use-package jedi
+(use-package lsp-python-ms
   :ensure t
-  :hook (python-mode . jedi:setup))
+  :init
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-python-ms)
+                         (lsp))))  ; or lsp-deferred
+
+(use-package python-black
+  :ensure t
+  :hook (python-mode . python-black-on-save-mode)
+  :after python-mode)
 
 (use-package haskell-mode)
 
 (use-package haskell-snippets)
 
 (use-package guix
-  :ensure nil
+  :defer t
   ;; :hook (scheme-mode . (global-guix-prettify 'guix-devel))
   :config
-  (setq guix-directory "~/guix")
+  ;; (setq guix-directory "~/guix")
   (add-hook 'after-init-hook 'global-guix-prettify-mode)
   (add-hook 'scheme-mode-hook 'guix-devel-mode)
   (with-eval-after-load 'geiser-guile
@@ -718,7 +742,6 @@ This command does not push text to `kill-ring'."
     (add-to-list 'geiser-guile-load-path
                  (concat (file-name-directory (locate-library "geiser.el"))
                          "scheme/guile"))
-    (add-to-list 'geiser-guile-load-path "~/.config/guix/latest")
     (add-to-list 'geiser-guile-load-path "~/guix")))
 
 (defcustom perltidy-program "perltidy"
@@ -1581,16 +1604,16 @@ This command does not push text to `kill-ring'."
   (setq mail-source-movemail-program "/usr/bin/movemail")
 
   ;; Выставить таймаут на коннект к NNTP
-  (setq nntp-connection-timeout 10)
+  (setq nntp-connection-timeout 5)
 
   ;; Периодический полл источников
   (gnus-demon-add-handler 'gnus-demon-scan-news 1200 300)
   (gnus-demon-init)
 
   ;; Какой браузер использовать
-  (setq gnus-button-url 'browse-url-generic
-        browse-url-generic-program "firefox"
-        browse-url-browser-function gnus-button-url)
+  ;; (setq gnus-button-url 'browse-url-generic
+  ;;       browse-url-generic-program "x-www-browser"
+  ;;       browse-url-browser-function gnus-button-url)
 
   ;; По умолчанию во всех группах делать копию отправляемого письма себе
   (setq gnus-parameters
