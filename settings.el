@@ -6,6 +6,13 @@
 
 (setenv "PATH" (concat "/home/evgenii/bin:" (getenv "PATH")))
 
+(make-directory "~/.local/var/lib/tmp/emacs/auto-save/" t)
+(setq auto-save-file-name-transforms '((".*" "~/.local/var/lib/tmp/emacs/auto-save/" t)))
+(setq backup-directory-alist '(("." . "~/.local/var/lib/tmp/emacs/auto-save/")))
+
+;; Do not move the current file while creating backup.
+(setq backup-by-copying t)
+
 (setq auto-revert-interval 1            ; Refresh buffers fast
       custom-file (make-temp-file "")   ; Discard customization's
       default-input-method "TeX"        ; Use TeX when toggling input method
@@ -131,11 +138,17 @@
 
 (use-package
   which-key
-  :config 
+  :config
   (setq which-key-idle-delay 1)
   (which-key-mode))
 
 (column-number-mode)
+
+(add-hook 'prog-mode-hook(lambda () (setq-local show-trailing-whitespace t)))
+
+(add-hook 'prog-mode-hook (lambda () (setq-local indicate-empty-lines t)))
+
+(add-hook 'prog-mode-hook (lambda () (setq-local indicate-buffer-boundaries 'left)))
 
 (use-package
   imenu
@@ -149,6 +162,18 @@
   (toggle-menu-bar-mode-from-frame 'toggle))
 
 (define-key my-bindings-map (kbd "<f10>") 'my-toggle-menu-bar)
+
+(use-package rainbow-delimiters
+  :config
+  (set-face-foreground 'rainbow-delimiters-depth-1-face "#c66")
+  (set-face-foreground 'rainbow-delimiters-depth-2-face "#6c6")
+  (set-face-foreground 'rainbow-delimiters-depth-3-face "#69f")
+  (set-face-foreground 'rainbow-delimiters-depth-4-face "#cc6")
+  (set-face-foreground 'rainbow-delimiters-depth-5-face "#6cc")
+  (set-face-foreground 'rainbow-delimiters-depth-6-face "#c6c")
+  (set-face-foreground 'rainbow-delimiters-depth-7-face "#ccc")
+  (set-face-foreground 'rainbow-delimiters-depth-8-face "#999")
+  (set-face-foreground 'rainbow-delimiters-depth-9-face "#666"))
 
 (setq backup-inhibited t)
 
@@ -552,8 +577,8 @@ This command does not push text to `kill-ring'."
 (use-package go-mode
   :ensure t
   :mode ("\\.go\\'" . go-mode)
-  :config
-  (add-hook 'go-mode-hook 'my-go-mode-setup))
+  :hook ((go-mode . lsp-deferred)
+         (go-mode . my-go-mode-setup)))
 
 (use-package go-eldoc
   :ensure t
@@ -742,7 +767,24 @@ This command does not push text to `kill-ring'."
     (add-to-list 'geiser-guile-load-path
                  (concat (file-name-directory (locate-library "geiser.el"))
                          "scheme/guile"))
-    (add-to-list 'geiser-guile-load-path "~/guix")))
+    (add-to-list 'geiser-guile-load-path "~/guix")
+    (add-to-list 'yas-snippet-dirs "~/guix/etc/snippets")))
+
+(load-file "~/guix/etc/copyright.el")
+
+(setq copyright-names-regexp
+      (format "%s <%s>" user-full-name user-mail-address))
+
+(use-package flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+
+(use-package company-shell
+  :ensure t
+  :defer t
+  :after company
+  :init (add-to-list 'company-backends '(company-shell company-shell-env))
 
 (defcustom perltidy-program "perltidy"
   "*Program name of perltidy"

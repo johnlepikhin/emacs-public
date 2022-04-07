@@ -63,6 +63,18 @@
 (setenv "PATH" (concat "/home/evgenii/bin:" (getenv "PATH")))
 #+END_SRC
 
+*** Бэкапы файлов
+
+#+BEGIN_SRC emacs-lisp
+(make-directory "~/.local/var/lib/tmp/emacs/auto-save/" t)
+(setq auto-save-file-name-transforms '((".*" "~/.local/var/lib/tmp/emacs/auto-save/" t)))
+(setq backup-directory-alist '(("." . "~/.local/var/lib/tmp/emacs/auto-save/")))
+
+;; Do not move the current file while creating backup.
+(setq backup-by-copying t)
+#+END_SRC
+
+
 *** Внешний вид
 
  Некоторые оптимизации:
@@ -290,7 +302,7 @@
  #+BEGIN_SRC emacs-lisp
  (use-package
    which-key
-   :config 
+   :config
    (setq which-key-idle-delay 1)
    (which-key-mode))
  #+END_SRC
@@ -300,6 +312,25 @@
  #+BEGIN_SRC emacs-lisp
  (column-number-mode)
  #+END_SRC
+
+Подсвечивать пробелы в конце строки:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook(lambda () (setq-local show-trailing-whitespace t)))
+#+END_SRC
+
+Подсвечивать пустые строчки в конце буфера:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook (lambda () (setq-local indicate-empty-lines t)))
+#+END_SRC
+
+Показывать окончание буфера:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook (lambda () (setq-local indicate-buffer-boundaries 'left)))
+#+END_SRC
+
 
 *** Imenu
 
@@ -321,6 +352,23 @@
   (toggle-menu-bar-mode-from-frame 'toggle))
 
 (define-key my-bindings-map (kbd "<f10>") 'my-toggle-menu-bar)
+#+END_SRC
+
+
+*** rainbow delimiters
+
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-delimiters
+  :config
+  (set-face-foreground 'rainbow-delimiters-depth-1-face "#c66")
+  (set-face-foreground 'rainbow-delimiters-depth-2-face "#6c6")
+  (set-face-foreground 'rainbow-delimiters-depth-3-face "#69f")
+  (set-face-foreground 'rainbow-delimiters-depth-4-face "#cc6")
+  (set-face-foreground 'rainbow-delimiters-depth-5-face "#6cc")
+  (set-face-foreground 'rainbow-delimiters-depth-6-face "#c6c")
+  (set-face-foreground 'rainbow-delimiters-depth-7-face "#ccc")
+  (set-face-foreground 'rainbow-delimiters-depth-8-face "#999")
+  (set-face-foreground 'rainbow-delimiters-depth-9-face "#666"))
 #+END_SRC
 
 
@@ -976,8 +1024,8 @@
 (use-package go-mode
   :ensure t
   :mode ("\\.go\\'" . go-mode)
-  :config
-  (add-hook 'go-mode-hook 'my-go-mode-setup))
+  :hook ((go-mode . lsp-deferred)
+         (go-mode . my-go-mode-setup)))
 #+END_SRC
 
 Документация
@@ -1241,36 +1289,7 @@ LSP для питона:
 (use-package haskell-snippets)
 #+END_SRC
 
-# *** Lisp/Scheme
-
-# Закомментил т.к. пока не научился этим пользоваться
-# #+BEGIN_SRC emacs-lisp
-# (use-package paredit
-#   :hook ((emacs-lisp-mode . paredit-mode)
-#          (lisp-mode . paredit-mode)
-#          (scheme-mode . paredit-mode)))
-# #+END_SRC
-
-# **** Scheme
-
-# #+BEGIN_SRC emacs-lisp
-# (use-package geiser
-#     :after (ac-geiser)
-#     :defer
-#     :config
-#      (add-to-list 'geiser-guile-load-path "~/guix"))
-
-# (use-package ac-geiser
-#     :after (auto-complete)
-#     :defer)
-# #+END_SRC
-
-
-# #+BEGIN_SRC emacs-lisp
-# (setq scheme-program-name "guile")
-# #+END_SRC
-
-**** Guix
+*** Guix
 
 #+BEGIN_SRC emacs-lisp
 (use-package guix
@@ -1286,7 +1305,30 @@ LSP для питона:
     (add-to-list 'geiser-guile-load-path
                  (concat (file-name-directory (locate-library "geiser.el"))
                          "scheme/guile"))
-    (add-to-list 'geiser-guile-load-path "~/guix")))
+    (add-to-list 'geiser-guile-load-path "~/guix")
+    (add-to-list 'yas-snippet-dirs "~/guix/etc/snippets")))
+
+(load-file "~/guix/etc/copyright.el")
+
+(setq copyright-names-regexp
+      (format "%s <%s>" user-full-name user-mail-address))
+#+END_SRC
+
+*** Shell
+
+#+BEGIN_SRC emacs-lisp
+(use-package flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-shell
+  :ensure t
+  :defer t
+  :after company
+  :init (add-to-list 'company-backends '(company-shell company-shell-env))
 #+END_SRC
 
 
