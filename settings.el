@@ -784,7 +784,7 @@ This command does not push text to `kill-ring'."
   :ensure t
   :defer t
   :after company
-  :init (add-to-list 'company-backends '(company-shell company-shell-env))
+  :init (add-to-list 'company-backends '(company-shell company-shell-env)))
 
 (defcustom perltidy-program "perltidy"
   "*Program name of perltidy"
@@ -1727,6 +1727,17 @@ This command does not push text to `kill-ring'."
           gnus-sum-thread-tree-leaf-with-other "├─► "
           gnus-sum-thread-tree-single-leaf     "╰─► "))
   )
+
+(use-package telega
+  :commands telega
+  :config
+  (setq telega-user-use-avatars nil
+        telega-use-tracking-for '(any pin unread)
+        telega-chat-use-markdown-formatting t
+        telega-emoji-use-images t
+        telega-completing-read-function #'ivy-completing-read
+        telega-msg-rainbow-title nil
+        telega-chat-fill-column 75))
 
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 

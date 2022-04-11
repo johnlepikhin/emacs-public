@@ -1328,7 +1328,7 @@ LSP для питона:
   :ensure t
   :defer t
   :after company
-  :init (add-to-list 'company-backends '(company-shell company-shell-env))
+  :init (add-to-list 'company-backends '(company-shell company-shell-env)))
 #+END_SRC
 
 
@@ -1567,6 +1567,9 @@ LSP для питона:
    (face-spec-set 'org-document-title '((t :height 1.2)))
  )
  #+END_SRC
+
+ #+RESULTS:
+ : my-org-mode-basic-config
 
 *** Подключение
 
@@ -2524,6 +2527,22 @@ Org babel режимы, которые надо поддержать
    )
  #+END_SRC
 
+** Telegram
+
+#+BEGIN_SRC emacs-lisp
+  (use-package telega
+    :commands telega
+    :config
+    (setq telega-user-use-avatars nil
+          telega-use-tracking-for '(any pin unread)
+          telega-chat-use-markdown-formatting t
+          telega-emoji-use-images t
+          telega-completing-read-function #'ivy-completing-read
+          telega-msg-rainbow-title nil
+          telega-chat-fill-column 75))
+#+END_SRC
+
+   
 ** Dired
 
  Обновлять буферы dired автоматом при изменении директории:
