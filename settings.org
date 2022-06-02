@@ -1099,7 +1099,7 @@
  #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun my-rustic-ini ()
+(defun my-rustic-init ()
   ;; so that run C-c C-c C-r works without having to confirm, but don't try to
   ;; save rust buffers that are not file visiting. Once
   ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
