@@ -701,7 +701,10 @@
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-mode
   :after yasnippet
-  :commands lsp)
+  :commands lsp
+  :config
+  (setq lsp-pylsp-plugins-flake8-max-line-length 120
+        lsp-pylsp-plugins-flake8-ignore "E203"))
 
 (use-package lsp-ui
   :custom-face

@@ -342,7 +342,13 @@ This command does not push text to `kill-ring'."
 
 (use-package lsp-mode
   :after yasnippet
-  :commands lsp)
+  :commands lsp
+  :config
+  (setq lsp-pylsp-plugins-pycodestyle-max-line-length 120
+        lsp-pylsp-plugins-pycodestyle-ignore "E203"
+        lsp-pylsp-plugins-pycodestyle-enabled nil
+        lsp-pylsp-plugins-pydocstyle-enabled nil
+        lsp-pylsp-plugins-flake8-enabled t))
 
 (use-package lsp-ui
   :custom-face
@@ -628,7 +634,7 @@ This command does not push text to `kill-ring'."
           ("=>" . ?⇒)))
   (prettify-symbols-mode))
 
-(defun my-rustic-ini ()
+(defun my-rustic-init ()
   ;; so that run C-c C-c C-r works without having to confirm, but don't try to
   ;; save rust buffers that are not file visiting. Once
   ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
