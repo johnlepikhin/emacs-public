@@ -344,11 +344,8 @@ This command does not push text to `kill-ring'."
   :after yasnippet
   :commands lsp
   :config
-  (setq lsp-pylsp-plugins-pycodestyle-max-line-length 120
-        lsp-pylsp-plugins-pycodestyle-ignore "E203"
-        lsp-pylsp-plugins-pycodestyle-enabled nil
-        lsp-pylsp-plugins-pydocstyle-enabled nil
-        lsp-pylsp-plugins-flake8-enabled t))
+  (setq lsp-pylsp-plugins-flake8-max-line-length 120
+        lsp-pylsp-plugins-flake8-ignore "E203"))
 
 (use-package lsp-ui
   :custom-face
