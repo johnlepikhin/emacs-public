@@ -1452,8 +1452,8 @@ This command does not push text to `kill-ring'."
 (use-package
   babel
   :ensure t
-  ;; :after
-  ;; (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
+  :after
+  (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
   :config
   ;; Не просить подтверждение для запуска SRC-блоков
   (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
