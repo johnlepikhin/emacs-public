@@ -773,7 +773,8 @@ This command does not push text to `kill-ring'."
     (add-to-list 'geiser-guile-load-path "~/guix")
     (add-to-list 'yas-snippet-dirs "~/guix/etc/snippets")))
 
-(load-file "~/guix/etc/copyright.el")
+(if (file-exists-p "~/guix/etc/copyright.el")
+    (load-file "~/guix/etc/copyright.el"))
 
 (setq copyright-names-regexp
       (format "%s <%s>" user-full-name user-mail-address))
