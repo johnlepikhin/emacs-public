@@ -2139,8 +2139,8 @@ Org babel режимы, которые надо поддержать
  (use-package
    babel
    :ensure t
-   :after
-   (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
+   ;; :after
+   ;; (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
    :config
    ;; Не просить подтверждение для запуска SRC-блоков
    (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
@@ -2155,7 +2155,7 @@ Org babel режимы, которые надо поддержать
       (dot . t)
       (http . t)
       (sql . t)
-      (coq . t)
+      ;; (coq . t)
       (ocaml . t)
       (plantuml . t)
       (gnuplot 't)
