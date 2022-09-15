@@ -1045,10 +1045,13 @@ This command does not push text to `kill-ring'."
   (my-org-reload-from-disk))
   ;; (my-org-fill-inotify-handlers))
 
-(defun my-org-agenda-redo ()
-  (ignore-errors
-    (with-current-buffer "*Org Agenda*"
-      (org-agenda-redo-all t))))
+(defun my-redo-all-agenda-buffers ()
+  (interactive)
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (derived-mode-p 'org-agenda-mode)
+        (message "Upadting buffer")
+        (ignore-errors (org-agenda-maybe-redo))))))
 
 (defun my-agenda-mode-setup ()
   (hl-line-mode))
@@ -1121,7 +1124,7 @@ This command does not push text to `kill-ring'."
 	;; раз в 10 минут заново составлять список файлов, на случай появления новых
 	(run-with-timer 0 600 'my-org-fill-files-list)
 	;; 
-	(run-with-idle-timer 120 120 'my-org-agenda-redo)
+	(run-with-idle-timer 120 120 'my-redo-all-agenda-buffers)
 	(my-load-org-config "local/org-agenda.org"))
 
 (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
