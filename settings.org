@@ -80,13 +80,20 @@
  Некоторые оптимизации:
 
  #+BEGIN_SRC emacs-lisp
-   (setq auto-revert-interval 1            ; Refresh buffers fast
-         custom-file (make-temp-file "")   ; Discard customization's
-         default-input-method "TeX"        ; Use TeX when toggling input method
-         echo-keystrokes 0.1               ; Show keystrokes asap
-         inhibit-startup-message t         ; No splash screen please
-         initial-scratch-message nil       ; Clean scratch buffer
-         sentence-end-double-space nil)    ; No double space
+ (setq auto-revert-interval 1            ; Refresh buffers fast
+       custom-file (make-temp-file "")   ; Discard customization's
+       default-input-method "TeX"        ; Use TeX when toggling input method
+       echo-keystrokes 0.1               ; Show keystrokes asap
+       inhibit-startup-message t         ; No splash screen please
+       initial-scratch-message nil       ; Clean scratch buffer
+       sentence-end-double-space nil)    ; No double space
+
+
+ ; Аккуратно обновляет буфер, по возможности с сохранением позиций курсора и выделения
+ (setq revert-buffer-insert-file-contents-function 'revert-buffer-insert-file-contents-delicately)
+
+ ; Перезапустить таймер после установки auto-revert-interval
+ (auto-revert-set-timer)
  #+END_SRC
 
  Выключить кнопку Insert (включение overwrite-mode):
