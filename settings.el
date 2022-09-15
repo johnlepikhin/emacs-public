@@ -21,6 +21,10 @@
       initial-scratch-message nil       ; Clean scratch buffer
       sentence-end-double-space nil)    ; No double space
 
+
+; Аккуратно обновляет буфер, по возможности с сохранением позиций курсора и выделения
+(setq revert-buffer-insert-file-contents-function 'revert-buffer-insert-file-contents-delicately)
+
 (define-key global-map [(insert)] nil)
 
 (tool-bar-mode -1)
@@ -1044,7 +1048,7 @@ This command does not push text to `kill-ring'."
 (defun my-org-agenda-redo ()
   (ignore-errors
     (with-current-buffer "*Org Agenda*"
-      (org-agenda-maybe-redo))))
+      (org-agenda-redo-all t))))
 
 (defun my-agenda-mode-setup ()
   (hl-line-mode))

@@ -91,9 +91,6 @@
 
  ; Аккуратно обновляет буфер, по возможности с сохранением позиций курсора и выделения
  (setq revert-buffer-insert-file-contents-function 'revert-buffer-insert-file-contents-delicately)
-
- ; Перезапустить таймер после установки auto-revert-interval
- (auto-revert-set-timer)
  #+END_SRC
 
  Выключить кнопку Insert (включение overwrite-mode):
@@ -1647,7 +1644,7 @@ LSP для питона:
  (defun my-org-agenda-redo ()
    (ignore-errors
      (with-current-buffer "*Org Agenda*"
-       (org-agenda-maybe-redo))))
+       (org-agenda-redo-all t))))
  #+END_SRC
 
 *** Базовые настройки agenda
