@@ -199,6 +199,8 @@
 
 (setq browse-url-browser-function 'browse-url-chromium)
 
+(setq warning-minimum-level :emergency)
+
 (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
 
@@ -343,6 +345,12 @@ This command does not push text to `kill-ring'."
 (use-package edit-server
   :config
   (edit-server-start))
+
+(use-package flycheck-grammarly
+  :after (flycheck)
+  :config
+  (setq flycheck-grammarly-check-time 0.8)
+  (flycheck-grammarly-setup))
 
 (use-package lsp-mode
   :after yasnippet

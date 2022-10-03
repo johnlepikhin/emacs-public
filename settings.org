@@ -375,7 +375,6 @@
   (set-face-foreground 'rainbow-delimiters-depth-9-face "#666"))
 #+END_SRC
 
-
 ** Поведение
 
  Бэкапы не нужны:
@@ -457,6 +456,11 @@
 #          ("C-r" . swiper)))
 # #+END_SRC
 
+Показывать только ошибки высокого уровня тревожности:
+
+#+BEGIN_SRC emacs-lisp
+(setq warning-minimum-level :emergency)
+#+END_SRC
 
 
 
@@ -698,6 +702,16 @@
    (edit-server-start))
  #+END_SRC
 
+
+*** Grammarly
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package flycheck-grammarly
+   :after (flycheck)
+   :config
+   (setq flycheck-grammarly-check-time 0.8)
+   (flycheck-grammarly-setup))
+ #+END_SRC
 
 ** Разработка
 *** LSP
