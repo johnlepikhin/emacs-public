@@ -1186,6 +1186,13 @@
   (setq puppet-include-indent 2))
 #+END_SRC
 
+*** Ansible
+
+#+BEGIN_SRC emacs-lisp
+(use-package ansible)
+#+END_SRC
+
+
 *** HTML
 
  Подключаем web-mode (HTML, JS, CUSS в одном):
