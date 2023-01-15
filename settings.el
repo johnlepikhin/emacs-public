@@ -694,6 +694,8 @@ This command does not push text to `kill-ring'."
   (setq puppet-indent-level 2)
   (setq puppet-include-indent 2))
 
+(use-package ansible)
+
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
   :init
