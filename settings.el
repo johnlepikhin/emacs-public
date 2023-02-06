@@ -69,7 +69,7 @@
 		  (message "Loaded config: %s" subpath))
 	  (error (message "Cannot load settings for file %s: %s" ini-file errinfo)))))
 
-(my-load-org-config "local/user-info.org")
+(my-load-org-config "local.org")
 
 (defun my-update-cursor ()
   (set-cursor-color
@@ -664,9 +664,7 @@ This command does not push text to `kill-ring'."
   (rustic-lsp-server 'rust-analyzer)
   ;; (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
-  (lsp-rust-analyzer-lru-capacity 20)
-  :config
-  (my-load-org-config "local/rust.org"))
+  (lsp-rust-analyzer-lru-capacity 20))
 
 (use-package cc-mode
   :defer t
@@ -1134,8 +1132,7 @@ This command does not push text to `kill-ring'."
 	;; раз в 10 минут заново составлять список файлов, на случай появления новых
 	(run-with-timer 0 600 'my-org-fill-files-list)
 	;; 
-	(run-with-idle-timer 120 120 'my-redo-all-agenda-buffers)
-	(my-load-org-config "local/org-agenda.org"))
+	(run-with-idle-timer 120 120 'my-redo-all-agenda-buffers))
 
 (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
 
@@ -1516,9 +1513,7 @@ This command does not push text to `kill-ring'."
   (add-to-list
    'org-capture-templates
    '("Pb" "(Protocol bookmark)" entry (file+olp+datetree my-org-file-web-bookmarks)
-     "* Закладка %U : [[%:link][%:description]]\n%?\n"))
-  ;; Подгрузить приватный локальный конфиг для конкретного хоста
-  (my-load-org-config "local/org-capture.org"))
+     "* Закладка %U : [[%:link][%:description]]\n%?\n")))
 
 (defun my-org-clone-to-date ()
   "Clone current subtree into specified file with all dates shifted to the same period."
@@ -1698,12 +1693,6 @@ This command does not push text to `kill-ring'."
           ;; Читаем RSS/Atom через ньюсгруппы
           (nntp "news.gwene.org"
                 (nntp-connection-timeout 120))))
-
-  ;; Подгрузить приватный локальный конфиг для конкретного хоста
-  (my-load-org-config "local/gnus-accounts.org")
-
-  ;; Подгрузить шаблоны писем
-  (my-load-org-config "local/gnus-templates.org")
 
   ;; Способ оформления цитаты
   (setq message-citation-line-function 'message-insert-formatted-citation-line)

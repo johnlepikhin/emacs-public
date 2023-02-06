@@ -10,15 +10,11 @@
 
 ** Описание
 
- Этот конфиг использую на всех десктопах и телефонах. Постепенно он пополняется. Актуальную версию всегда можно найти в рабочем репозитории:
- [[https://github.com/johnlepikhin/emacs-public/blob/master/settings.org]].
+Этот конфиг использую на всех десктопах и телефонах. Постепенно он пополняется. Актуальную версию всегда можно найти в рабочем репозитории:
+[[https://github.com/johnlepikhin/emacs-public/blob/master/settings.org]].
 
- Из него динамически подгружаются файлы:
-  * ~/.emacs.d/local/user-info.org : настройки email, имени пользователя и т.д.
-  * ~/.emacs.d/local/org-agenda.org : личные настройки шаблонов agenda
-  * ~/.emacs.d/local/org-capture.org : личные шаблоны org-записей
-  * ~/.emacs.d/local/gnus-accounts.org : почтовые аккаунты
-  * ~/.emacs.d/local/gnus-templates.org : почтовые шаблоны
+Из него динамически подгружается файл ~/.emacs.d/local.org — настройки email, имени пользователя, личные настройки шаблонов agenda, личные
+шаблоны org-записей, почтовые аккаунты и шаблоны.
 
 *** Как подключать
 
@@ -192,11 +188,6 @@
 	  (error (message "Cannot load settings for file %s: %s" ini-file errinfo)))))
 #+END_SRC
 
-*** Информация о пользователе
-
-#+BEGIN_SRC emacs-lisp
-(my-load-org-config "local/user-info.org")
-#+END_SRC
 
 ** Настройки ввода
 
@@ -1144,9 +1135,7 @@
   (rustic-lsp-server 'rust-analyzer)
   ;; (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
-  (lsp-rust-analyzer-lru-capacity 20)
-  :config
-  (my-load-org-config "local/rust.org"))
+  (lsp-rust-analyzer-lru-capacity 20))
 #+END_SRC
  
 *** C/C++
@@ -1768,8 +1757,7 @@ LSP для питона:
 	 ;; раз в 10 минут заново составлять список файлов, на случай появления новых
 	 (run-with-timer 0 600 'my-org-fill-files-list)
 	 ;; 
-	 (run-with-idle-timer 120 120 'my-redo-all-agenda-buffers)
-	 (my-load-org-config "local/org-agenda.org"))
+	 (run-with-idle-timer 120 120 'my-redo-all-agenda-buffers))
  #+END_SRC
 
 *** Прочее
@@ -2217,9 +2205,7 @@ Org babel режимы, которые надо поддержать
    (add-to-list
     'org-capture-templates
     '("Pb" "(Protocol bookmark)" entry (file+olp+datetree my-org-file-web-bookmarks)
-      "* Закладка %U : [[%:link][%:description]]\n%?\n"))
-   ;; Подгрузить приватный локальный конфиг для конкретного хоста
-   (my-load-org-config "local/org-capture.org"))
+      "* Закладка %U : [[%:link][%:description]]\n%?\n")))
  #+END_SRC
 
 *** Супер-шаблоны
@@ -2508,12 +2494,6 @@ Org babel режимы, которые надо поддержать
            (nntp "news.gwene.org"
                  (nntp-connection-timeout 120))))
 
-   ;; Подгрузить приватный локальный конфиг для конкретного хоста
-   (my-load-org-config "local/gnus-accounts.org")
-
-   ;; Подгрузить шаблоны писем
-   (my-load-org-config "local/gnus-templates.org")
-
    ;; Способ оформления цитаты
    (setq message-citation-line-function 'message-insert-formatted-citation-line)
 
@@ -2725,4 +2705,10 @@ Org babel режимы, которые надо поддержать
 (defun lst-number-or-v (lst pos v)
   "Return V if list element at POS is not a number, or (nth POS LST) otherwise."
   (number-or-v (nth pos lst) v))
+#+END_SRC
+
+** Загрузка локальных настроек
+
+#+BEGIN_SRC emacs-lisp
+(my-load-org-config "local.org")
 #+END_SRC
