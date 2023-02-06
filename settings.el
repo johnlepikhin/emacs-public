@@ -1493,6 +1493,7 @@ This command does not push text to `kill-ring'."
 (use-package
   org-capture
   :ensure t
+  :defer t
   :after (org)
   :bind (:map my-bindings-map
               ("C-c c" . org-capture))
