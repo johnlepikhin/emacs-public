@@ -69,8 +69,6 @@
 		  (message "Loaded config: %s" subpath))
 	  (error (message "Cannot load settings for file %s: %s" ini-file errinfo)))))
 
-(my-load-org-config "local.org")
-
 (defun my-update-cursor ()
   (set-cursor-color
    (if (string= current-input-method "russian-computer") "red" "black")))
@@ -1494,7 +1492,7 @@ This command does not push text to `kill-ring'."
 
 (use-package
   org-capture
-  :ensure nil
+  :ensure t
   :after (org)
   :bind (:map my-bindings-map
               ("C-c c" . org-capture))
@@ -1869,3 +1867,5 @@ This command does not push text to `kill-ring'."
 (defun lst-number-or-v (lst pos v)
   "Return V if list element at POS is not a number, or (nth POS LST) otherwise."
   (number-or-v (nth pos lst) v))
+
+(my-load-org-config "local.org")
