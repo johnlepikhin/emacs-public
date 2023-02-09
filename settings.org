@@ -1349,6 +1349,13 @@ LSP для питона:
   :init (add-to-list 'company-backends '(company-shell company-shell-env)))
 #+END_SRC
 
+** LaTeX
+
+#+BEGIN_SRC emacs-lisp
+(use-package tex
+  :ensure auctex)
+#+END_SRC
+
 
 *** Форматирование
 
