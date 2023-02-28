@@ -844,24 +844,6 @@
    flycheck
    :config
    (setq flycheck-idle-change-delay 5)
-   ;; Багфиксы, согласно проблеме https://github.com/flycheck/flycheck/issues/1278:
-   ;; в :preface нельзя определять т.к. :preface обрабатывается до загрузки модуля
-   (advice-add
-    'flycheck-process-send-buffer
-    :override
-    (lambda (process)
-      (condition-case err
-          (save-restriction
-            (widen)
-            (if flycheck-chunked-process-input
-                (flycheck--process-send-buffer-contents-chunked process)
-              (process-send-region process (point-min) (point-max)))
-            (process-send-eof process))
-        (error
-         (let* ((checker (process-get process 'flycheck-checker))
-                (type (flycheck-checker-get checker 'standard-input)))
-           (when (or (not (eq type 'ignore-error)) (process-live-p process))
-             (signal (car err) (cdr err))))))))
    (flycheck-define-checker perl
      "A Perl syntax checker using the Perl interpreter.
 
@@ -876,12 +858,14 @@
              (or "." (and ", " (zero-or-more not-newline))) line-end))
      :modes (perl-mode cperl-mode)
      :next-checkers (perl-perlcritic))
-   (setq flycheck-global-modes '(not org-mode)
+   (setq 
+    ;; Не надо везде включать flycheck, это вредно как минимум при LSP
+    ;; flycheck-global-modes '(not org-mode)
+    flycheck-global-modes nil
          flycheck-display-errors-function nil
          flycheck-display-errors-delay 0
          ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
-         flycheck-checker-error-threshold 10000)
-   (global-flycheck-mode))
+         flycheck-checker-error-threshold 10000))
  #+END_SRC
 
  # Показывать ошибки прямо на месте, под строкой:
@@ -1111,25 +1095,15 @@
  #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun my-rustic-init ()
-  ;; so that run C-c C-c C-r works without having to confirm, but don't try to
-  ;; save rust buffers that are not file visiting. Once
-  ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
-  ;; no longer be necessary.
-  (when buffer-file-name
-    (setq-local buffer-save-without-query t)))
-#+END_SRC
-
-
-#+BEGIN_SRC emacs-lisp
 (use-package rustic
-  :hook ((rustic-mode . my-rust-init-prettify-symbols)
-         (rustic-mode . my-rustic-init))
+  :hook ((rustic-mode . my-rust-init-prettify-symbols))
   :bind (:map rustic-mode-map
               ("M-j" . lsp-ui-imenu)
               ("M-?" . lsp-find-references)
               ("C-c C-c a" . lsp-execute-code-action)
               ("C-c C-c r" . lsp-rename))
+  :config
+  (remove-hook 'rustic-mode-hook 'flycheck-mode)
   :custom
   (rustic-format-trigger 'on-save)
   (rustic-lsp-server 'rust-analyzer)
@@ -1599,7 +1573,7 @@ LSP для питона:
 *** Подключение
 
  #+BEGIN_SRC emacs-lisp
- (require 'org-protocol)
+ (defvar my-org-file-main-inbox "~/org/personal/general-TODO.org" "Главный файл для инбокса задач")
 
  (use-package
    org
@@ -1615,9 +1589,16 @@ LSP для питона:
           ;; в org-mode он по нажатию enter вставляет строчку с отступом
           (org-mode . (lambda () (electric-indent-mode -1))))
    :bind (:map my-bindings-map
-               ("C-c l" . org-store-link))
+               ("C-c l" . org-store-link)
+               ("C-c c" . org-capture))
    :config
-   (my-org-mode-basic-config))
+   (my-org-mode-basic-config)
+
+   (setq
+    org-capture-templates
+    ;; Главная кнопка добавления задачи
+    '(("g" "Общий TODO" entry (file my-org-file-main-inbox)
+      "* TODO %?\nSCHEDULED: %t"))))
  #+END_SRC
 
 ** Org agenda
@@ -1653,18 +1634,6 @@ LSP для питона:
    ;; после пересоздания списков файлов, неплохо бы перечитать их с диска
    (my-org-reload-from-disk))
    ;; (my-org-fill-inotify-handlers))
- #+END_SRC
-
- Обновить буфер агенды:
-
- #+BEGIN_SRC emacs-lisp
-(defun my-redo-all-agenda-buffers ()
-  (interactive)
-  (dolist (buffer (buffer-list))
-    (with-current-buffer buffer
-      (when (derived-mode-p 'org-agenda-mode)
-        (message "Upadting buffer")
-        (ignore-errors (org-agenda-maybe-redo))))))
  #+END_SRC
 
 *** Базовые настройки agenda
@@ -1760,11 +1729,7 @@ LSP для питона:
 	 (my-org-agenda-basic-config)
 	 (my-agenda-delayed-tasks-setup)
 	 (my-org-agenda-commands-config)
-	 (my-org-fill-files-list)
-	 ;; раз в 10 минут заново составлять список файлов, на случай появления новых
-	 (run-with-timer 0 600 'my-org-fill-files-list)
-	 ;; 
-	 (run-with-idle-timer 120 120 'my-redo-all-agenda-buffers))
+	 (my-org-fill-files-list))
  #+END_SRC
 
 *** Прочее
@@ -2186,35 +2151,6 @@ Org babel режимы, которые надо поддержать
  #+END_SRC
 
 ** Org capture (шаблоны записей)
-
- #+BEGIN_SRC emacs-lisp
- (defvar my-org-file-main-inbox "~/org/personal/general-TODO.org" "Главный файл для инбокса задач")
- (defvar my-org-file-web-bookmarks "~/org/personal/web-bookmarks.org" "Путь до файла, где хранятся веб-закладки")
-
- (use-package
-   org-capture
-   :ensure t
-   :demand t
-   :after (org)
-   :bind (:map my-bindings-map
-               ("C-c c" . org-capture))
-   :config
-   ;; Главная кнопка добавления задачи
-   (add-to-list
-    'org-capture-templates
-    '("g" "Общий TODO" entry (file my-org-file-main-inbox)
-      "* TODO %?\nSCHEDULED: %t"))
-   ;; Заметки из браузера тоже сохраняем в главный инбокс
-   (add-to-list
-    'org-capture-templates
-    '("Pm" "(Protocol bookmark)" entry (file+headline my-org-file-main-inbox "Сохранено из браузера")
-      "* TODO Взято из веба: [[%:link][%:description]]\n  SCHEDULED: %^T\n\nДобавлено: %U\n\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n%?"))
-   ;; Закладки браузера храним в указанном org-файле, в дереве годов/месяцев/дат
-   (add-to-list
-    'org-capture-templates
-    '("Pb" "(Protocol bookmark)" entry (file+olp+datetree my-org-file-web-bookmarks)
-      "* Закладка %U : [[%:link][%:description]]\n%?\n")))
- #+END_SRC
 
 *** Супер-шаблоны
 
