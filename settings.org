@@ -865,7 +865,7 @@
          flycheck-display-errors-function nil
          flycheck-display-errors-delay 0
          ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
-         flycheck-checker-error-threshold 10000))
+         flycheck-checker-error-threshold 100))
  #+END_SRC
 
  # Показывать ошибки прямо на месте, под строкой:
