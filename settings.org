@@ -737,6 +737,8 @@
         ("C-c d"   . ladicle/toggle-lsp-ui-doc))
   :custom
   (lsp-ui-doc-enable nil)
+  ;; Не показывать ошибки в сайдлайне т.к. в случае если строчка генерит десятки ошибок — начинаются тормоза интерфейса
+  (lsp-ui-sideline-show-diagnostics nil)
   (read-process-output-max (* 1024 1024))
   (gc-cons-threshold (* 1024 10240))
   :config
