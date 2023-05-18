@@ -1011,10 +1011,7 @@
 (defun my-go-mode-setup ()
   (yas-minor-mode)
   (flycheck-mode)
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  (add-hook 'completion-at-point-functions 'go-complete-at-point)
-  (go-guru-hl-identifier-mode)
-  (go-eldoc-setup))
+  (go-guru-hl-identifier-mode))
 #+END_SRC
 
 
@@ -1023,32 +1020,10 @@
   :ensure t
   :mode ("\\.go\\'" . go-mode)
   :hook ((go-mode . lsp-deferred)
-         (go-mode . my-go-mode-setup)))
-#+END_SRC
-
-Документация
-
-#+BEGIN_SRC emacs-lisp
-(use-package go-eldoc
-  :ensure t
-  :commands (go-eldoc-setup))
-#+END_SRC
-
-Автодополнение
-
-#+BEGIN_SRC emacs-lisp
-(use-package company-go
-  :defer t
-  :init
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-go)))
-#+END_SRC
-
-Рефакторинг
-
-#+BEGIN_SRC emacs-lisp
-(use-package go-rename
-  :commands (go-rename))
+         (go-mode . my-go-mode-setup)
+         (before-save . lsp-format-buffer)
+         (before-save . lsp-organize-imports)
+         (completion-at-point-functions . go-complete-at-point)))
 #+END_SRC
 
 Подсветка идентификаторов
