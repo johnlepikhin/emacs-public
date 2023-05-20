@@ -1011,7 +1011,9 @@
 (defun my-go-mode-setup ()
   (yas-minor-mode)
   (flycheck-mode)
-  (go-guru-hl-identifier-mode))
+  (go-guru-hl-identifier-mode)
+  (add-hook 'before-save-hook lsp-format-buffer nil 'local)
+  (add-hook 'before-save-hook lsp-organize-imports nil 'local))
 #+END_SRC
 
 
@@ -1021,8 +1023,6 @@
   :mode ("\\.go\\'" . go-mode)
   :hook ((go-mode . lsp-deferred)
          (go-mode . my-go-mode-setup)
-         (before-save . lsp-format-buffer)
-         (before-save . lsp-organize-imports)
          (completion-at-point-functions . go-complete-at-point)))
 #+END_SRC
 
