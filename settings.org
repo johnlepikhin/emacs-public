@@ -494,22 +494,22 @@
 
 ** Редактирование
 
- Многострочный режим комментариев по умолчанию
+Многострочный режим комментариев по умолчанию
 
  #+BEGIN_SRC emacs-lisp
- (setq comment-style 'multi-line)
+   (setq comment-style 'multi-line)
  #+END_SRC
 
- У нас не принято разделять предложения двойным пробелом:
+У нас не принято разделять предложения двойным пробелом:
 
  #+BEGIN_SRC emacs-lisp
- (setq sentence-end-double-space nil)
+   (setq sentence-end-double-space nil)
  #+END_SRC
 
- Мы презираем табулялцию в отступах:
+Мы презираем табулялцию в отступах:
 
  #+BEGIN_SRC emacs-lisp
- (setq-default indent-tabs-mode nil)
+   (setq-default indent-tabs-mode nil)
  #+END_SRC
 
 Фиксим Delete, стирающую не туда
@@ -577,69 +577,65 @@
 Отключить режим для файлов больше 100K:
 
 #+BEGIN_SRC emacs-lisp
-(defun my-disable-indent-guide-mode-for-big-buffer ()
-  (when (> (buffer-size) 100000)
-    (progn
-      (message "Buffer is too big, disable guided indent mode")
-      (indent-guide-mode -1))))
+  (defun my-disable-indent-guide-mode-for-big-buffer ()
+    (when (> (buffer-size) 100000)
+      (progn
+        (message "Buffer is too big, disable guided indent mode")
+        (indent-guide-mode -1))))
 #+END_SRC
 
  #+BEGIN_SRC emacs-lisp
- (use-package
-   indent-guide
-   :hook ((prog-mode . indent-guide-mode)
-          (yaml-mode . indent-guide-mode)
-          (find-file . my-disable-indent-guide-mode-for-big-buffer))
-   :config
-   (setq indent-guide-char "|")
-   (set-face-foreground 'indent-guide-face "darkgray"))
+   (use-package indent-guide
+     :hook ((prog-mode . indent-guide-mode)
+            (yaml-mode . indent-guide-mode)
+            (find-file . my-disable-indent-guide-mode-for-big-buffer))
+     :config
+     (setq indent-guide-char "|")
+     (set-face-foreground 'indent-guide-face "darkgray"))
  #+END_SRC
 
 *** Умные скобочки
 
  #+BEGIN_SRC emacs-lisp
- (use-package
-   smartparens
-   :config
-   ;; Есть баг с electric-parens-mode с cperl, заплатка из https://github.com/syl20bnr/spacemacs/issues/480
-   (with-eval-after-load 'cperl-mode
-	 (add-hook 'smartparens-enabled-hook  (lambda () (define-key cperl-mode-map "{" nil)))
-	 (add-hook 'smartparens-disabled-hook  (lambda () (define-key cperl-mode-map "{" 'cperl-electric-lbrace))))
-   ;; Включаем глобально
-   (smartparens-global-mode 1))
- #+END_SRC
+   (use-package smartparens
+     :config
+     ;; Есть баг с electric-parens-mode с cperl, заплатка из https://github.com/syl20bnr/spacemacs/issues/480
+     (with-eval-after-load 'cperl-mode
+       (add-hook 'smartparens-enabled-hook  (lambda () (define-key cperl-mode-map "{" nil)))
+       (add-hook 'smartparens-disabled-hook  (lambda () (define-key cperl-mode-map "{" 'cperl-electric-lbrace))))
+     ;; Включаем глобально
+     (smartparens-global-mode 1))
+   #+END_SRC
 
  Подсвечивать парную скобку, переходы по ним:
 
  #+BEGIN_SRC emacs-lisp
- (show-paren-mode 1)
- (setq show-paren-delay 0)
+   (show-paren-mode 1)
+   (setq show-paren-delay 0)
+   
+   (defun match-paren (arg)
+     "Go to the matching paren."
+     (interactive "p")
+     (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+           ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+           (t (self-insert-command (or arg 1)))))
 
- (defun match-paren (arg)
-   "Go to the matching paren."
-   (interactive "p")
-   (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-         (t (self-insert-command (or arg 1)))))
-
- (define-key my-bindings-map (kbd "C-`") 'match-paren)
+   (define-key my-bindings-map (kbd "C-`") 'match-paren)
  #+END_SRC
 
 *** Дерево отмены
 
  #+BEGIN_SRC emacs-lisp
- (use-package
-   undo-tree
-   :bind (:map my-bindings-map
-               ("C-x u" . undo-tree-visualize))
-   :config (global-undo-tree-mode 1))
+   (use-package undo-tree
+     :bind (:map my-bindings-map
+                 ("C-x u" . undo-tree-visualize))
+     :config (global-undo-tree-mode 1))
  #+END_SRC
 
 *** Автодополнение
 
 #+BEGIN_SRC emacs-lisp
-(use-package
-   company
+(use-package company
    :hook (prog-mode . company-mode)
    :config
    ;; сначала ищем в gtags, а если не нашли — смотрим в abbrev
@@ -1271,7 +1267,7 @@ LSP для питона:
   :defer t
   ;; :hook (scheme-mode . (global-guix-prettify 'guix-devel))
   :config
-  ;; (setq guix-directory "~/guix")
+  (setq guix-directory "~/guix/guix")
   (add-hook 'after-init-hook 'global-guix-prettify-mode)
   (add-hook 'scheme-mode-hook 'guix-devel-mode)
   (with-eval-after-load 'geiser-guile
@@ -1280,11 +1276,11 @@ LSP для питона:
     (add-to-list 'geiser-guile-load-path
                  (concat (file-name-directory (locate-library "geiser.el"))
                          "scheme/guile"))
-    (add-to-list 'geiser-guile-load-path "~/guix")
+    (add-to-list 'geiser-guile-load-path "~/guix/guix")
     (add-to-list 'yas-snippet-dirs "~/guix/etc/snippets")))
 
-(if (file-exists-p "~/guix/etc/copyright.el")
-    (load-file "~/guix/etc/copyright.el"))
+(if (file-exists-p "~/guix/guix/etc/copyright.el")
+    (load-file "~/guix/guix/etc/copyright.el"))
 
 (setq copyright-names-regexp
       (format "%s <%s>" user-full-name user-mail-address))
