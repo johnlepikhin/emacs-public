@@ -512,6 +512,13 @@
  (setq-default indent-tabs-mode nil)
  #+END_SRC
 
+Фиксим Delete, стирающую не туда
+
+ #+BEGIN_SRC emacs-lisp
+   (normal-erase-is-backspace-mode 1)
+ #+END_SRC
+
+
 *** Yasnippet: разворачивание сниппетов
 
  #+BEGIN_SRC emacs-lisp
