@@ -518,6 +518,12 @@
    (normal-erase-is-backspace-mode 1)
  #+END_SRC
 
+Backspace/delete должны удалять выделенный текст:
+
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+
 
 *** Yasnippet: разворачивание сниппетов
 
@@ -747,6 +753,7 @@
   :config
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor"))
 #+END_SRC
+
 
 *** Управление проектами
 
@@ -1097,6 +1104,8 @@
 #+BEGIN_SRC emacs-lisp
 (use-package cc-mode
   :defer t
+  :hook (((c-mode c++-mode) . my-c-hook)
+         ((c-mode c++-mode) . flycheck-mode))
   :init
   (defun my-c-hook ()
     (setf c-basic-offset 4)
@@ -1105,18 +1114,24 @@
     (c-set-offset 'access-label '/)
     (c-set-offset 'label '/))
   :config
-  (add-hook 'c-mode-hook #'my-c-hook)
-  (add-hook 'c++-mode-hook #'my-c-hook)
+  ;; (add-hook 'c-mode-hook #'my-c-hook)
+  ;; (add-hook 'c++-mode-hook #'my-c-hook)
   (add-to-list 'c-default-style '(c-mode . "k&r"))
   (add-to-list 'c-default-style '(c++-mode . "k&r")))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package ccls
-  :hook ((c-mode c++-mode objc-mode cuda-mode) .
-         (lambda () (require 'ccls) (lsp)))
-  :config
-  (setq ccls-executable "/snap/bin/ccls"))
+  :after cc-mode
+  :hook (((c-mode c++-mode) . (lambda () (lsp)))
+         (lsp-after-initialize . (lambda () (flycheck-add-next-checker 'lsp 'c/c++-clang)))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package clang-format+
+  :quelpa (clang-format+
+           :fetcher github
+           :repo "SavchenkoValeriy/emacs-clang-format-plus"))
 #+END_SRC
 
 
@@ -1266,10 +1281,12 @@ LSP для питона:
 (use-package guix
   :defer t
   ;; :hook (scheme-mode . (global-guix-prettify 'guix-devel))
+  :hook
+  (after-init . global-guix-prettify-mode)
+  (scheme-mode . guix-devel-mode)
+  (scheme-mode . smartparens-strict-mode)
   :config
   (setq guix-directory "~/guix/guix")
-  (add-hook 'after-init-hook 'global-guix-prettify-mode)
-  (add-hook 'scheme-mode-hook 'guix-devel-mode)
   (with-eval-after-load 'geiser-guile
     ;; NOTE: "~/.config/guix/latest/" is invaild,
     ;; use "~/.config/guix/latest" instead.
@@ -1277,7 +1294,7 @@ LSP для питона:
                  (concat (file-name-directory (locate-library "geiser.el"))
                          "scheme/guile"))
     (add-to-list 'geiser-guile-load-path "~/guix/guix")
-    (add-to-list 'yas-snippet-dirs "~/guix/etc/snippets")))
+    (add-to-list 'yas-snippet-dirs "~/guix/guix/etc/snippets")))
 
 (if (file-exists-p "~/guix/guix/etc/copyright.el")
     (load-file "~/guix/guix/etc/copyright.el"))
