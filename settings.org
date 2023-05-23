@@ -723,7 +723,7 @@ Backspace/delete должны удалять выделенный текст:
   :hook (lsp-after-initialize
          . (lambda ()
              (flycheck-add-next-checker 'lsp 'c/c++-clang)
-             (flycheck-add-next-checker 'lsp 'python-mypy)))
+             (flycheck-add-next-checker 'lsp 'python-flake8)))
   :config
   (setq lsp-pylsp-plugins-flake8-max-line-length 120
         lsp-pylsp-plugins-flake8-ignore "E203"))
@@ -1239,7 +1239,7 @@ Backspace/delete должны удалять выделенный текст:
 LSP для питона:
 
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-python-ms
+(use-package lsp-ython-ms
   :ensure t
   :init
   :hook (python-mode . (lambda ()
