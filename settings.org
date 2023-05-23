@@ -1128,7 +1128,6 @@ Backspace/delete должны удалять выделенный текст:
 (use-package ccls
   :after cc-mode
   :hook (((c-mode c++-mode) . (lambda () (lsp)))))
-         ;; (lsp-after-initialize . (lambda () (flycheck-add-next-checker 'lsp 'c/c++-clang)))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
