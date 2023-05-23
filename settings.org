@@ -859,7 +859,6 @@ Backspace/delete должны удалять выделенный текст:
  (use-package
    flycheck
    :config
-   (defun flycheck-python-needs-module-p (checker) nil)
    (setq flycheck-idle-change-delay 5)
    (flycheck-define-checker perl
      "A Perl syntax checker using the Perl interpreter.
@@ -1255,6 +1254,73 @@ LSP для питона:
   :ensure t
   :hook (python-mode . python-black-on-save-mode)
   :after python-mode)
+#+END_SRC
+
+Фиксы для Guix:
+
+#+BEGIN_SRC emacs-lisp
+(flycheck-define-checker python-flake8
+  "A Python syntax and style checker using Flake8.
+
+Requires Flake8 3.0 or newer. See URL
+`https://flake8.readthedocs.io/'."
+  :command ("flake8"
+            "--format=default"
+            (config-file "--append-config" flycheck-flake8rc)
+            (option "--max-complexity" flycheck-flake8-maximum-complexity nil
+                    flycheck-option-int)
+            (option "--max-line-length" flycheck-flake8-maximum-line-length nil
+                    flycheck-option-int)
+            (eval (when buffer-file-name
+                    (concat "--stdin-display-name=" buffer-file-name)))
+            "-")
+  :standard-input t
+  :working-directory flycheck-python-find-project-root
+  :error-filter (lambda (errors)
+                  (let ((errors (flycheck-sanitize-errors errors)))
+                    (seq-map #'flycheck-flake8-fix-error-level errors)))
+  :error-patterns
+  ((warning line-start
+            (file-name) ":" line ":" (optional column ":") " "
+            (id (one-or-more (any alpha)) (one-or-more digit)) " "
+            (message (one-or-more not-newline))
+            line-end))
+  :enabled (lambda () t)
+  :modes (python-mode python-ts-mode)
+  :next-checkers ((warning . python-pylint)
+                  (warning . python-mypy)))
+
+(add-to-list 'flycheck-checkers 'python-flake8)
+
+(flycheck-define-checker python-pylint
+  "A Python syntax and style checker using Pylint.
+
+This syntax checker requires Pylint 1.0 or newer.
+
+See URL `https://www.pylint.org/'."
+  ;; --reports=n disables the scoring report.
+  :command ("pylint"
+            "--reports=n"
+            "--output-format=json"
+            (config-file "--rcfile=" flycheck-pylintrc concat)
+            ;; Need `source-inplace' for relative imports (e.g. `from .foo
+            ;; import bar'), see https://github.com/flycheck/flycheck/issues/280
+            source-inplace)
+  :error-parser flycheck-parse-pylint
+  :working-directory flycheck-python-find-project-root
+  :enabled (lambda () t)
+  :error-explainer (lambda (err)
+                     (-when-let (id (flycheck-error-id err))
+                       (apply
+                        #'flycheck-call-checker-process-for-output
+                        'python-pylint nil t
+                        (append
+                         (flycheck-python-module-args 'python-pylint "pylint")
+                         (list (format "--help-msg=%s" id))))))
+  :modes (python-mode python-ts-mode)
+  :next-checkers ((warning . python-mypy)))
+
+(add-to-list 'flycheck-checkers 'python-pylint)
 #+END_SRC
 
 
