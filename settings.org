@@ -1239,7 +1239,7 @@ Backspace/delete должны удалять выделенный текст:
 LSP для питона:
 
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-ython-ms
+(use-package lsp-python-ms
   :ensure t
   :init
   :hook (python-mode . (lambda ()
