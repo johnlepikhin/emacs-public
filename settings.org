@@ -1023,6 +1023,7 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (defun my-go-mode-setup ()
+  (lsp-deferred)
   (yas-minor-mode)
   (flycheck-mode)
   (go-guru-hl-identifier-mode)
@@ -1035,8 +1036,7 @@ Backspace/delete должны удалять выделенный текст:
 (use-package go-mode
   :ensure t
   :mode ("\\.go\\'" . go-mode)
-  :hook ((go-mode . lsp-deferred)
-         (go-mode . my-go-mode-setup)
+  :hook ((go-mode . my-go-mode-setup)
          (completion-at-point-functions . go-complete-at-point)))
 #+END_SRC
 
