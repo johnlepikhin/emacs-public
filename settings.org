@@ -632,10 +632,13 @@ Backspace/delete должны удалять выделенный текст:
 *** Дерево отмены
 
  #+BEGIN_SRC emacs-lisp
-   (use-package undo-tree
-     :bind (:map my-bindings-map
-                 ("C-x u" . undo-tree-visualize))
-     :config (global-undo-tree-mode 1))
+  (use-package undo-tree
+    :bind (:map my-bindings-map
+                ("C-x u" . undo-tree-visualize))
+    :config
+    (setq undo-tree-auto-save-history nil
+          undo-tree-visualizer-timestamps t)
+    (global-undo-tree-mode 1))
  #+END_SRC
 
 *** Автодополнение
@@ -1027,8 +1030,8 @@ Backspace/delete должны удалять выделенный текст:
   (yas-minor-mode)
   (flycheck-mode)
   (go-guru-hl-identifier-mode)
-  (add-hook 'before-save-hook lsp-format-buffer nil 'local)
-  (add-hook 'before-save-hook lsp-organize-imports nil 'local))
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
 #+END_SRC
 
 
