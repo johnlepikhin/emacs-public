@@ -716,6 +716,7 @@ Backspace/delete должны удалять выделенный текст:
    (flycheck-grammarly-setup))
  #+END_SRC
 
+
 ** Разработка
 *** LSP
 
@@ -1048,6 +1049,16 @@ Backspace/delete должны удалять выделенный текст:
 #+BEGIN_SRC emacs-lisp
 (use-package go-guru
   :commands (go-guru-hl-identifier-mode))
+#+END_SRC
+
+Линтер
+
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck-golangci-lint
+  :ensure t
+  :hook (go-mode . flycheck-golangci-lint-setup)
+  :config
+  (flycheck-add-next-checker 'lsp 'golangci-lint 'append))
 #+END_SRC
 
 *** Rust
