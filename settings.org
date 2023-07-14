@@ -2180,6 +2180,12 @@ See URL `https://www.pylint.org/'."
 (require 'ox-man)
 #+END_SRC
 
+*** Форматированное копирование в буфер обмена
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-clip)
+#+END_SRC
+
 
 ** Org babel (исполняемые кусочки кода в org-файлах)
 
