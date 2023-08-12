@@ -1227,6 +1227,8 @@ Backspace/delete должны удалять выделенный текст:
 (use-package rjsx-mode
   :mode ("\\.js" . rjsx-mode)
   :mode ("\\.jsx" . rjsx-mode)
+  :mode ("\\.ts" . rjsx-mode)
+  :mode ("\\.tsx" . rjsx-mode)
   :hook (rjsx-mode . tide-setup)
   :hook (rjsx-mode . my-jsx-setup)
   :config
