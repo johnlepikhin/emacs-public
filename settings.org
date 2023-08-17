@@ -1858,7 +1858,7 @@ See URL `https://www.pylint.org/'."
    (setq org-latex-default-packages-alist
          '(("utf8" "inputenc" t ("pdflatex"))
            ("T2A" "fontenc" t ("pdflatex"))
-           ("russian" "babel" t)
+           ("english,main=russian" "babel" t)
            ("" "cmap" t)
            ("" "graphicx" t)
            ("" "grffile" t)
@@ -2180,6 +2180,12 @@ See URL `https://www.pylint.org/'."
 
 #+BEGIN_SRC emacs-lisp
 (require 'ox-man)
+#+END_SRC
+
+*** wikipedia
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-mediawiki)
 #+END_SRC
 
 *** Форматированное копирование в буфер обмена
