@@ -1873,6 +1873,8 @@ See URL `https://www.pylint.org/'."
            ("" "listings" t)
            ("" "capt-of" nil)
            ("" "hyperref" nil)))
+   ;; Для листинга кода использовать пакет listings вместо verbatim-окружений
+   (setq org-latex-listings t)
    ;; Файлы с этими расширениями считаются временными при экспорте и будут удалены
    (setq org-latex-logfiles-extensions
          '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "log" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv" "tex")))
