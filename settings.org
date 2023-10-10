@@ -104,7 +104,7 @@
  Ширина заполнения по умолчанию большая, сейчас широкие мониторы:
 
  #+BEGIN_SRC emacs-lisp
- (setq-default fill-column 140)
+ (setq-default fill-column 120)
  #+END_SRC
 
  Не надо мне сообщать, что у строки есть продолжение. Просто показывай продолжение на
@@ -113,6 +113,13 @@
  #+BEGIN_SRC emacs-lisp
  (setq-default truncate-lines t)
  #+END_SRC
+
+Плавный скролинг (начиная с Emacs 29)
+
+#+BEGIN_SRC emacs-lisp
+(pixel-scroll-precision-mode)
+#+END_SRC
+
 
 *** Настройка темы
 
@@ -207,23 +214,22 @@
                isearch-input-method-local-p t)
          (isearch-update))))
 
- (defun my-update-input-method (is-ru)
-   (if is-ru
-       (set-input-method 'russian-computer)
-     (inactivate-input-method))
+ (defun my-update-input-method ()
    (my-update-isearch-input-method)
    (my-update-cursor))
 
  (defun my-select-input-eng ()
    (interactive)
-   (my-update-input-method nil))
+   (set-input-method 'rfc1345)
+   (my-update-input-method))
 
  (defun my-select-input-rus ()
    (interactive)
-   (my-update-input-method t))
+   (set-input-method 'russian-computer)
+   (my-update-input-method))
 
  (global-set-key (kbd "<M-f11>") 'my-select-input-eng)
- (global-set-key (kbd "<M-f12>") 'my-select-input-rus)
+ (global-set-key (kbd "<C-M-f12>") 'my-select-input-rus)
  (define-key isearch-mode-map (kbd "<M-f11>") 'my-select-input-eng)
  (define-key isearch-mode-map (kbd "<M-f12>") 'my-select-input-rus)
  #+END_SRC
@@ -324,6 +330,13 @@
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (setq-local indicate-buffer-boundaries 'left)))
+#+END_SRC
+
+Отключить изменение размера шрифта скроллингом:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-<wheel-up>") nil)
+(global-set-key (kbd "C-<wheel-down>") nil)
 #+END_SRC
 
 
@@ -724,10 +737,13 @@ Backspace/delete должны удалять выделенный текст:
 (use-package lsp-mode
   :after (yasnippet flycheck)
   :commands lsp
-  :hook (lsp-after-initialize
+  :hook ((lsp-after-initialize
          . (lambda ()
              (flycheck-add-next-checker 'lsp 'c/c++-clang)
-             (flycheck-add-next-checker 'lsp 'python-flake8)))
+             (flycheck-add-next-checker 'lsp 'python-flake8)
+             (flycheck-add-next-checker 'lsp 'golangci-lint)
+             (flycheck-add-next-checker 'lsp 'go-vet t)))
+         (lsp-mode . lsp-enable-which-key-integration))
   :config
   (setq lsp-pylsp-plugins-flake8-max-line-length 120
         lsp-pylsp-plugins-flake8-ignore "E203"))
@@ -862,6 +878,7 @@ Backspace/delete должны удалять выделенный текст:
  #+BEGIN_SRC emacs-lisp
  (use-package
    flycheck
+   :hook ((yaml-mode sh-mode) . flycheck-mode)
    :config
    (setq flycheck-idle-change-delay 5)
    (flycheck-define-checker perl
@@ -887,15 +904,6 @@ Backspace/delete должны удалять выделенный текст:
          ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
          flycheck-checker-error-threshold 1000))
  #+END_SRC
-
- # Показывать ошибки прямо на месте, под строкой:
-
- # #+BEGIN_SRC emacs-lisp
- # (use-package
- #   flycheck-inline
- #   :after (flycheck)
- #   :hook (flycheck-mode . flycheck-inline-mode))
- # #+END_SRC
 
 *** Perl
 
@@ -1056,9 +1064,7 @@ Backspace/delete должны удалять выделенный текст:
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-golangci-lint
   :ensure t
-  :hook (go-mode . flycheck-golangci-lint-setup)
-  :config
-  (flycheck-add-next-checker 'lsp 'golangci-lint 'append))
+  :hook (go-mode . flycheck-golangci-lint-setup))
 #+END_SRC
 
 *** Rust
@@ -1359,7 +1365,6 @@ See URL `https://www.pylint.org/'."
   :hook
   (after-init . global-guix-prettify-mode)
   (scheme-mode . guix-devel-mode)
-  (scheme-mode . smartparens-strict-mode)
   :config
   (setq guix-directory "~/guix/guix")
   (with-eval-after-load 'geiser-guile
@@ -1567,7 +1572,7 @@ See URL `https://www.pylint.org/'."
 
  #+BEGIN_SRC emacs-lisp
  (use-package fic-mode
-   :hook cperl-mode emacs-lisp-mode rust-mode rustic-mode rjsx-mode)
+   :hook cperl-mode emacs-lisp-mode rust-mode rustic-mode rjsx-mode lsp-mode go-mode)
  #+END_SRC
 
 *** Цветной compile buffer
