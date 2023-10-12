@@ -878,7 +878,7 @@ Backspace/delete должны удалять выделенный текст:
  #+BEGIN_SRC emacs-lisp
  (use-package
    flycheck
-   :hook ((yaml-mode sh-mode) . flycheck-mode)
+   :hook ((yaml-mode sh-mode cperl-mode) . flycheck-mode)
    :config
    (setq flycheck-idle-change-delay 5)
    (flycheck-define-checker perl
