@@ -50,7 +50,9 @@
 Подключить возможность устанавливать пакеты из quelpa и гита.
 
 #+BEGIN_SRC emacs-lisp
-(use-package quelpa-use-package)
+(use-package quelpa-use-package
+  :config
+  (setq quelpa-checkout-melpa-p nil))
 #+END_SRC
 
 *** Окружение
@@ -854,7 +856,9 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (use-package conventional-changelog
-  :quelpa (conventional-changelog :fetcher github :repo "johnlepikhin/el-conventional-changelog"))
+  :quelpa (conventional-changelog
+           :fetcher github
+           :repo "johnlepikhin/el-conventional-changelog"))
 #+END_SRC
 
 #+RESULTS:
@@ -1262,7 +1266,6 @@ LSP для питона:
 
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-python-ms
-  :ensure t
   :init
   :hook (python-mode . (lambda ()
                          (require 'lsp-python-ms)
@@ -2170,18 +2173,6 @@ See URL `https://www.pylint.org/'."
    :ensure nil
    :config (advice-add #'org-display-inline-images :after #'org-yt-display-inline-images))
  #+END_SRC
-
-*** Mind map
-
-#+BEGIN_SRC emacs-lisp
-(use-package org-mind-map
-  :init
-  (require 'ox-org)
-  :ensure t
-  :config
-  ;; Никогда не хочу получать маленькие картинки. У меня большой мозг и он генерирует большие карты
-  (setq org-mind-map-default-graph-attribs '()))
-#+END_SRC
 
 *** man pages
 
