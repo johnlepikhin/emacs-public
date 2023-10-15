@@ -169,7 +169,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (require 'use-package)
-(setq use-package-always-ensure t)
+;(setq use-package-always-ensure t)
 #+END_SRC
 
 Больше дебага для use-package:
@@ -1267,6 +1267,7 @@ LSP для питона:
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-python-ms
   :init
+  :defer t
   :hook (python-mode . (lambda ()
                          (require 'lsp-python-ms)
                          (lsp))))  ; or lsp-deferred
@@ -1407,6 +1408,7 @@ See URL `https://www.pylint.org/'."
 
 #+BEGIN_SRC emacs-lisp
 (use-package tex
+  :defer t
   :ensure auctex)
 #+END_SRC
 
@@ -2466,8 +2468,8 @@ Org babel режимы, которые надо поддержать
 #+END_SRC
 
  #+BEGIN_SRC emacs-lisp
- (use-package
-   gnus
+ (use-package gnus
+   :defer t
    :commands (gnus)
    :hook ((message-mode . turn-on-flyspell)
           (message-mode . my-message-mode-setup)
@@ -2566,6 +2568,11 @@ Org babel режимы, которые надо поддержать
  #+END_SRC
 
 ** Telegram
+
+#+BEGIN_SRC emacs-lisp
+(use-package tracking)
+#+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp
   (use-package telega
