@@ -2465,7 +2465,7 @@ Org babel режимы, которые надо поддержать
 
  #+BEGIN_SRC emacs-lisp
  (use-package gnus
-   :defer t
+   :ensure t
    :commands (gnus)
    :hook ((message-mode . turn-on-flyspell)
           (message-mode . my-message-mode-setup)
