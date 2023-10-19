@@ -2445,7 +2445,7 @@ Org babel режимы, которые надо поддержать
    (interactive)
    (progn
      (message "Checking new news from external sources...")
-     (shell-command "(offlineimap -o -1; notmuch new) >/dev/null 2>&1 &")
+     (call-process-shell-command "(offlineimap -o -1; notmuch new) &>/dev/null &" nil 0)
      (gnus-group-get-new-news)))
  #+END_SRC
 
