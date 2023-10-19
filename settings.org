@@ -2445,8 +2445,7 @@ Org babel режимы, которые надо поддержать
    (interactive)
    (progn
      (message "Checking new news from external sources...")
-     (shell-command "(offlineimap -o -1; notmuch new) >/dev/null 2>&1")
-     (message "Checking new news from external sources... DONE")
+     (shell-command "(offlineimap -o -1; notmuch new) >/dev/null 2>&1 &")
      (gnus-group-get-new-news)))
  #+END_SRC
 
@@ -2465,7 +2464,7 @@ Org babel режимы, которые надо поддержать
 
  #+BEGIN_SRC emacs-lisp
  (use-package gnus
-   :ensure t
+   :demand t
    :commands (gnus)
    :hook ((message-mode . turn-on-flyspell)
           (message-mode . my-message-mode-setup)
