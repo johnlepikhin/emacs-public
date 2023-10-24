@@ -319,7 +319,7 @@
 Подсвечивать пробелы в конце строки:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook(lambda () (setq-local show-trailing-whitespace t)))
+(add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
 #+END_SRC
 
 Подсвечивать пустые строчки в конце буфера:
@@ -1403,6 +1403,18 @@ See URL `https://www.pylint.org/'."
   :after company
   :init (add-to-list 'company-backends '(company-shell company-shell-env)))
 #+END_SRC
+
+*** Copilot
+
+#+BEGIN_SRC emacs-lisp
+(use-package copilot
+  :hook (prog-mode . copilot-mode)
+  :quelpa (copilot :fetcher github
+                   :repo "zerolfx/copilot.el"
+                   :branch "main"
+                   :files ("dist" "*.el")))
+#+END_SRC
+
 
 ** LaTeX
 
