@@ -1596,7 +1596,7 @@ See URL `https://www.pylint.org/'."
 
  #+BEGIN_SRC emacs-lisp
  (use-package fic-mode
-   :hook cperl-mode emacs-lisp-mode rust-mode rustic-mode rjsx-mode lsp-mode go-mode)
+   :hook prog-mode)
  #+END_SRC
 
 *** Цветной compile buffer
