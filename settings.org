@@ -320,18 +320,21 @@
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
+(add-hook 'yaml-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
 #+END_SRC
 
 Подсвечивать пустые строчки в конце буфера:
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (setq-local indicate-empty-lines t)))
+(add-hook 'yaml-mode-hook (lambda () (setq-local indicate-empty-lines t)))
 #+END_SRC
 
 Показывать окончание буфера:
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (setq-local indicate-buffer-boundaries 'left)))
+(add-hook 'yaml-mode-hook (lambda () (setq-local indicate-buffer-boundaries 'left)))
 #+END_SRC
 
 Отключить изменение размера шрифта скроллингом:
@@ -1408,11 +1411,15 @@ See URL `https://www.pylint.org/'."
 
 #+BEGIN_SRC emacs-lisp
 (use-package copilot
-  :hook (prog-mode . copilot-mode)
   :quelpa (copilot :fetcher github
                    :repo "zerolfx/copilot.el"
                    :branch "main"
-                   :files ("dist" "*.el")))
+                   :files ("dist" "*.el"))
+  :hook prog-mode yaml-mode
+  :config
+  (define-key copilot-mode-map (kbd "<M-up>") 'copilot-complete)
+  (define-key copilot-mode-map (kbd "<M-right>") 'copilot-accept-completion)
+  (define-key copilot-mode-map (kbd "<M-down>") 'copilot-next-completion))
 #+END_SRC
 
 
