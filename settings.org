@@ -751,7 +751,7 @@ Backspace/delete должны удалять выделенный текст:
          (lsp-mode . lsp-enable-which-key-integration))
   :config
   (setq lsp-pylsp-plugins-flake8-max-line-length 120
-        lsp-pylsp-plugins-flake8-ignore "E203"))
+        lsp-pylsp-plugins-flake8-ignore ["E203", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"]))
 
 (use-package lsp-ui
   :custom-face
@@ -2228,9 +2228,9 @@ Org babel режимы, которые надо поддержать
          (string= lang "plantuml"))))
 
  (use-package babel
-   :defer t
-   :after
-   (org ob-ruby ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-coq ob-python ob-ocaml ob-http)
+   :ensure t
+   ;; :after
+   ;; (org ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-python ob-ocaml)
    :config
    ;; Не просить подтверждение для запуска SRC-блоков
    (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
@@ -2238,12 +2238,10 @@ Org babel режимы, которые надо поддержать
    (org-babel-do-load-languages
     'org-babel-load-languages
     '((perl . t)
-      (ruby . t)
       (shell . t)
       (latex . t)
       (org . t)
       (dot . t)
-      (http . t)
       (sql . t)
       ;; (coq . t)
       (ocaml . t)
