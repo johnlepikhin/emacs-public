@@ -747,7 +747,8 @@ Backspace/delete должны удалять выделенный текст:
              (flycheck-add-next-checker 'lsp 'c/c++-clang)
              (flycheck-add-next-checker 'lsp 'python-flake8)
              (flycheck-add-next-checker 'lsp 'golangci-lint)
-             (flycheck-add-next-checker 'lsp 'go-vet t)))
+             (flycheck-add-next-checker 'lsp 'go-vet t)
+             (flycheck-add-next-checker 'lsp 'javascript-eslint)))
          (lsp-mode . lsp-enable-which-key-integration))
   :config
   (setq lsp-pylsp-plugins-flake8-max-line-length 120
@@ -1182,21 +1183,29 @@ Backspace/delete должны удалять выделенный текст:
 #+END_SRC
 
 
-*** HTML
+*** HTML / JS / typescript
 
  Подключаем web-mode (HTML, JS, CUSS в одном):
 
  #+BEGIN_SRC emacs-lisp
- (use-package web-mode
-   :mode ("\\.html$" . web-mode)
-   :init
-   (setq web-mode-markup-indent-offset 4)
-   (setq web-mode-code-indent-offset 4)
-   (setq web-mode-css-indent-offset 4)
-   (setq js-indent-level 4)
-   (setq web-mode-enable-auto-pairing t)
-   (setq web-mode-enable-auto-expanding t)
-   (setq web-mode-enable-css-colorization t))
+  (use-package web-mode
+    :mode ("\\.html$" . web-mode)
+    :mode ("\\.js$" . web-mode)
+    :mode ("\\.jsx$" . web-mode)
+    :mode ("\\.ts$" . web-mode)
+    :mode ("\\.tsx$" . web-mode)
+    :hook (web-mode . lsp-deferred)
+    :init
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-enable-auto-pairing t)
+    (setq web-mode-enable-auto-expanding t)
+    (setq web-mode-enable-css-colorization t))
+
+ (use-package prettier-js
+   :hook (web-mode . prettier-js-mode)
+   :ensure t)
  #+END_SRC
 
 *** YAML
@@ -1204,50 +1213,6 @@ Backspace/delete должны удалять выделенный текст:
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
   :mode ("\\.yaml$" . yaml-mode))
-#+END_SRC
-
-
-*** Javascript / ECMA / React
-
-#+BEGIN_SRC emacs-lisp
-(defun my-use-eslint-from-node-modules ()
-  (let* ((root (locate-dominating-file
-                (or (buffer-file-name) default-directory)
-                "node_modules"))
-         (eslint (and root
-                      (expand-file-name "node_modules/eslint/bin/eslint.js"
-                                        root))))
-    (when (and eslint (file-executable-p eslint))
-      (setq-local flycheck-javascript-eslint-executable eslint))))
-
-(defun my-tide-buffer-setup ()
-  (add-hook 'flycheck-mode-hook #'my-use-eslint-from-node-modules)
-  (add-hook 'before-save-hook 'tide-format-before-save nil 'local))
-
-(use-package tide
-  :after (company flycheck)
-  :hook (tide-mode . my-tide-buffer-setup)
-  :config
-  (add-to-list 'company-backends 'company-tide)
-  (define-key tide-mode-map (kbd "C-.") 'tide-jump-to-definition)
-  (define-key tide-mode-map (kbd "C-,") 'tide-jump-back)
-  (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
-  (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
-  (tide-hl-identifier-mode +1))
-
-(defun my-jsx-setup ()
-  (flycheck-mode +1))
-
-(use-package rjsx-mode
-  :mode ("\\.js" . rjsx-mode)
-  :mode ("\\.jsx" . rjsx-mode)
-  :mode ("\\.ts" . rjsx-mode)
-  :mode ("\\.tsx" . rjsx-mode)
-  :hook (rjsx-mode . tide-setup)
-  :hook (rjsx-mode . my-jsx-setup)
-  :config
-  (setq js-indent-level 2)
-  (flycheck-add-mode 'javascript-eslint 'rjsx-mode))
 #+END_SRC
 
 *** SQL
