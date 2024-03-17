@@ -828,6 +828,7 @@ Backspace/delete должны удалять выделенный текст:
   :config
   (add-to-list 'tree-sitter-major-mode-language-alist '(rustic-mode . rust))
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-ts-mode . typescript))
+  (add-to-list 'tree-sitter-major-mode-language-alist '(tsx-ts-mode . typescript))
   (setq treesit-language-source-alist
    '((bash "https://github.com/tree-sitter/tree-sitter-bash")
      (cmake "https://github.com/uyha/tree-sitter-cmake")
@@ -1280,12 +1281,11 @@ Typescript с tree-sitter:
 #+BEGIN_SRC emacs-lisp
 (use-package typescript-ts-mode
   :ensure t
-  :mode ("\\.ts$" . typescript-ts-mode)
-  :mode ("\\.tsx$" . typescript-ts-mode)
-  :hook (typescript-ts-mode . lsp-deferred)
-  :hook (typescript-ts-mode . tree-sitter-hl-mode)
-  :config
-  (add-to-list major-mode-remap-alist (typescript-ts-mode . tsx-ts-mode)))
+  :mode ("\\.ts$" . tsx-ts-mode)
+  :mode ("\\.tsx$" . tsx-ts-mode)
+  :hook (tsx-ts-mode . lsp-deferred)
+  :hook (tsx-ts-mode . tree-sitter-hl-mode)
+  :hook (tsx-ts-mode . prettier-js-mode))
 #+END_SRC
 
 
