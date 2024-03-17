@@ -47,13 +47,36 @@
 (setq use-package-compute-statistics t)
 #+END_SRC
 
-Подключить возможность устанавливать пакеты из quelpa и гита.
+*** Подключить возможность устанавливать пакеты из quelpa и гита.
 
 #+BEGIN_SRC emacs-lisp
 (use-package quelpa-use-package
   :config
   (setq quelpa-checkout-melpa-p nil))
 #+END_SRC
+
+*** Поддержка straight.el
+
+#+BEGIN_SRC emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  (straight-use-package 'use-package)
+#+END_SRC
+
 
 *** Окружение
 
@@ -677,10 +700,6 @@ Backspace/delete должны удалять выделенный текст:
          company-selection-wrap-around t
          company-transformers '(company-sort-by-occurrence
                                 company-sort-by-backend-importance)))
-
-;; Глючит паре с rustic
-;; (use-package company-box
-;;   :hook (company-mode . company-box-mode))
 #+END_SRC
 
 **** Автодополнение с неточным совпадением
@@ -703,6 +722,17 @@ Backspace/delete должны удалять выделенный текст:
   :commands (company-quickhelp-mode)
   :defer t
   :init (add-hook 'global-company-mode-hook #'company-quickhelp-mode))
+#+END_SRC
+
+**** Отображение списка дополнений в отдельном окошке
+
+#+BEGIN_SRC emacs-lisp
+;; С копилотом друг друга перекрывают, неудобно
+
+;; (use-package company-box                ;
+;;   :straight t
+;;   :ensure t
+;;   :hook (company-mode . company-box-mode))
 #+END_SRC
 
 
@@ -1376,17 +1406,14 @@ See URL `https://www.pylint.org/'."
 *** Copilot
 
 #+BEGIN_SRC emacs-lisp
-(use-package copilot
-  :quelpa (copilot :fetcher github
-                   :repo "copilot-emacs/copilot.el"
-                   :branch "main"
-                   :files ("dist" "*.el"))
-  :ensure t
-  :hook prog-mode yaml-mode
-  :config
-  (define-key copilot-mode-map (kbd "<M-up>") 'copilot-complete)
-  (define-key copilot-mode-map (kbd "<M-right>") 'copilot-accept-completion)
-  (define-key copilot-mode-map (kbd "<M-down>") 'copilot-next-completion))
+  (use-package copilot
+    :straight (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
+    :ensure t
+    :hook prog-mode yaml-mode
+    :config
+    (define-key copilot-mode-map (kbd "<M-up>") 'copilot-complete)
+    (define-key copilot-mode-map (kbd "<M-right>") 'copilot-accept-completion)
+    (define-key copilot-mode-map (kbd "<M-down>") 'copilot-next-completion))
 #+END_SRC
 
 
