@@ -1378,9 +1378,10 @@ See URL `https://www.pylint.org/'."
 #+BEGIN_SRC emacs-lisp
 (use-package copilot
   :quelpa (copilot :fetcher github
-                   :repo "zerolfx/copilot.el"
+                   :repo "copilot-emacs/copilot.el"
                    :branch "main"
                    :files ("dist" "*.el"))
+  :ensure t
   :hook prog-mode yaml-mode
   :config
   (define-key copilot-mode-map (kbd "<M-up>") 'copilot-complete)
