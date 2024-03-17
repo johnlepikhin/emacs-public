@@ -835,6 +835,11 @@ Backspace/delete должны удалять выделенный текст:
                                :repo "ubolonton/emacs-tree-sitter"
                                :files ("langs/*.el" "langs/queries"))
   :after tree-sitter)
+
+(straight-use-package
+ '(tree-sitter-langs :host github
+                     :repo "ubolonton/emacs-tree-sitter"
+                     :files ("langs/*.el" "langs/queries")))
 #+END_SRC
 
 
@@ -1233,15 +1238,16 @@ Backspace/delete должны удалять выделенный текст:
 
 *** HTML / JS / typescript
 
- Подключаем web-mode (HTML, JS, CUSS в одном):
+Подключаем web-mode (HTML, JS, CUSS в одном):
 
  #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :mode ("\\.html$" . web-mode)
     :mode ("\\.js$" . web-mode)
     :mode ("\\.jsx$" . web-mode)
-    :mode ("\\.ts$" . web-mode)
-    :mode ("\\.tsx$" . web-mode)
+    ;; Для TS теперь используем typescript-ts-mode
+    ;; :mode ("\\.ts$" . web-mode)
+    ;; :mode ("\\.tsx$" . web-mode)
     :hook (web-mode . lsp-deferred)
     :init
     (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
@@ -1256,6 +1262,21 @@ Backspace/delete должны удалять выделенный текст:
    :hook (web-mode . prettier-js-mode)
    :ensure t)
  #+END_SRC
+
+Typescript с tree-sitter:
+
+#+BEGIN_SRC emacs-lisp
+(use-package typescript-ts-mode
+  :ensure t
+  :mode ("\\.ts$" . typescript-ts-mode)
+  :mode ("\\.tsx$" . typescript-ts-mode)
+  :hook (typescript-ts-mode . lsp-deferred)
+  :hook (typescript-ts-mode . tree-sitter-hl-mode)
+  :hook (typescript-ts-mode . tree-sitter-indent-mode)
+  :config
+  (setq typescript-ts-indent-offset 2))
+#+END_SRC
+
 
 *** YAML
 
