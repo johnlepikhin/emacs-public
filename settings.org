@@ -845,6 +845,7 @@ Backspace/delete должны удалять выделенный текст:
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
      (yaml "https://github.com/ikatyang/tree-sitter-yaml"))))
 
+
 (use-package tree-sitter-langs
   :straight (tree-sitter-langs :type git
                                :host github
@@ -1283,8 +1284,8 @@ Typescript с tree-sitter:
   :mode ("\\.tsx$" . typescript-ts-mode)
   :hook (typescript-ts-mode . lsp-deferred)
   :hook (typescript-ts-mode . tree-sitter-hl-mode)
-  :bind (:map typescript-ts-mode-map
-              ("TAB" . treesit-indent)))
+  :config
+  (add-to-list major-mode-remap-alist (typescript-ts-mode . tsx-ts-mode)))
 #+END_SRC
 
 
