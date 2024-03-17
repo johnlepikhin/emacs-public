@@ -49,10 +49,12 @@
 
 *** Подключить возможность устанавливать пакеты из quelpa и гита.
 
+(Заменено на straight.el)
+
 #+BEGIN_SRC emacs-lisp
-(use-package quelpa-use-package
-  :config
-  (setq quelpa-checkout-melpa-p nil))
+;; (use-package quelpa-use-package
+;;   :config
+;;   (setq quelpa-checkout-melpa-p nil))
 #+END_SRC
 
 *** Поддержка straight.el
@@ -776,7 +778,6 @@ Backspace/delete должны удалять выделенный текст:
          . (lambda ()
              (flycheck-add-next-checker 'lsp 'c/c++-clang)
              (flycheck-add-next-checker 'lsp 'python-flake8)
-             (flycheck-add-next-checker 'lsp 'golangci-lint)
              (flycheck-add-next-checker 'lsp 'go-vet t)
              (flycheck-add-next-checker 'lsp 'javascript-eslint)))
          (lsp-mode . lsp-enable-which-key-integration))
@@ -891,9 +892,7 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (use-package conventional-changelog
-  :quelpa (conventional-changelog
-           :fetcher github
-           :repo "johnlepikhin/el-conventional-changelog"))
+  :straight (:host github :repo "johnlepikhin/el-conventional-changelog" :files ("dist" "*.el")))
 #+END_SRC
 
 #+RESULTS:
@@ -1191,9 +1190,7 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (use-package clang-format+
-  :quelpa (clang-format+
-           :fetcher github
-           :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+  :straight (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus" :files ("dist" "*.el")))
 #+END_SRC
 
 
@@ -1226,6 +1223,7 @@ Backspace/delete должны удалять выделенный текст:
     :mode ("\\.tsx$" . web-mode)
     :hook (web-mode . lsp-deferred)
     :init
+    (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
     (setq web-mode-markup-indent-offset 2)
     (setq web-mode-code-indent-offset 2)
     (setq web-mode-css-indent-offset 2)
@@ -1406,14 +1404,14 @@ See URL `https://www.pylint.org/'."
 *** Copilot
 
 #+BEGIN_SRC emacs-lisp
-  (use-package copilot
-    :straight (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
-    :ensure t
-    :hook prog-mode yaml-mode
-    :config
-    (define-key copilot-mode-map (kbd "<M-up>") 'copilot-complete)
-    (define-key copilot-mode-map (kbd "<M-right>") 'copilot-accept-completion)
-    (define-key copilot-mode-map (kbd "<M-down>") 'copilot-next-completion))
+(use-package copilot
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
+  :ensure t
+  :hook ((prog-mode yaml-mode) . copilot-mode)
+  :config
+  (define-key copilot-mode-map (kbd "<M-up>") 'copilot-complete)
+  (define-key copilot-mode-map (kbd "<M-right>") 'copilot-accept-completion)
+  (define-key copilot-mode-map (kbd "<M-down>") 'copilot-next-completion))
 #+END_SRC
 
 
