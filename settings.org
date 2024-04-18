@@ -453,10 +453,12 @@
  (savehist-mode 1)
  #+END_SRC
 
- Браузер по умолчанию — chromium:
+ Браузер по умолчанию — google-chrome-beta:
 
  #+BEGIN_SRC emacs-lisp
- (setq browse-url-browser-function 'browse-url-chromium)
+ (setq browse-url-browser-function 'browse-url-generic
+       browse-url-generic-program "google-chrome-beta")
+ ;; (setq browse-url-browser-function 'browse-url-chromium)
  #+END_SRC
 
 Использовать ivy в качестве движка автодополнения имен буферов, файлов и т.д.
@@ -1284,8 +1286,9 @@ Typescript с tree-sitter:
   :mode ("\\.ts$" . tsx-ts-mode)
   :mode ("\\.tsx$" . tsx-ts-mode)
   :hook (tsx-ts-mode . lsp-deferred)
-  :hook (tsx-ts-mode . tree-sitter-hl-mode)
-  :hook (tsx-ts-mode . prettier-js-mode))
+  :hook (tsx-ts-mode . tree-sitter-hl-mode))
+;; двойное сохранение ломает линтер/lsp
+;; :hook (tsx-ts-mode . prettier-js-mode))
 #+END_SRC
 
 
@@ -1685,6 +1688,8 @@ See URL `https://www.pylint.org/'."
    (setq org-refile-use-outline-path 'file)
    ;; Люблю выделять по shift-стрелочки, даже в org-mode
    (setq org-support-shift-select t)
+   ;; Отключаем org-persist, кэширование создает тормоза(!)
+   (setq org-element-cache-persistent nil)
 
    ;; Угадывать mode SRC-блоков по названию режимов
    (add-to-list 'org-src-lang-modes '("conf" . conf))
