@@ -2428,7 +2428,6 @@ Org-подобная система, модно-молодежная.
   :ensure t
   :demand t
   :config
-  (obsidian-specify-path "~/MY_OBSIDIAN_FOLDER")
   (global-obsidian-mode t)
   :custom
   ;; This directory will be used for `obsidian-capture' if set.
