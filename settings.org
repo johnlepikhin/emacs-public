@@ -1477,6 +1477,15 @@ See URL `https://www.pylint.org/'."
   (define-key copilot-mode-map (kbd "<M-down>") 'copilot-next-completion))
 #+END_SRC
 
+*** Graphviz
+
+#+BEGIN_SRC emacs-lisp
+(use-package graphviz-dot-mode
+  :ensure t
+  :config
+  (setq graphviz-dot-indent-width 4))
+#+END_SRC
+
 
 ** LaTeX
 
