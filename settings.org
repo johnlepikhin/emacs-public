@@ -1684,7 +1684,8 @@ See URL `https://www.pylint.org/'."
   :mode ("\\.plantuml\\'" . plantuml-mode)
   :config
   (setq plantuml-jar-path (concat (getenv "HOME") "/.guix-home/profile/share/java/plantuml.jar"))
-  (setq plantuml-default-exec-mode 'jar))
+  (setq plantuml-default-exec-mode 'jar)
+  (setq plantuml-indent-level 2))
 #+END_SRC
 
 
