@@ -1728,7 +1728,6 @@ See URL `https://www.pylint.org/'."
    ;; Подключить эти модули
    (add-to-list 'org-modules 'org-id)
    (add-to-list 'org-modules 'org-mouse)
-   (add-to-list 'org-modules 'org-attach-screenshot)
 
    ;; Разукрашиваем статусы
    (setq org-todo-keyword-faces
@@ -1834,6 +1833,18 @@ See URL `https://www.pylint.org/'."
    (face-spec-set 'org-agenda-date '((t :height 1.1)))
    (face-spec-set 'org-agenda-date-weekend '((t :height 1.1))))
  #+END_SRC
+
+*** Автоматическое обновление с диска
+
+#+BEGIN_SRC emacs-lisp
+(defadvice revert-buffer (after refresh-org-agenda activate)
+  (if (eq major-mode 'org-mode)
+      (progn
+        (org-agenda-redo-all t)
+        ;; С одного раза агенда теперь почему-то не обновляется (с появлением кэшей в org?)
+        (org-agenda-redo-all t))))
+#+END_SRC
+
 
 *** Отложенные таски
 
