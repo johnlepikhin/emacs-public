@@ -1680,7 +1680,7 @@ See URL `https://www.pylint.org/'."
 
  #+BEGIN_SRC emacs-lisp
  (use-package fic-mode
-  :straight (tree-sitter :type git
+  :straight (fic-mode :type git
                          :host github
                          :repo "lewang/fic-mode"
                          :branch "master"
