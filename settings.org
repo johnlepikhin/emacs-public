@@ -2093,11 +2093,11 @@ See URL `https://www.pylint.org/'."
  (use-package
    ox-hugo
    :after (ox org)
-   :straight (tree-sitter :type git
-                          :host github
-                          :repo "kaushalmodi/ox-hugo"
-                          :branch "v0.12.2"
-                          :files ("lisp/*.el"))
+   :straight (ox-hugo :type git
+                      :host github
+                      :repo "kaushalmodi/ox-hugo"
+                      :branch "v0.12.2"
+                      :files ("lisp/*.el"))
    :hook ((org-export-before-processing . my-org-hugo-add-printable-version)
           (org-export-before-processing . my-org-hugo-add-source-of-article))
    :config
