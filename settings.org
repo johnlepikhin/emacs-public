@@ -2095,11 +2095,6 @@ See URL `https://www.pylint.org/'."
    :after (ox org)
    :ensure t
    :commands (org-hugo-export-wim-to-md)
-   :straight (ox-hugo :type git
-                      :host github
-                      :repo "kaushalmodi/ox-hugo"
-                      :branch "v0.12.2"
-                      :files ("lisp/*.el"))
    :hook ((org-export-before-processing . my-org-hugo-add-printable-version)
           (org-export-before-processing . my-org-hugo-add-source-of-article))
    :config
