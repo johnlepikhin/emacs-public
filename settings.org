@@ -2093,6 +2093,8 @@ See URL `https://www.pylint.org/'."
  (use-package
    ox-hugo
    :after (ox org)
+   :ensure t
+   :commands (org-hugo-export-wim-to-md)
    :straight (ox-hugo :type git
                       :host github
                       :repo "kaushalmodi/ox-hugo"
