@@ -203,13 +203,6 @@
 (setq use-package-verbose t)
 #+END_SRC
 
-Я хочу указывать зависимости к системным пакетам при использовании use-package:
-
-#+BEGIN_SRC emacs-lisp
-(use-package use-package-ensure-system-package
-  :ensure t)
-#+END_SRC
-
 Продублируем определение, подгружающее функции из ~/.emacs:
 
 #+BEGIN_SRC emacs-lisp
@@ -780,8 +773,8 @@ Backspace/delete должны удалять выделенный текст:
          . (lambda ()
              (flycheck-add-next-checker 'lsp 'c/c++-clang)
              (flycheck-add-next-checker 'lsp 'python-flake8)
-             (flycheck-add-next-checker 'lsp 'go-vet t)
-             (flycheck-add-next-checker 'lsp 'javascript-eslint)))
+             (flycheck-add-next-checker 'lsp 'go-vet t)))
+             ;; (flycheck-add-next-checker 'lsp 'javascript-eslint)))
          (lsp-mode . lsp-enable-which-key-integration))
   :config
   (setq lsp-pylsp-plugins-flake8-max-line-length 120
@@ -857,6 +850,22 @@ Backspace/delete должны удалять выделенный текст:
   :after tree-sitter)
 #+END_SRC
 
+*** Форматирование кода
+
+#+BEGIN_SRC emacs-lisp
+(use-package apheleia
+  :ensure apheleia
+  :diminish ""
+  :defines
+  apheleia-formatters
+  apheleia-mode-alist
+  :functions
+  apheleia-global-mode
+  :config
+  (setf (alist-get 'prettier-json apheleia-formatters)
+        '("prettier" "--stdin-filepath" filepath))
+  (apheleia-global-mode +1))
+#+END_SRC
 
 *** Управление проектами
 
@@ -983,6 +992,7 @@ Backspace/delete должны удалять выделенный текст:
          ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
          flycheck-checker-error-threshold 1000))
  #+END_SRC
+
 
 *** Perl
 
@@ -1280,24 +1290,34 @@ Backspace/delete должны удалять выделенный текст:
     (setq web-mode-enable-auto-expanding t)
     (setq web-mode-enable-css-colorization t))
 
- (use-package prettier-js
-   :hook (web-mode . prettier-js-mode)
-   :ensure t)
+ ;; (use-package prettier-js
+ ;;   :hook ((web-mode . prettier-js-mode)
+ ;;          (tsx-ts-mode . prettier-js-mode)
+ ;;          (css-mode-hook . prettier-js-mode))
+ ;;   :ensure t)
  #+END_SRC
 
 Typescript с tree-sitter:
 
 #+BEGIN_SRC emacs-lisp
-(use-package typescript-ts-mode
-  :ensure t
-  :mode ("\\.ts$" . tsx-ts-mode)
-  :mode ("\\.tsx$" . tsx-ts-mode)
-  :hook (tsx-ts-mode . lsp-deferred)
-  :hook (tsx-ts-mode . tree-sitter-hl-mode))
-;; двойное сохранение ломает линтер/lsp
-;; :hook (tsx-ts-mode . prettier-js-mode))
+  (use-package typescript-ts-mode
+    :ensure t
+    :mode ("\\.ts$" . tsx-ts-mode)
+    :mode ("\\.tsx$" . tsx-ts-mode)
+    :hook (tsx-ts-mode . lsp-deferred)
+    :hook (tsx-ts-mode . tree-sitter-hl-mode)
+    )
+  ;; двойное сохранение ломает линтер/lsp
+  ;; :hook (tsx-ts-mode . prettier-js-mode))
 #+END_SRC
 
+ESlint:
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-eslint
+  :demand t
+  :after lsp-mode)
+#+END_SRC
 
 *** YAML
 
@@ -1746,9 +1766,6 @@ See URL `https://www.pylint.org/'."
  )
  #+END_SRC
 
- #+RESULTS:
- : my-org-mode-basic-config
-
 *** Подключение
 
  #+BEGIN_SRC emacs-lisp
@@ -1764,6 +1781,8 @@ See URL `https://www.pylint.org/'."
           ;; (auto-save . org-save-all-org-buffers)
           ;; автоперенос строк по умолчанию
           (org-mode . auto-fill-mode)
+          ;; автоматом переносить в архив завершенные задачи с верхнего уровня
+          (org-mode . (lambda () (add-hook 'after-save-hook 'org-archive-all-done nil t)))
           ;; выключить включенный теперь везде по умолчанию electric-indent-mode
           ;; в org-mode он по нажатию enter вставляет строчку с отступом
           (org-mode . (lambda () (electric-indent-mode -1))))
@@ -1779,6 +1798,19 @@ See URL `https://www.pylint.org/'."
     '(("g" "Общий TODO" entry (file my-org-file-main-inbox)
       "* TODO %?\nSCHEDULED: %t"))))
  #+END_SRC
+
+*** Синхронизация
+
+#+BEGIN_SRC emacs-lisp
+(defun git-sync-org-private ()
+  (call-process-shell-command "cd ~/org/personal && git-sync" nil 0))
+
+(defun register-git-sync-org-private-hook ()
+ (add-hook 'after-save-hook #'git-sync-org-private nil t))
+
+(add-to-list 'safe-local-variable-values '(eval . (register-git-sync-org-private-hook)))
+#+END_SRC
+
 
 ** Org agenda
 
@@ -2291,11 +2323,11 @@ See URL `https://www.pylint.org/'."
 (require 'ox-man)
 #+END_SRC
 
-*** wikipedia
-
-#+BEGIN_SRC emacs-lisp
-(use-package ox-mediawiki)
-#+END_SRC
+# *** wikipedia
+#
+# #+BEGIN_SRC emacs-lisp
+# (use-package ox-mediawiki)
+# #+END_SRC
 
 *** Форматированное копирование в буфер обмена
 
