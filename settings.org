@@ -2096,7 +2096,7 @@ See URL `https://www.pylint.org/'."
    :straight (ox-hugo :type git
                       :host github
                       :repo "kaushalmodi/ox-hugo"
-                      :branch "v0.12.2"
+                      :branch "v0.8.0"
                       :files ("lisp/*.el"))
    :hook ((org-export-before-processing . my-org-hugo-add-printable-version)
           (org-export-before-processing . my-org-hugo-add-source-of-article))
