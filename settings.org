@@ -1786,8 +1786,8 @@ See URL `https://www.pylint.org/'."
           ;; (auto-save . org-save-all-org-buffers)
           ;; автоперенос строк по умолчанию
           (org-mode . auto-fill-mode)
-          ;; автоматом переносить в архив завершенные задачи с верхнего уровня
-          (org-mode . (lambda () (add-hook 'after-save-hook 'org-archive-all-done nil t)))
+          ;; ;; автоматом переносить в архив завершенные задачи с верхнего уровня
+          ;; (org-mode . (lambda () (add-hook 'after-save-hook 'org-archive-all-done nil t)))
           ;; выключить включенный теперь везде по умолчанию electric-indent-mode
           ;; в org-mode он по нажатию enter вставляет строчку с отступом
           (org-mode . (lambda () (electric-indent-mode -1))))
