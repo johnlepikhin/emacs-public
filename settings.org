@@ -2318,10 +2318,16 @@ See URL `https://www.pylint.org/'."
   :ensure t)
 
 (use-package ox-taskjuggler
+  :straight (tree-sitter :type git
+                         :host github
+                         :repo "h-oll/ox-taskjuggler"
+                         :branch "master"
+                         :files ("lisp/*.el"))
   :ensure t)
 
 (use-package tj3-mode
   :after ox-taskjuggler
+  :ensure t
   :config
   (require 'ox-taskjuggler))
 #+END_SRC
