@@ -2314,7 +2314,13 @@ See URL `https://www.pylint.org/'."
 *** Gantt
 
 #+BEGIN_SRC emacs-lisp
-(use-package ox-taskjuggler)
+(use-package ox-taskjuggler
+  :ensure nil)
+
+(use-package tj3-mode
+  :after ox-taskjuggler
+  :config
+  (require 'ox-taskjuggler))
 #+END_SRC
 
 
