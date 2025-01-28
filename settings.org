@@ -2311,11 +2311,14 @@ See URL `https://www.pylint.org/'."
 (use-package ox-clip)
 #+END_SRC
 
-*** Gantt
+*** Org-contrib
 
 #+BEGIN_SRC emacs-lisp
+(use-package org-contrib
+  :ensure t)
+
 (use-package ox-taskjuggler
-  :ensure nil)
+  :ensure t)
 
 (use-package tj3-mode
   :after ox-taskjuggler
