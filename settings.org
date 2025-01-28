@@ -2311,6 +2311,12 @@ See URL `https://www.pylint.org/'."
 (use-package ox-clip)
 #+END_SRC
 
+*** Gantt
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-taskjuggler)
+#+END_SRC
+
 
 ** Org babel (исполняемые кусочки кода в org-файлах)
 
