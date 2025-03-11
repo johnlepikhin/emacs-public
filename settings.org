@@ -824,6 +824,7 @@ Backspace/delete должны удалять выделенный текст:
   (add-to-list 'tree-sitter-major-mode-language-alist '(rustic-mode . rust))
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-ts-mode . typescript))
   (add-to-list 'tree-sitter-major-mode-language-alist '(tsx-ts-mode . typescript))
+  (add-to-list 'tree-sitter-major-mode-language-alist '(cperl-mode . perl))
   (setq treesit-language-source-alist
    '((bash "https://github.com/tree-sitter/tree-sitter-bash")
      (cmake "https://github.com/uyha/tree-sitter-cmake")
@@ -836,6 +837,7 @@ Backspace/delete должны удалять выделенный текст:
      (make "https://github.com/alemuller/tree-sitter-make")
      (markdown "https://github.com/ikatyang/tree-sitter-markdown")
      (python "https://github.com/tree-sitter/tree-sitter-python")
+     (perl . ("https://github.com/tree-sitter-perl/tree-sitter-perl" "release"))
      (toml "https://github.com/tree-sitter/tree-sitter-toml")
      (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
@@ -948,19 +950,6 @@ Backspace/delete должны удалять выделенный текст:
 #+RESULTS:
 : #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24466 37134 710883 275000) :init (24466 37134 710879 842000) :config (24466 37134 710829 132000) :config-secs (0 0 5 487000) :init-secs (0 0 2422 647000) :use-package-secs (0 53 571255 214000)))
 
-
-*** Индекс по тэгам
-
- #+BEGIN_SRC emacs-lisp
- (use-package ggtags
-   :hook (cperl-mode . ggtags-mode)
-   :config
-   (setq ggtags-sort-by-nearness nil
-         ggtags-navigation-mode-lighter nil
-         ggtags-mode-line-project-name nil
-         ggtags-oversize-limit (* 30 1024 1024)))
- #+END_SRC
-
 *** Flycheck
 
  #+BEGIN_SRC emacs-lisp
@@ -1044,6 +1033,7 @@ Backspace/delete должны удалять выделенный текст:
  (use-package
    cperl-mode
    :ensure-system-package perltidy
+   :hook (cperl-mode . tree-sitter-hl-mode)
    :after (flycheck tramp)
    :bind (:map cperl-mode-map ())
    :mode ("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode)
@@ -1061,10 +1051,10 @@ Backspace/delete должны удалять выделенный текст:
    (add-hook 'cperl-mode-hook 'my-cperl-init-prettify-symbols)
    ;; Отступ равен 4, не выпендриваться!
    (setq cperl-indent-level 4
-		 cperl-close-paren-offset -4
-		 cperl-continued-statement-offset 4
-		 cperl-indent-parens-as-block t
-		 cperl-tab-always-indent t)
+         cperl-close-paren-offset -4
+         cperl-continued-statement-offset 4
+         cperl-indent-parens-as-block t
+         cperl-tab-always-indent t)
    ;; Красные хэши меня всегда раздражали
    (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
  #+END_SRC
