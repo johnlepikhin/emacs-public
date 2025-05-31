@@ -2753,7 +2753,6 @@ Org-подобная система, модно-молодежная.
   :straight (:type git
                    :host github
                    :repo "xenodium/shell-maker"
-                   :branch "main"
                    :files ("*.el")))
 
 (use-package chatgpt-shell
@@ -2770,20 +2769,22 @@ Org-подобная система, модно-молодежная.
 
 #+BEGIN_SRC emacs-lisp
 (use-package plz-media-type
-  :ensure t)
+  ;; :ensure t
+)
 
 (use-package llm-openai
-  :ensure t)
+  ;; :ensure t
+)
 
 (use-package magit-gptcommit
   ;; :straight t
-  :ensure t
+  ;; :ensure t
   :after magit
   :bind (:map git-commit-mode-map
               ("C-c C-g" . magit-gptcommit-commit-accept))
   :custom
   (require 'llm-openai)
-  (magit-gptcommit-llm-provider (make-llm-openai :key (auth-source-pass-get 'secret "personal/openai-emacs-key"))
+  (magit-gptcommit-llm-provider (make-llm-openai :key (auth-source-pass-get 'secret "personal/openai-emacs-key")))
 
   :config
   ;; Enable magit-gptcommit-mode to watch staged changes and generate commit message automatically in magit status buffer
