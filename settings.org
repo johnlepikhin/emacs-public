@@ -2743,7 +2743,60 @@ Org-подобная система, модно-молодежная.
 ;;         telega-chat-fill-column 75))
 #+END_SRC
 
-   
+** Языковые модели   
+
+*** ChatGPT шелл
+
+#+BEGIN_SRC emacs-lisp
+(use-package shell-maker
+  :ensure t
+  :straight (:type git
+                   :host github
+                   :repo "xenodium/shell-maker"
+                   :branch "main"
+                   :files ("*.el")))
+
+(use-package chatgpt-shell
+  :ensure t
+  :straight (:type git :host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell*.el"))
+  :custom
+  (chatgpt-shell-openai-key
+    (lambda ()
+      (auth-source-pass-get 'secret "personal/openai-emacs-key"))))
+#+END_SRC
+
+
+*** Автоматическое формирование коммит-сообщений
+
+#+BEGIN_SRC emacs-lisp
+(use-package plz-media-type
+  :ensure t)
+
+(use-package llm-openai
+  :ensure t)
+
+(use-package magit-gptcommit
+  ;; :straight t
+  :ensure t
+  :after magit
+  :bind (:map git-commit-mode-map
+              ("C-c C-g" . magit-gptcommit-commit-accept))
+  :custom
+  (require 'llm-openai)
+  (magit-gptcommit-llm-provider (make-llm-openai :key (auth-source-pass-get 'secret "personal/openai-emacs-key"))
+
+  :config
+  ;; Enable magit-gptcommit-mode to watch staged changes and generate commit message automatically in magit status buffer
+  ;; This mode is optional, you can also use `magit-gptcommit-generate' to generate commit message manually
+  ;; `magit-gptcommit-generate' should only execute on magit status buffer currently
+  ;; (magit-gptcommit-mode 1)
+
+  ;; Add gptcommit transient commands to `magit-commit'
+  ;; Eval (transient-remove-suffix 'magit-commit '(1 -1)) to remove gptcommit transient commands
+  (magit-gptcommit-status-buffer-setup))
+#+END_SRC
+
+
 ** Dired
 
  Обновлять буферы dired автоматом при изменении директории:
@@ -2895,6 +2948,7 @@ Org-подобная система, модно-молодежная.
   "Return V if list element at POS is not a number, or (nth POS LST) otherwise."
   (number-or-v (nth pos lst) v))
 #+END_SRC
+
 
 ** Загрузка локальных настроек
 
