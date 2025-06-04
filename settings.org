@@ -2345,7 +2345,12 @@ columns no, name, effort, weekly { width 3000 }
 loadunit shortauto
 hidetask ~(isleaf() & isleaf_())
 sorttasks plan.start.up
-}")
+}"
+
+          "taskreport mytasks \"CSV\" {
+             formats csv
+             columns id, name, start, end
+         }")
 
         org-taskjuggler-default-project-duration 3000))
 
