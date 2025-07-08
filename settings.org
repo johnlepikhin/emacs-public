@@ -170,6 +170,7 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
 #+END_SRC
 
 Прибить гвоздями указанные пакеты к репозиториям:
@@ -2762,26 +2763,6 @@ Org-подобная система, модно-молодежная.
    )
  #+END_SRC
 
-** Telegram
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package tracking)
-#+END_SRC
-
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package telega
-;;   :commands telega
-;;   :config
-;;   (setq telega-user-use-avatars nil
-;;         telega-use-tracking-for '(any pin unread)
-;;         telega-chat-use-markdown-formatting t
-;;         telega-emoji-use-images t
-;;         telega-completing-read-function #'ivy-completing-read
-;;         telega-msg-rainbow-title nil
-;;         telega-chat-fill-column 75))
-#+END_SRC
-
 ** Языковые модели   
 
 *** ChatGPT шелл
@@ -2806,7 +2787,14 @@ Org-подобная система, модно-молодежная.
 *** Claude code
 
 #+BEGIN_SRC emacs-lisp
+(use-package transient
+  :ensure t
+  :straight (:type git
+                   :host github
+                   :repo "magit/transient"))
+
 (use-package claude-code
+  :after transient
   :straight (:type git
                    :host github
                    :repo "stevemolitor/claude-code.el"
