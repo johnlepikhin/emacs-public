@@ -2787,6 +2787,8 @@ Org-подобная система, модно-молодежная.
 *** Claude code
 
 #+BEGIN_SRC emacs-lisp
+(use-package vterm :ensure t)
+
 (use-package transient
   :ensure t
   :straight (:type git
@@ -2802,6 +2804,7 @@ Org-подобная система, модно-молодежная.
   :bind-keymap
   ("C-c x" . claude-code-command-map) ;; or your preferred key
   :config
+  (setq claude-code-terminal-backend 'vterm)
   (defun my-claude-notify (title message)
     "Display a Linux notification using notify-send."
     (if (executable-find "notify-send")
