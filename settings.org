@@ -2803,6 +2803,27 @@ Org-подобная система, модно-молодежная.
       (auth-source-pass-get 'secret "personal/openai-emacs-key"))))
 #+END_SRC
 
+*** Claude code
+
+#+BEGIN_SRC emacs-lisp
+(use-package claude-code
+  :straight (:type git
+                   :host github
+                   :repo "stevemolitor/claude-code.el"
+                   :files ("*.el" (:exclude "images/*")))
+  :bind-keymap
+  ("C-c x" . claude-code-command-map) ;; or your preferred key
+  :config
+  (defun my-claude-notify (title message)
+    "Display a Linux notification using notify-send."
+    (if (executable-find "notify-send")
+        (call-process "notify-send" nil nil nil title message)
+      (message "%s: %s" title message)))
+  (setq claude-code-notification-function #'my-claude-notify)
+  (claude-code-mode))
+#+END_SRC
+
+
 
 *** Автоматическое формирование коммит-сообщений
 
