@@ -773,14 +773,41 @@ Backspace/delete должны удалять выделенный текст:
   :hook ((lsp-after-initialize
          . (lambda ()
              (flycheck-add-next-checker 'lsp 'c/c++-clang)
-             (flycheck-add-next-checker 'lsp 'python-flake8)
-             (flycheck-add-next-checker 'lsp 'go-vet t)))
+             (flycheck-add-next-checker 'lsp 'python-flake8)))
              ;; (flycheck-add-next-checker 'lsp 'javascript-eslint)))
          (lsp-mode . lsp-enable-which-key-integration))
   :config
   (setq lsp-pylsp-plugins-flake8-max-line-length 120
         lsp-pylsp-server-command '("pylsp" "-vv")
-        lsp-pylsp-plugins-flake8-ignore ["E203", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"]))
+        lsp-pylsp-plugins-flake8-ignore ["E203", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"])
+  
+  ;; Настройки для gopls
+  (setq lsp-go-analyses '((shadow . t)
+                          (simplifyslice . t)
+                          (staticcheck . t)
+                          (unusedparams . t)
+                          (unusedvariable . t)
+                          (unusedwrite . t)
+                          (useany . t)))
+  
+  ;; Включаем импорт пакетов при сохранении
+  (setq lsp-go-imports-local-prefix "")
+  
+  ;; Включаем поддержку линз кода (code lens)
+  (setq lsp-go-codelenses '((gc_details . t)
+                            (generate . t)
+                            (regenerate_cgo . t)
+                            (test . t)
+                            (tidy . t)
+                            (upgrade_dependency . t)
+                            (vendor . t)))
+  
+  ;; Настройки производительности для больших проектов
+  (setq lsp-go-env '((GOFLAGS . "-tags=integration,unit")))
+  
+  ;; Автоматически использовать gofumpt вместо gofmt если доступен
+  (when (executable-find "gofumpt")
+    (setq lsp-go-use-gofumpt t)))
 
 (use-package lsp-ui
   :custom-face
@@ -826,6 +853,7 @@ Backspace/delete должны удалять выделенный текст:
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-ts-mode . typescript))
   (add-to-list 'tree-sitter-major-mode-language-alist '(tsx-ts-mode . typescript))
   (add-to-list 'tree-sitter-major-mode-language-alist '(cperl-mode . perl))
+  (add-to-list 'tree-sitter-major-mode-language-alist '(go-mode . go))
   (setq treesit-language-source-alist
    '((bash "https://github.com/tree-sitter/tree-sitter-bash")
      (cmake "https://github.com/uyha/tree-sitter-cmake")
@@ -1115,10 +1143,26 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (defun my-go-mode-setup ()
-  (lsp-deferred)
+  ;; Проверяем наличие gopls
+  (if (not (executable-find "gopls"))
+      (message "Warning: gopls not found! Please install it with: go install golang.org/x/tools/gopls@latest")
+    ;; Запускаем LSP с отложенной инициализацией
+    (lsp-deferred))
+  
+  ;; Включаем дополнительные режимы
   (yas-minor-mode)
   (flycheck-mode)
   (go-guru-hl-identifier-mode)
+  
+  ;; Настраиваем цепочку проверок: LSP (gopls) -> golangci-lint
+  (when (and (featurep 'flycheck-golangci-lint)
+             (executable-find "golangci-lint"))
+    ;; Убеждаемся, что LSP является основным checker'ом
+    (setq-local flycheck-checker 'lsp)
+    ;; Добавляем golangci-lint как следующий checker после LSP
+    (flycheck-add-next-checker 'lsp 'golangci-lint t))
+  
+  ;; Хуки для форматирования при сохранении
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   (add-hook 'before-save-hook #'lsp-organize-imports t t))
 #+END_SRC
@@ -1144,7 +1188,15 @@ Backspace/delete должны удалять выделенный текст:
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-golangci-lint
   :ensure t
-  :hook (go-mode . flycheck-golangci-lint-setup))
+  :after (flycheck lsp-mode)
+  :config
+  ;; Включаем все проверки golangci-lint
+  (setq flycheck-golangci-lint-enable-all t)
+  ;; Отключаем дублирующиеся проверки, которые уже выполняет gopls
+  (setq flycheck-golangci-lint-disable-linters '("typecheck" "errcheck"))
+  ;; Настраиваем golangci-lint как дополнительный checker после LSP
+  ;; Это будет настроено в my-go-mode-setup
+  )
 #+END_SRC
 
 *** Rust
