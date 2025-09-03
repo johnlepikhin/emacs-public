@@ -750,7 +750,8 @@ Backspace/delete должны удалять выделенный текст:
  #+BEGIN_SRC emacs-lisp
  (use-package edit-server
    :config
-   (edit-server-start))
+   (unless (ignore-errors (process-status "edit-server"))
+     (edit-server-start)))
  #+END_SRC
 
 
