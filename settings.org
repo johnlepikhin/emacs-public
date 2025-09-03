@@ -270,7 +270,9 @@
 
  (define-minor-mode my-bindings-mode
    "Режим для подключения моих кнопок."
-   t nil my-bindings-map)
+   :init-value t
+   :lighter nil
+   :keymap my-bindings-map)
 
  (define-key my-bindings-map (kbd "C-c <up>")    'windmove-up)
  (define-key my-bindings-map (kbd "C-c <down>")  'windmove-down)
@@ -1917,12 +1919,13 @@ See URL `https://www.pylint.org/'."
 *** Автоматическое обновление с диска
 
 #+BEGIN_SRC emacs-lisp
-(defadvice revert-buffer (after refresh-org-agenda activate)
-  (if (eq major-mode 'org-mode)
-      (progn
-        (org-agenda-redo-all t)
-        ;; С одного раза агенда теперь почему-то не обновляется (с появлением кэшей в org?)
-        (org-agenda-redo-all t))))
+(advice-add 'revert-buffer :after
+  (lambda (&rest _)
+    (if (eq major-mode 'org-mode)
+        (progn
+          (org-agenda-redo-all t)
+          ;; С одного раза агенда теперь почему-то не обновляется (с появлением кэшей в org?)
+          (org-agenda-redo-all t)))))
 #+END_SRC
 
 
@@ -2361,9 +2364,9 @@ See URL `https://www.pylint.org/'."
   :ensure t)
 
 (use-package ox-taskjuggler
-  :straight (tree-sitter :type git
-                         :host github
-                         :repo "h-oll/ox-taskjuggler"
+  :straight (ox-taskjuggler :type git
+                            :host github
+                            :repo "h-oll/ox-taskjuggler"
                          :branch "master"
                          :files ("lisp/*.el"))
   :ensure t
@@ -2611,8 +2614,8 @@ Org-подобная система, модно-молодежная.
      (setq ispell-program-name "aspell")
      (setq ispell-list-command "--list"))
    ;; ;; Переключаем язык проверки по переключению раскладки
-   (defadvice my-select-input-eng (after ispell-american activate) (ispell-change-dictionary "american"))
-   (defadvice my-select-input-rus (after ispell-russian activate) (ispell-change-dictionary "ru")))
+   (advice-add 'my-select-input-eng :after (lambda (&rest _) (ispell-change-dictionary "american")))
+   (advice-add 'my-select-input-rus :after (lambda (&rest _) (ispell-change-dictionary "ru"))))
  #+END_SRC
 
  Включаем ленивую проверку, когда ничего не происходит:
