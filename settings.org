@@ -2346,6 +2346,23 @@ See URL `https://www.pylint.org/'."
 (require 'ox-man)
 #+END_SRC
 
+*** Markdown
+
+Экспорт в GitHub Flavored Markdown (поддержка таблиц, блоков кода с подсветкой и т.д.):
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-gfm
+  :ensure t
+  :after ox
+  :commands (org-gfm-export-to-markdown org-gfm-export-as-markdown))
+#+END_SRC
+
+Также подключим стандартный ox-md для базового Markdown:
+
+#+BEGIN_SRC emacs-lisp
+(require 'ox-md)
+#+END_SRC
+
 # *** wikipedia
 #
 # #+BEGIN_SRC emacs-lisp
