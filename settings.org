@@ -405,6 +405,16 @@
   (set-face-foreground 'rainbow-delimiters-depth-9-face "#666"))
 #+END_SRC
 
+*** Emoji fonts
+
+#+BEGIN_SRC emacs-lisp
+(defun my-setup-emoji-fonts ()
+  "Configure emoji font fallback."
+  (set-fontset-font t 'emoji "Noto Color Emoji" nil 'prepend))
+
+(add-hook 'after-init-hook #'my-setup-emoji-fonts)
+#+END_SRC
+
 ** Поведение
 
  Бэкапы не нужны:
