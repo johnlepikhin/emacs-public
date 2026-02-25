@@ -2,6 +2,7 @@
 
 #+LANGUAGE: ru
 #+PROPERTY: results silent
+#+PROPERTY: header-args:emacs-lisp :lexical t
 
 * DONE Мой конфиг Emacs в формате org-mode                            :emacs:
   :PROPERTIES:
@@ -35,55 +36,19 @@
 
 ** Базовая конфигурация
 
- Все переменные здесь лексически локальны:
-
-#+BEGIN_SRC emacs-lisp
-(setq-local lexical-binding t)
-#+END_SRC
-
 Собрать информацию по use-package. После загрузки можно позвать функци use-package-report и посмотреть.
 
 #+BEGIN_SRC emacs-lisp
-(setq use-package-compute-statistics t)
+;; Включать только при профилировании:
+;; (setq use-package-compute-statistics t)
 #+END_SRC
-
-*** Подключить возможность устанавливать пакеты из quelpa и гита.
-
-(Заменено на straight.el)
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package quelpa-use-package
-;;   :config
-;;   (setq quelpa-checkout-melpa-p nil))
-#+END_SRC
-
-*** Поддержка straight.el
-
-#+BEGIN_SRC emacs-lisp
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-         (expand-file-name
-          "straight/repos/straight.el/bootstrap.el"
-          (or (bound-and-true-p straight-base-dir)
-              user-emacs-directory)))
-        (bootstrap-version 7))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-          (url-retrieve-synchronously
-           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-           'silent 'inhibit-cookies)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
-
-  (straight-use-package 'use-package)
-#+END_SRC
-
 
 *** Окружение
 
+Добавляем ~/bin в начало PATH, чтобы пользовательские скрипты и утилиты (perltidy, gofumpt и др.) были доступны для вызовов из Emacs:
+
 #+BEGIN_SRC emacs-lisp
-(setenv "PATH" (concat "/home/evgenii/bin:" (getenv "PATH")))
+(setenv "PATH" (concat (expand-file-name "~/bin") ":" (getenv "PATH")))
 #+END_SRC
 
 *** Бэкапы файлов
@@ -91,20 +56,29 @@
 #+BEGIN_SRC emacs-lisp
 (make-directory "~/.local/var/lib/tmp/emacs/auto-save/" t)
 (setq auto-save-file-name-transforms '((".*" "~/.local/var/lib/tmp/emacs/auto-save/" t)))
-(setq backup-directory-alist '(("." . "~/.local/var/lib/tmp/emacs/auto-save/")))
-
-;; Do not move the current file while creating backup.
-(setq backup-by-copying t)
 #+END_SRC
 
+*** Производительность
 
-*** Внешний вид
+GC-threshold ставится в most-positive-fixnum в early-init.el на время старта. После загрузки откатываем до 100MB — рекомендация lsp-mode для комфортной работы с LSP-серверами (gopls, rust-analyzer). read-process-output-max увеличиваем до 1MB для ускорения обмена данными с процессами:
+
+#+BEGIN_SRC emacs-lisp
+;; Откат GC после старта (ставился в early-init.el)
+(add-hook 'after-init-hook
+  (lambda () (setq gc-cons-threshold (* 100 1024 1024)))) ;; 100MB для LSP
+(setq read-process-output-max (* 1024 1024))
+
+;; Отключаем org-persist до загрузки org, иначе кэш-файлы всё равно пишутся
+(setq org-element-cache-persistent nil)
+#+END_SRC
+
+*** Настройки отображения
 
  Некоторые оптимизации:
 
  #+BEGIN_SRC emacs-lisp
  (setq auto-revert-interval 1            ; Refresh buffers fast
-       custom-file (make-temp-file "")   ; Discard customization's
+       custom-file (expand-file-name "/dev/null")  ; Discard customization's
        default-input-method "TeX"        ; Use TeX when toggling input method
        echo-keystrokes 0.1               ; Show keystrokes asap
        inhibit-startup-message t         ; No splash screen please
@@ -156,51 +130,15 @@
 
 *** Менеджер пакетов и зависимостей
 
-Фикс для https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request/
-
-#+BEGIN_SRC emacs-lisp
-;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-#+END_SRC
-
-Подключить менеджер пакетов:
-
 #+BEGIN_SRC emacs-lisp
 (require 'package)
+(setq package-archives
+      '(("gnu" . "https://elpa.gnu.org/packages/")
+        ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+        ("melpa" . "https://melpa.org/packages/")))
 
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
-#+END_SRC
-
-Прибить гвоздями указанные пакеты к репозиториям:
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
-#+END_SRC
-
-Поставить перечисленные пакеты, если не установлены:
-
-#+BEGIN_SRC emacs-lisp
-(dolist (package
-         '(use-package))
-  (if (not (package-installed-p package))
-    (progn
-      (message "Installing package %s" package)
-    (package-refresh-contents)
-      (package-install package))))
-#+END_SRC
-
-Настраиваем use-package:
-
-#+BEGIN_SRC emacs-lisp
 (require 'use-package)
-;(setq use-package-always-ensure t)
-#+END_SRC
-
-Больше дебага для use-package:
-
-#+BEGIN_SRC emacs-lisp
+(setq use-package-always-ensure t)
 (setq use-package-verbose t)
 #+END_SRC
 
@@ -222,11 +160,11 @@
  У меня переключение раскладки внутри Emacs интегрировано с XMonad. Нижеследующие функции служат этой интеграции.
 
  #+BEGIN_SRC emacs-lisp
- (defun my-update-cursor ()
-   (set-cursor-color
-    (if (string= current-input-method "russian-computer") "red" "black")))
+ (defvar my-russian-layout-p nil
+   "Non-nil when system keyboard layout is Russian (set by XMonad).")
 
- (add-hook 'buffer-list-update-hook 'my-update-cursor)
+ (defun my-update-cursor ()
+   (set-cursor-color (if my-russian-layout-p "red" "black")))
 
  (defun my-update-isearch-input-method ()
    (if isearch-mode
@@ -242,11 +180,13 @@
  (defun my-select-input-eng ()
    (interactive)
    (set-input-method 'rfc1345)
+   (setq my-russian-layout-p nil)
    (my-update-input-method))
 
  (defun my-select-input-rus ()
    (interactive)
    (set-input-method 'russian-computer)
+   (setq my-russian-layout-p t)
    (my-update-input-method))
 
  (global-set-key (kbd "<M-f11>") 'my-select-input-eng)
@@ -260,6 +200,18 @@
  #+BEGIN_SRC emacs-lisp
  (set-input-method 'russian-computer)
  (toggle-input-method)
+ #+END_SRC
+
+ Горячие клавиши Emacs при русской раскладке. Когда системная раскладка
+ переключена на русскую, =reverse-im= транслирует модификаторные комбинации
+ (C-, M-, C-M-) обратно в латиницу, чтобы биндинги работали при обеих раскладках.
+ Ввод русского текста в буферах не затрагивается.
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package reverse-im
+   :config
+   (reverse-im-activate "russian-computer")
+   (set-cursor-color "black"))
  #+END_SRC
 
  Создаем личную карту аккордов:
@@ -305,11 +257,10 @@
 
  #+BEGIN_SRC emacs-lisp
  (use-package zoom
-   :commands zoom-mode
+   :hook (after-init . zoom-mode)
    :config
    (setq zoom-ignored-major-modes '(gnus-summary-mode))
    (setq zoom-size '(0.618 . 0.618)))
- (zoom-mode t)
  #+END_SRC
 
 Удобное хождение по окнам:
@@ -326,9 +277,9 @@
  #+BEGIN_SRC emacs-lisp
  (use-package
    which-key
+   :hook (after-init . which-key-mode)
    :config
-   (setq which-key-idle-delay 1)
-   (which-key-mode))
+   (setq which-key-idle-delay 1))
  #+END_SRC
 
 Показывать в минибуфере позицию в строке:
@@ -337,25 +288,16 @@
  (column-number-mode)
  #+END_SRC
 
-Подсвечивать пробелы в конце строки:
+Подсвечивать пробелы, пустые строчки в конце буфера, показывать окончание буфера:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
-(add-hook 'yaml-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
-#+END_SRC
+(defun my-code-buffer-visual-setup ()
+  (setq-local show-trailing-whitespace t)
+  (setq-local indicate-empty-lines t)
+  (setq-local indicate-buffer-boundaries 'left))
 
-Подсвечивать пустые строчки в конце буфера:
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook (lambda () (setq-local indicate-empty-lines t)))
-(add-hook 'yaml-mode-hook (lambda () (setq-local indicate-empty-lines t)))
-#+END_SRC
-
-Показывать окончание буфера:
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook (lambda () (setq-local indicate-buffer-boundaries 'left)))
-(add-hook 'yaml-mode-hook (lambda () (setq-local indicate-buffer-boundaries 'left)))
+(add-hook 'prog-mode-hook #'my-code-buffer-visual-setup)
+(add-hook 'yaml-mode-hook #'my-code-buffer-visual-setup)
 #+END_SRC
 
 Отключить изменение размера шрифта скроллингом:
@@ -370,7 +312,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package
-  imenu
+  imenu-list
   :bind (:map my-bindings-map
               ("M-'" . imenu-list-smart-toggle)))
 #+END_SRC
@@ -393,6 +335,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode)
   :config
   (set-face-foreground 'rainbow-delimiters-depth-1-face "#c66")
   (set-face-foreground 'rainbow-delimiters-depth-2-face "#6c6")
@@ -427,7 +370,7 @@
 
  #+BEGIN_SRC emacs-lisp
  (setq-default tab-width 4) 
- (setq-default standart-indent 4)
+ (setq-default standard-indent 4)
  #+END_SRC
 
  Я люблю ограничивать область видимости до выбранного региона, не надо меня ворнить:
@@ -439,11 +382,16 @@
  История открытых файлов:
 
  #+BEGIN_SRC emacs-lisp
- (use-package
-   recentf
+ (use-package recentf
+   :ensure nil
    :config
-   (setq recentf-max-saved-items 100)
-   (setq recentf-max-menu-items 25)
+   (setq recentf-max-saved-items 100
+         recentf-max-menu-items 25
+         recentf-auto-cleanup 'never)  ;; не проверять файлы автоматически
+   (add-to-list 'recentf-exclude "^/ssh:")
+   (add-to-list 'recentf-exclude "^/sudo:")
+   (add-to-list 'recentf-exclude "^/gnu/store/")
+   (add-to-list 'recentf-exclude "\\.elc$")
    (recentf-mode 1))
  #+END_SRC
 
@@ -464,59 +412,16 @@
  #+BEGIN_SRC emacs-lisp
  (setq browse-url-browser-function 'browse-url-generic
        browse-url-generic-program "google-chrome-beta")
- ;; (setq browse-url-browser-function 'browse-url-chromium)
  #+END_SRC
 
-Использовать ivy в качестве движка автодополнения имен буферов, файлов и т.д.
-
-[2019-09-23 Mon] закомментил т.к. тормозит на больших файлах.
-
-# #+BEGIN_SRC emacs-lisp
-# (use-package ivy
-#   :defer 0.1
-#   :diminish
-#   :bind (("C-c C-r" . ivy-resume)
-#          ("C-x B" . ivy-switch-buffer-other-window))
-#   :custom
-#   (ivy-count-format "(%d/%d) ")
-#   (ivy-use-virtual-buffers t)
-#   :config (ivy-mode))
-
-# (use-package counsel
-#   :after ivy
-#   :config (counsel-mode))
-# #+END_SRC
-
-Ищем swiper'ом:
-
-[2019-09-23 Mon] закомментил т.к. тормозит на больших файлах.
-
-# #+BEGIN_SRC emacs-lisp
-# (use-package swiper
-#   :after ivy
-#   :bind (("C-s" . swiper)
-#          ("C-r" . swiper)))
-# #+END_SRC
 
 Показывать только ошибки высокого уровня тревожности:
 
 #+BEGIN_SRC emacs-lisp
-(setq warning-minimum-level :emergency)
+(setq warning-minimum-level :error)
 #+END_SRC
 
 
-
-*** Правильный список буферов
-
-[2019-09-23 Mon] закомментил т.к. тормозит на больших файлах.
-
-#     #+BEGIN_SRC emacs-lisp
-# (use-package
-#   ibuffer
-#   :bind (:map my-bindings-map
-#                ("C-x C-b" . ibuffer))
-#   :hook ((ibuffer-mode . hl-line-mode)))
-# #+END_SRC
 
 *** Настройки isearch
 
@@ -539,7 +444,7 @@
 
 #+BEGIN_SRC emacs-lisp
 (use-package visual-fill-column
-  :defer t)
+  :commands visual-fill-column-mode)
 #+END_SRC
 
 
@@ -551,28 +456,17 @@
    (setq comment-style 'multi-line)
  #+END_SRC
 
-У нас не принято разделять предложения двойным пробелом:
-
- #+BEGIN_SRC emacs-lisp
-   (setq sentence-end-double-space nil)
- #+END_SRC
-
 Мы презираем табулялцию в отступах:
 
  #+BEGIN_SRC emacs-lisp
    (setq-default indent-tabs-mode nil)
  #+END_SRC
 
-Фиксим Delete, стирающую не туда
-
- #+BEGIN_SRC emacs-lisp
-   (normal-erase-is-backspace-mode 1)
- #+END_SRC
-
 Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode 1)
+(normal-erase-is-backspace-mode 1)
 #+END_SRC
 
 
@@ -580,7 +474,6 @@ Backspace/delete должны удалять выделенный текст:
 
  #+BEGIN_SRC emacs-lisp
  (use-package yasnippet
-   :ensure t
    :bind
    (:map my-bindings-map
          ("C-<tab>" . yas-expand))
@@ -590,14 +483,14 @@ Backspace/delete должны удалять выделенный текст:
          ("TAB" . nil))
    :hook ((prog-mode org-mode) . yas-minor-mode)
    :commands (yas-minor-mode)
-   :after (yasnippet-classic-snippets)
    :config
    ;; подключить мой публичный репозиторий сниппетов
    (add-to-list 'yas-snippet-dirs (expand-file-name "~/.emacs.d/public/yasnippets"))
    ;; теперь надо всё перечитать
    (yas-reload-all))
 
- (use-package yasnippet-classic-snippets)
+ (use-package yasnippet-classic-snippets
+   :after yasnippet)
  #+END_SRC
 
 *** Удаление без пополнения kill-ring
@@ -623,6 +516,11 @@ Backspace/delete должны удалять выделенный текст:
    (interactive "p")
    (my-delete-word (- arg)))
 
+ (defun my-delete-line-backward ()
+   "Delete from point to beginning of line without kill-ring."
+   (interactive)
+   (delete-region (line-beginning-position) (point)))
+
  (define-key my-bindings-map (kbd "C-S-k") 'my-delete-line-backward)
  (define-key my-bindings-map (kbd "M-d") 'my-delete-word)
  (define-key my-bindings-map (kbd "<M-backspace>") 'my-backward-delete-word)
@@ -635,10 +533,9 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
   (defun my-disable-indent-guide-mode-for-big-buffer ()
-    (when (> (buffer-size) 100000)
-      (progn
-        (message "Buffer is too big, disable guided indent mode")
-        (indent-guide-mode -1))))
+    (when (or (derived-mode-p 'org-mode)
+              (> (buffer-size) 100000))
+      (indent-guide-mode -1)))
 #+END_SRC
 
  #+BEGIN_SRC emacs-lisp
@@ -655,13 +552,12 @@ Backspace/delete должны удалять выделенный текст:
 
  #+BEGIN_SRC emacs-lisp
    (use-package smartparens
+     :hook (after-init . smartparens-global-mode)
      :config
      ;; Есть баг с electric-parens-mode с cperl, заплатка из https://github.com/syl20bnr/spacemacs/issues/480
      (with-eval-after-load 'cperl-mode
        (add-hook 'smartparens-enabled-hook  (lambda () (define-key cperl-mode-map "{" nil)))
-       (add-hook 'smartparens-disabled-hook  (lambda () (define-key cperl-mode-map "{" 'cperl-electric-lbrace))))
-     ;; Включаем глобально
-     (smartparens-global-mode 1))
+       (add-hook 'smartparens-disabled-hook  (lambda () (define-key cperl-mode-map "{" 'cperl-electric-lbrace)))))
    #+END_SRC
 
  Подсвечивать парную скобку, переходы по ним:
@@ -683,74 +579,40 @@ Backspace/delete должны удалять выделенный текст:
 *** Дерево отмены
 
  #+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
+  (use-package vundo
     :bind (:map my-bindings-map
-                ("C-x u" . undo-tree-visualize))
-    :config
-    (setq undo-tree-auto-save-history nil
-          undo-tree-visualizer-timestamps t)
-    (global-undo-tree-mode 1))
+                ("C-x u" . vundo)))
  #+END_SRC
 
 *** Автодополнение
 
-#+BEGIN_SRC emacs-lisp
-(use-package company
-   :hook (prog-mode . company-mode)
-   :config
-   ;; сначала ищем в gtags, а если не нашли — смотрим в abbrev
-   (add-to-list 'company-backends '(company-gtags :with company-dabbrev))
-   ;; по кнопке TAB происходит и дополнение, и выбор варианта
-;;   (company-tng-configure-default)
-   (setq company-idle-delay 0.1
-         company-echo-delay 0
-         company-dabbrev-downcase nil
-         company-show-numbers t
-         company-minimum-prefix-length 2
-         company-selection-wrap-around t
-         company-transformers '(company-sort-by-occurrence
-                                company-sort-by-backend-importance)))
-#+END_SRC
-
-**** Автодополнение с неточным совпадением
-
-К сожалению, поддерживает не так много бэкендов company. Я использую только для lisp.
+Стек автодополнения: Corfu — in-buffer popup-меню дополнений (замена company-mode), Cape — дополнительные completion-at-point бэкенды (dabbrev для слов из буфера, file для путей), corfu-terminal — поддержка Corfu в терминальном Emacs (без GUI):
 
 #+BEGIN_SRC emacs-lisp
-(use-package company-flx
-  :demand t
+(use-package corfu
+  :custom
+  (corfu-auto t)
+  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 2)
+  :init (global-corfu-mode))
+
+(use-package cape
   :init
-  (company-flx-mode +1))
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file))
+
+(use-package corfu-terminal
+  :unless (display-graphic-p)
+  :config (corfu-terminal-mode))
 #+END_SRC
-
-**** Документация в company
-
-#+BEGIN_SRC emacs-lisp
-(use-package company-quickhelp
-  :ensure t
-  :hook (global-company-mode . company-quickhelp-mode)
-  :commands (company-quickhelp-mode)
-  :defer t
-  :init (add-hook 'global-company-mode-hook #'company-quickhelp-mode))
-#+END_SRC
-
-**** Отображение списка дополнений в отдельном окошке
-
-#+BEGIN_SRC emacs-lisp
-;; С копилотом друг друга перекрывают, неудобно
-
-;; (use-package company-box                ;
-;;   :straight t
-;;   :ensure t
-;;   :hook (company-mode . company-box-mode))
-#+END_SRC
-
 
 *** Tramp
 
  #+BEGIN_SRC emacs-lisp
  (use-package
    tramp
+   :defer t
+   :ensure nil
    :config (setq tramp-use-ssh-controlmaster-options nil))
  #+END_SRC
 
@@ -759,9 +621,7 @@ Backspace/delete должны удалять выделенный текст:
 
  #+BEGIN_SRC emacs-lisp
  (use-package edit-server
-   :config
-   (unless (ignore-errors (process-status "edit-server"))
-     (edit-server-start)))
+   :hook (after-init . edit-server-start))
  #+END_SRC
 
 
@@ -777,18 +637,23 @@ Backspace/delete должны удалять выделенный текст:
 
 
 ** Разработка
+
+*** direnv
+
+Автоматическое переключение окружения (GOPATH, venv, PATH) при входе в проект с =.envrc=:
+
+#+BEGIN_SRC emacs-lisp
+(use-package envrc
+  :if (executable-find "direnv")
+  :hook (after-init . envrc-global-mode))
+#+END_SRC
+
 *** LSP
 
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-mode
-  :after (yasnippet flycheck)
   :commands lsp
-  :hook ((lsp-after-initialize
-         . (lambda ()
-             (flycheck-add-next-checker 'lsp 'c/c++-clang)
-             (flycheck-add-next-checker 'lsp 'python-flake8)))
-             ;; (flycheck-add-next-checker 'lsp 'javascript-eslint)))
-         (lsp-mode . lsp-enable-which-key-integration))
+  :hook ((lsp-mode . lsp-enable-which-key-integration))
   :config
   (setq lsp-pylsp-plugins-flake8-max-line-length 120
         lsp-pylsp-server-command '("pylsp" "-vv")
@@ -820,7 +685,27 @@ Backspace/delete должны удалять выделенный текст:
   
   ;; Автоматически использовать gofumpt вместо gofmt если доступен
   (when (executable-find "gofumpt")
-    (setq lsp-go-use-gofumpt t)))
+    (setq lsp-go-use-gofumpt t))
+
+  ;; emacs-lsp-booster: ускорение парсинга LSP JSON (~4x)
+  (when (executable-find "emacs-lsp-booster")
+    (defun lsp-booster--advice-json-parse (old-fn &rest args)
+      (or (when (equal (following-char) ?#)
+            (let ((bytecode (read (current-buffer))))
+              (when (byte-code-function-p bytecode) (funcall bytecode))))
+          (apply old-fn args)))
+    (advice-add (if (progn (require 'json) (fboundp 'json-parse-buffer))
+                    'json-parse-buffer 'json-read)
+                :around #'lsp-booster--advice-json-parse)
+
+    (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+      (let ((orig-result (funcall old-fn cmd test?)))
+        (if (and (not test?) (not (file-remote-p default-directory))
+                 (not (and (consp orig-result) (member "emacs-lsp-booster" orig-result))))
+            (progn (message "Using emacs-lsp-booster for %s" orig-result)
+                   (append '("emacs-lsp-booster" "--json-object-type" "hashtable" "--") orig-result))
+          orig-result)))
+    (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)))
 
 (use-package lsp-ui
   :custom-face
@@ -846,52 +731,37 @@ Backspace/delete должны удалять выделенный текст:
   (lsp-ui-doc-enable nil)
   ;; Не показывать ошибки в сайдлайне т.к. в случае если строчка генерит десятки ошибок — начинаются тормоза интерфейса
   (lsp-ui-sideline-show-diagnostics nil)
-  (read-process-output-max (* 1024 1024))
-  (gc-cons-threshold (* 1024 10240))
   :config
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor"))
 #+END_SRC
 
-*** tree-sitter
+*** tree-sitter (built-in treesit)
 
 #+BEGIN_SRC emacs-lisp
-(use-package tree-sitter
-  :straight (tree-sitter :type git
-                         :host github
-                         :repo "ubolonton/emacs-tree-sitter"
-                         :files ("lisp/*.el"))
-  :hook ((python-mode rustic-mode golang-mode) . tree-sitter-hl-mode)
-  :config
-  (add-to-list 'tree-sitter-major-mode-language-alist '(rustic-mode . rust))
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-ts-mode . typescript))
-  (add-to-list 'tree-sitter-major-mode-language-alist '(tsx-ts-mode . typescript))
-  (add-to-list 'tree-sitter-major-mode-language-alist '(cperl-mode . perl))
-  (add-to-list 'tree-sitter-major-mode-language-alist '(go-mode . go))
-  (setq treesit-language-source-alist
-   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-     (cmake "https://github.com/uyha/tree-sitter-cmake")
-     (css "https://github.com/tree-sitter/tree-sitter-css")
-     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-     (go "https://github.com/tree-sitter/tree-sitter-go")
-     (html "https://github.com/tree-sitter/tree-sitter-html")
-     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-     (json "https://github.com/tree-sitter/tree-sitter-json")
-     (make "https://github.com/alemuller/tree-sitter-make")
-     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-     (python "https://github.com/tree-sitter/tree-sitter-python")
-     (perl . ("https://github.com/tree-sitter-perl/tree-sitter-perl" "release"))
-     (toml "https://github.com/tree-sitter/tree-sitter-toml")
-     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml"))))
+(setq treesit-language-source-alist
+      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+        (c "https://github.com/tree-sitter/tree-sitter-c")
+        (cmake "https://github.com/uyha/tree-sitter-cmake")
+        (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+        (css "https://github.com/tree-sitter/tree-sitter-css")
+        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+        (go "https://github.com/tree-sitter/tree-sitter-go")
+        (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+        (html "https://github.com/tree-sitter/tree-sitter-html")
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+        (json "https://github.com/tree-sitter/tree-sitter-json")
+        (make "https://github.com/alemuller/tree-sitter-make")
+        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+        (perl . ("https://github.com/tree-sitter-perl/tree-sitter-perl" "release"))
+        (python "https://github.com/tree-sitter/tree-sitter-python")
+        (rust "https://github.com/tree-sitter/tree-sitter-rust")
+        (toml "https://github.com/tree-sitter/tree-sitter-toml")
+        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-
-(use-package tree-sitter-langs
-  :straight (tree-sitter-langs :type git
-                               :host github
-                               :repo "ubolonton/emacs-tree-sitter"
-                               :files ("langs/*.el" "langs/queries"))
-  :after tree-sitter)
+(use-package treesit-auto
+  :hook (prog-mode . treesit-auto-mode))
 #+END_SRC
 
 *** Форматирование кода
@@ -905,10 +775,10 @@ Backspace/delete должны удалять выделенный текст:
   apheleia-mode-alist
   :functions
   apheleia-global-mode
+  :hook (after-init . apheleia-global-mode)
   :config
   (setf (alist-get 'prettier-json apheleia-formatters)
-        '("prettier" "--stdin-filepath" filepath))
-  (apheleia-global-mode +1))
+        '("prettier" "--stdin-filepath" filepath)))
 #+END_SRC
 
 *** Управление проектами
@@ -923,21 +793,13 @@ Backspace/delete должны удалять выделенный текст:
      :config (projectile-mode +1))
  #+END_SRC
 
- Подключаем helm к projectile
-
- #+BEGIN_SRC emacs-lisp
- (use-package
-   helm-projectile
-   :after (projectile helm)
-   :config (helm-projectile-on))
- #+END_SRC
 
 *** Документирование
 
 #+BEGIN_SRC emacs-lisp
 (use-package eldoc
-  :diminish eldoc-mode
-  :config (add-hook 'prog-mode-hook 'eldoc-mode))
+  :ensure nil
+  :diminish eldoc-mode)
 #+END_SRC
 
 
@@ -986,18 +848,16 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (use-package conventional-changelog
-  :straight (:host github :repo "johnlepikhin/el-conventional-changelog" :files ("dist" "*.el")))
+  :commands (conventional-changelog)
+  :vc (:url "https://github.com/johnlepikhin/el-conventional-changelog"))
 #+END_SRC
-
-#+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24466 37134 710883 275000) :init (24466 37134 710879 842000) :config (24466 37134 710829 132000) :config-secs (0 0 5 487000) :init-secs (0 0 2422 647000) :use-package-secs (0 53 571255 214000)))
 
 *** Flycheck
 
  #+BEGIN_SRC emacs-lisp
  (use-package
    flycheck
-   :hook ((yaml-mode sh-mode cperl-mode) . flycheck-mode)
+   :hook ((yaml-mode yaml-ts-mode sh-mode bash-ts-mode cperl-mode) . flycheck-mode)
    :config
    (setq flycheck-idle-change-delay 5)
    (flycheck-define-checker perl
@@ -1014,10 +874,7 @@ Backspace/delete должны удалять выделенный текст:
              (or "." (and ", " (zero-or-more not-newline))) line-end))
      :modes (perl-mode cperl-mode)
      :next-checkers (perl-perlcritic))
-   (setq 
-    ;; Не надо везде включать flycheck, это вредно как минимум при LSP
-    ;; flycheck-global-modes '(not org-mode)
-    flycheck-global-modes nil
+   (setq flycheck-global-modes nil
          flycheck-display-errors-function nil
          flycheck-display-errors-delay 0
          ;; Иногда приходится разгребать чуланы с граблями, надо видеть тысячи ошибок в файле
@@ -1071,18 +928,152 @@ Backspace/delete должны удалять выделенный текст:
    (prettify-symbols-mode))
  #+END_SRC
 
+**** Perltidy
+
+ Perltidy.el, взято отсюда: https://www.emacswiki.org/emacs/perltidy.el
+
+ #+BEGIN_SRC emacs-lisp
+ (defcustom perltidy-program "perltidy"
+   "*Program name of perltidy"
+   :type 'string
+   :group 'perltidy)
+
+ (defcustom perltidy-program-params
+   '(;; I/O control
+     "--standard-output"
+     "--standard-error-output"
+     "--force-read-binary"
+     "--quiet"
+
+     ;; FORMATTING OPTIONS
+     "--no-check-syntax"
+     )
+   "*perltidy run options"
+   :type 'list
+   :group 'perltidy)
+
+ (defcustom perltidy-rcregex "\\.perltidyrc"
+   "perltidyrc file regex"
+   :type 'string
+   :group 'perltidy)
+
+ (defun perltidy-buffer ()
+   "Call perltidy for whole buffer."
+   (interactive)
+   (perltidy-region (point-min) (point-max)))
+
+ (defun perltidy-region (beg end)
+   "Tidy perl code in the region."
+   (interactive "r")
+   (or (get 'perltidy-program 'has-perltidy)
+       (if (executable-find perltidy-program)
+           (put 'perltidy-program 'has-perltidy t)
+         (error "Seem perltidy is not installed")))
+     (let ((old-perltidy-env (getenv "PERLTIDY"))
+           (remote? (tramp-tramp-file-p buffer-file-name))
+           (perltidyrc (perltidy-find-perltidyrc buffer-file-truename))
+           (pertidyrc-remote (expand-file-name "perltidyrc-remote" temporary-file-directory))
+           (perltidy-run-list perltidy-program-params))
+
+       (if (and (bound-and-true-p remote?)
+                perltidyrc)
+           (progn
+             (require 'tramp-sh)
+             (tramp-sh-handle-copy-file perltidyrc pertidyrc-remote t)
+             (setq perltidyrc pertidyrc-remote)
+             (setq perltidy-run-list
+                   (append perltidy-run-list
+                           (list (concat "-pro=" pertidyrc-remote))))))
+
+       (apply #'call-process-region
+              (append (list beg end perltidy-program t t nil)
+                      perltidy-run-list)))
+     t)
+
+ (defun perltidy-subroutine ()
+   "Call perltidy for subroutine at point."
+   (interactive)
+   (save-excursion
+     (let ((current-point (point))
+           b e)
+       (setq b (progn (beginning-of-defun) (point)))
+       (when (and
+              (looking-at "\\s-*sub\\s-+")
+              (< b current-point)
+              (> (save-excursion
+                   (setq e (progn (end-of-defun) (point))))
+                 current-point))
+         (perltidy-region b e)))))
+
+ (defun perltidy-find-perltidyrc (&optional dir rcregex)
+   (unless dir (setq dir (buffer-file-name)))
+   (unless rcregex (setq rcregex perltidy-rcregex))
+   (setq dir (file-name-directory dir))
+   (let (rcfile)
+     (catch 'my-tag
+       (locate-dominating-file
+        dir
+        (lambda (parent)
+          (let ((rc (car (ignore-errors (directory-files parent t rcregex))))
+                (pparent (file-name-directory (directory-file-name parent))))
+            (setq rcfile rc)
+            (cond ((equal parent pparent)
+                   (if (= (length rc) 0)
+                       (throw 'my-tag rc)
+                     (throw 'my-tag nil)))
+                  ((and (= (length rc) 0)
+                        (file-exists-p    (expand-file-name "lib" pparent))
+                        (file-directory-p (expand-file-name "lib" pparent)))
+                   (setq rcfile (car (ignore-errors (directory-files pparent t rcregex))))
+                   (throw 'my-tag rcfile))
+                  (t rc))))))
+     rcfile))
+
+ (defun perl-mode-perltidy ()
+   "Perltidy buffer or region if this is perl file."
+   (interactive)
+   (let ((saved-line (line-number-at-pos)))
+     (save-excursion
+       (when (eq major-mode 'cperl-mode)
+         (if (use-region-p)
+             (perltidy-region (region-beginning) (region-end))
+           (perltidy-buffer))))
+     (goto-char (point-min))
+     (forward-line (1- saved-line))))
+
+ (defun my-perltidy-subroutine ()
+   "Perltidy current subroutine keeping current position in the buffer as close as possible"
+   (interactive)
+   (let ((saved-line (line-number-at-pos)))
+     (perltidy-subroutine)
+     (goto-char (point-min))
+     (forward-line (1- saved-line))))
+
+ (defun my-perl-tab-indent ()
+   (interactive)
+   (if (use-region-p)
+       (perltidy-region (region-beginning) (region-end))
+     (cperl-indent-command)))
+
+ (defun my-perl-insert-json ()
+   (interactive)
+   (shell-command-on-region (point) (point) "xclip -o | json_to_perl.pl" t))
+ #+END_SRC
+
  #+BEGIN_SRC emacs-lisp
  (use-package
    cperl-mode
    :ensure-system-package perltidy
-   :hook (cperl-mode . tree-sitter-hl-mode)
-   :after (flycheck tramp)
-   :bind (:map cperl-mode-map ())
+   :bind (:map cperl-mode-map
+               ("C-c i d" . my-perltidy-subroutine)
+               ("C-c i b" . perl-mode-perltidy)
+               ("TAB" . my-perl-tab-indent)
+               ("C-c j" . my-perl-insert-json))
    :mode ("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode)
    :interpreter (("perl"     . cperl-mode)
                  ("perl5"    . cperl-mode)
                  ("miniperl" . cperl-mode))
-   :config 
+   :config
    ;; perl := cperl
    (defalias 'perl-mode 'cperl-mode)
    ;; C-h P будет показывать perldoc на слово под курсором
@@ -1101,58 +1092,9 @@ Backspace/delete должны удалять выделенный текст:
    (face-spec-set 'cperl-hash-face '((t :foreground "darkblue"))))
  #+END_SRC
 
-**** Автодополнение для Perl через PerlySense
-
- #+BEGIN_SRC emacs-lisp
- (use-package
-   company-plsense
-   :hook (cperl-mode . company-mode))
- #+END_SRC
-
-*** Ocaml
-
- #+BEGIN_SRC emacs-lisp
- (use-package tuareg)
- #+END_SRC
-
- #+BEGIN_SRC emacs-lisp
- (use-package merlin
-   :init
-   ;; merlin сам их не объявил в зависимости, небольшой костыль
-   (use-package iedit)
-   (use-package auto-complete)
-   :after (tuareg iedit auto-complete)
-   :hook ((tuareg-mode . merlin-mode)
-          (tuareg-mode . company-mode))
-   :config
-   (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
- #+END_SRC
-
- #+BEGIN_SRC emacs-lisp
- (use-package flycheck-ocaml
-   :after (flycheck merlin)
-   :config
-   ;; ошибки от мерлина нам не нужны, ведь у нас есть flycheck
-   (setq merlin-error-after-save nil)
-   (flycheck-ocaml-setup))
- #+END_SRC
-
-*** Coq
-
-#+BEGIN_SRC emacs-lisp
-(defun my-coq-mode-setup ()
-  (company-coq-mode)
-  (setq-local company-minimum-prefix-length 1)
-  (setq coq-double-hit-enable t)
-  (golden-ratio-mode -1)
-  (auto-complete-mode -1))
-
-(use-package proof-general
-  :mode ("\\.v$" . coq-mode)
-  :hook (coq-mode . my-coq-mode-setup))
-#+END_SRC
-
 *** Golang
+
+Функция настройки Go-буфера: проверяет наличие gopls, запускает LSP, включает flycheck с golangci-lint, настраивает автоформатирование и организацию импортов при сохранении:
 
 #+BEGIN_SRC emacs-lisp
 (defun my-go-mode-setup ()
@@ -1163,7 +1105,6 @@ Backspace/delete должны удалять выделенный текст:
     (lsp-deferred))
   
   ;; Включаем дополнительные режимы
-  (yas-minor-mode)
   (flycheck-mode)
   (go-guru-hl-identifier-mode)
   
@@ -1171,9 +1112,7 @@ Backspace/delete должны удалять выделенный текст:
   (when (and (featurep 'flycheck-golangci-lint)
              (executable-find "golangci-lint"))
     ;; Убеждаемся, что LSP является основным checker'ом
-    (setq-local flycheck-checker 'lsp)
-    ;; Добавляем golangci-lint как следующий checker после LSP
-    (flycheck-add-next-checker 'lsp 'golangci-lint t))
+    (setq-local flycheck-checker 'lsp))
   
   ;; Хуки для форматирования при сохранении
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
@@ -1183,10 +1122,9 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (use-package go-mode
-  :ensure t
   :mode ("\\.go\\'" . go-mode)
   :hook ((go-mode . my-go-mode-setup)
-         (completion-at-point-functions . go-complete-at-point)))
+         (go-ts-mode . my-go-mode-setup)))
 #+END_SRC
 
 Подсветка идентификаторов
@@ -1200,7 +1138,6 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-golangci-lint
-  :ensure t
   :after (flycheck lsp-mode)
   :config
   ;; Включаем все проверки golangci-lint
@@ -1208,13 +1145,16 @@ Backspace/delete должны удалять выделенный текст:
   ;; Отключаем дублирующиеся проверки, которые уже выполняет gopls
   (setq flycheck-golangci-lint-disable-linters '("typecheck" "errcheck"))
   ;; Настраиваем golangci-lint как дополнительный checker после LSP
-  ;; Это будет настроено в my-go-mode-setup
-  )
+  (with-eval-after-load 'lsp-diagnostics
+    (lsp-diagnostics-lsp-checker-if-needed)
+    (flycheck-add-next-checker 'lsp 'golangci-lint t)))
 #+END_SRC
 
 *** Rust
 
 Символьная репрезентация кода
+
+Математическая нотация для Rust: fn→λ (функции как лямбды), None→∅ (пустое множество), Some→∃ (квантор существования), for→∀ (квантор всеобщности). Читаемость для людей с математическим бэкграундом:
 
  #+BEGIN_SRC emacs-lisp
  (defun my-rust-init-prettify-symbols ()
@@ -1230,21 +1170,12 @@ Backspace/delete должны удалять выделенный текст:
            ("let" . ?≡)
            ("in" . ?∈)
            ("not" . ?¬)
-           ;; ("join" . ?𝐉)
-           ;; ("filter" . ?⊳)
-           ;; ("map" . ?𝐌)
-           ;; ("sort" . ?𝐒)
            (".." . ?⋰)
-           ;; ("continue" . ?↰)
-           ;; ("break" . ?↴)
            ("if" . ?⎧)
            ("else if" . ?⎨)
            ("else" . ?⎩)
            ("enum" . ?ℕ)
            ("struct" . ?𝐔)
-           ;; ("self" . ?☐)
-           ;; ("mut" . ?✎)
-           ;; ("pub" . ?☍)
            ("->" . ?→)
            ("=>" . ?⇒)))
    (prettify-symbols-mode))
@@ -1263,15 +1194,13 @@ Backspace/delete должны удалять выделенный текст:
   :custom
   (rustic-format-trigger 'on-save)
   (rustic-lsp-server 'rust-analyzer)
-  ;; (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"])
   (lsp-rust-analyzer-lru-capacity 20))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package ron-mode
-  :mode ("\\.ron$" . ron-mode)
-  :ensure t)
+  :mode ("\\.ron\\'" . ron-mode))
 #+END_SRC
 
  
@@ -1279,9 +1208,10 @@ Backspace/delete должны удалять выделенный текст:
 
 #+BEGIN_SRC emacs-lisp
 (use-package cc-mode
+  :ensure nil
   :defer t
-  :hook (((c-mode c++-mode) . my-c-hook)
-         ((c-mode c++-mode) . flycheck-mode))
+  :hook (((c-mode c++-mode c-ts-mode c++-ts-mode) . my-c-hook)
+         ((c-mode c++-mode c-ts-mode c++-ts-mode) . flycheck-mode))
   :init
   (defun my-c-hook ()
     (setf c-basic-offset 4)
@@ -1290,8 +1220,9 @@ Backspace/delete должны удалять выделенный текст:
     (c-set-offset 'access-label '/)
     (c-set-offset 'label '/))
   :config
-  ;; (add-hook 'c-mode-hook #'my-c-hook)
-  ;; (add-hook 'c++-mode-hook #'my-c-hook)
+  (with-eval-after-load 'lsp-diagnostics
+    (lsp-diagnostics-lsp-checker-if-needed)
+    (flycheck-add-next-checker 'lsp 'c/c++-clang))
   (add-to-list 'c-default-style '(c-mode . "k&r"))
   (add-to-list 'c-default-style '(c++-mode . "k&r")))
 #+END_SRC
@@ -1299,43 +1230,26 @@ Backspace/delete должны удалять выделенный текст:
 #+BEGIN_SRC emacs-lisp
 (use-package ccls
   :after cc-mode
-  :hook (((c-mode c++-mode) . (lambda () (lsp)))))
+  :hook (((c-mode c++-mode c-ts-mode c++-ts-mode) . (lambda () (lsp-deferred)))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package clang-format+
-  :straight (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus" :files ("dist" "*.el")))
+  :after cc-mode
+  :vc (:url "https://github.com/SavchenkoValeriy/emacs-clang-format-plus"))
 #+END_SRC
 
-
-*** Puppet
-
-#+BEGIN_SRC emacs-lisp
-(use-package puppet-mode
-  :config
-  (setq puppet-indent-level 2)
-  (setq puppet-include-indent 2))
-#+END_SRC
-
-*** Ansible
-
-#+BEGIN_SRC emacs-lisp
-(use-package ansible)
-#+END_SRC
 
 
 *** HTML / JS / typescript
 
-Подключаем web-mode (HTML, JS, CUSS в одном):
+Подключаем web-mode (HTML, JS, CSS в одном):
 
  #+BEGIN_SRC emacs-lisp
   (use-package web-mode
-    :mode ("\\.html$" . web-mode)
-    :mode ("\\.js$" . web-mode)
-    :mode ("\\.jsx$" . web-mode)
-    ;; Для TS теперь используем typescript-ts-mode
-    ;; :mode ("\\.ts$" . web-mode)
-    ;; :mode ("\\.tsx$" . web-mode)
+    :mode ("\\.html\\'" . web-mode)
+    :mode ("\\.js\\'" . web-mode)
+    :mode ("\\.jsx\\'" . web-mode)
     :hook (web-mode . lsp-deferred)
     :init
     (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
@@ -1346,32 +1260,22 @@ Backspace/delete должны удалять выделенный текст:
     (setq web-mode-enable-auto-expanding t)
     (setq web-mode-enable-css-colorization t))
 
- ;; (use-package prettier-js
- ;;   :hook ((web-mode . prettier-js-mode)
- ;;          (tsx-ts-mode . prettier-js-mode)
- ;;          (css-mode-hook . prettier-js-mode))
- ;;   :ensure t)
  #+END_SRC
 
 Typescript с tree-sitter:
 
 #+BEGIN_SRC emacs-lisp
   (use-package typescript-ts-mode
-    :ensure t
-    :mode ("\\.ts$" . tsx-ts-mode)
-    :mode ("\\.tsx$" . tsx-ts-mode)
-    :hook (tsx-ts-mode . lsp-deferred)
-    :hook (tsx-ts-mode . tree-sitter-hl-mode)
-    )
-  ;; двойное сохранение ломает линтер/lsp
-  ;; :hook (tsx-ts-mode . prettier-js-mode))
+    :mode ("\\.ts\\'" . tsx-ts-mode)
+    :mode ("\\.tsx\\'" . tsx-ts-mode)
+    :hook (tsx-ts-mode . lsp-deferred))
 #+END_SRC
 
 ESlint:
 
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-eslint
-  :demand t
+  :ensure nil
   :after lsp-mode)
 #+END_SRC
 
@@ -1379,7 +1283,7 @@ ESlint:
 
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
-  :mode ("\\.yaml$" . yaml-mode))
+  :mode ("\\.yaml\\'" . yaml-mode))
 #+END_SRC
 
 *** SQL
@@ -1395,25 +1299,15 @@ ESlint:
 #+BEGIN_SRC emacs-lisp
 (use-package python-mode
   :mode ("\\.py\\'" . python-mode)
-  :interpreter ("python" . python-mode))
-#+END_SRC
-
-LSP для питона:
-
-#+BEGIN_SRC emacs-lisp
-(use-package lsp-python-ms
-  :init
-  :defer t
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-python-ms)
-                         (lsp))))  ; or lsp-deferred
+  :interpreter ("python" . python-mode)
+  :hook ((python-mode . lsp-deferred)
+         (python-ts-mode . lsp-deferred)))
 #+END_SRC
 
 Форматтер:
 
 #+BEGIN_SRC emacs-lisp
 (use-package python-black
-  :ensure t
   :hook (python-mode . python-black-on-save-mode)
   :after python-mode)
 #+END_SRC
@@ -1421,6 +1315,7 @@ LSP для питона:
 Фиксы для Guix:
 
 #+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'flycheck
 (flycheck-define-checker python-flake8
   "A Python syntax and style checker using Flake8.
 
@@ -1472,7 +1367,7 @@ See URL `https://www.pylint.org/'."
   :working-directory flycheck-python-find-project-root
   :enabled (lambda () t)
   :error-explainer (lambda (err)
-                     (-when-let (id (flycheck-error-id err))
+                     (when-let* ((id (flycheck-error-id err)))
                        (apply
                         #'flycheck-call-checker-process-for-output
                         'python-pylint nil t
@@ -1482,33 +1377,22 @@ See URL `https://www.pylint.org/'."
   :modes (python-mode python-ts-mode)
   :next-checkers ((warning . python-mypy)))
 
-(add-to-list 'flycheck-checkers 'python-pylint)
+(add-to-list 'flycheck-checkers 'python-pylint))
 #+END_SRC
 
 
-*** Haskell
-
-#+BEGIN_SRC emacs-lisp
-(use-package haskell-mode)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package haskell-snippets)
-#+END_SRC
 
 *** Guix
 
 #+BEGIN_SRC emacs-lisp
 (use-package guix
-  :defer t
-  ;; :hook (scheme-mode . (global-guix-prettify 'guix-devel))
   :hook
   (after-init . global-guix-prettify-mode)
   (scheme-mode . guix-devel-mode)
   :config
   (setq guix-directory "~/guix/guix")
   (with-eval-after-load 'geiser-guile
-    ;; NOTE: "~/.config/guix/latest/" is invaild,
+    ;; NOTE: "~/.config/guix/latest/" is invalid,
     ;; use "~/.config/guix/latest" instead.
     (add-to-list 'geiser-guile-load-path
                  (concat (file-name-directory (locate-library "geiser.el"))
@@ -1529,24 +1413,18 @@ See URL `https://www.pylint.org/'."
 (use-package flymake-shellcheck
   :commands flymake-shellcheck-load
   :init
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
+  (add-hook 'bash-ts-mode-hook 'flymake-shellcheck-load))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(use-package company-shell
-  :ensure t
-  :defer t
-  :after company
-  :init (add-to-list 'company-backends '(company-shell company-shell-env)))
-#+END_SRC
 
 *** Copilot
 
 #+BEGIN_SRC emacs-lisp
 (use-package copilot
-  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
-  :ensure t
-  :hook ((prog-mode yaml-mode) . copilot-mode)
+  :vc (:url "https://github.com/copilot-emacs/copilot.el")
+  :if (executable-find "copilot-language-server")
+  :hook ((prog-mode yaml-mode yaml-ts-mode) . copilot-mode)
   :config
   (define-key copilot-mode-map (kbd "<M-up>") 'copilot-complete)
   (define-key copilot-mode-map (kbd "<M-right>") 'copilot-accept-completion)
@@ -1557,11 +1435,31 @@ See URL `https://www.pylint.org/'."
 
 #+BEGIN_SRC emacs-lisp
 (use-package graphviz-dot-mode
-  :ensure t
+  :mode ("\\.dot\\'")
   :config
   (setq graphviz-dot-indent-width 4))
 #+END_SRC
 
+
+*** Подсветка TODO/FIXME
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package fic-mode
+   :vc (:url "https://github.com/lewang/fic-mode")
+   :hook prog-mode)
+ #+END_SRC
+
+*** Цветной compile buffer
+
+#+BEGIN_SRC emacs-lisp
+(defun my-colorize-compilation-buffer ()
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region compilation-filter-start (point))))
+
+(use-package ansi-color
+  :ensure nil
+  :hook (compilation-filter . my-colorize-compilation-buffer))
+#+END_SRC
 
 ** LaTeX
 
@@ -1572,191 +1470,6 @@ See URL `https://www.pylint.org/'."
 #+END_SRC
 
 
-*** Форматирование
-
- Perltidy.el, взято отсюда: https://www.emacswiki.org/emacs/perltidy.el
-
- #+BEGIN_SRC emacs-lisp
- (defcustom perltidy-program "perltidy"
-   "*Program name of perltidy"
-   :type 'string
-   :group 'perltidy)
-
- (defcustom perltidy-program-params
-   '(;; I/O control
-     "--standard-output"
-     "--standard-error-output"
-     "--force-read-binary"
-     "--quiet"
-
-     ;; FORMATTING OPTIONS
-     "--no-check-syntax"
-     )
-   "*perltidy run options"
-   :type 'list
-   :group 'perltidy)
-
- (defcustom perltidy-rcregex "\\.perltidyrc"
-   "perltidyrc file regex"
-   :type 'string
-   :group 'perltidy)
-
- (defun perltidy-buffer ()
-   "Call perltidy for whole buffer."
-   (interactive)
-   (perltidy-region (point-min) (point-max)))
- ;;;###autoload
- (defun perltidy-region (beg end)
-   "Tidy perl code in the region."
-   (interactive "r")
-   (or (get 'perltidy-program 'has-perltidy)
-       (if (executable-find perltidy-program)
-           (put 'perltidy-program 'has-perltidy t)
-         (error "Seem perltidy is not installed")))
-     (let ((old-perltidy-env (getenv "PERLTIDY"))
-           (remote? (tramp-tramp-file-p buffer-file-name))
-           (perltidyrc (perltidy-find-perltidyrc buffer-file-truename))
-           (pertidyrc-remote (expand-file-name "perltidyrc-remote" temporary-file-directory))
-           (perltidy-run-list perltidy-program-params)
-           )
-
-       (if (and (bound-and-true-p remote?)
-                perltidyrc)
-           (progn
-             (require 'tramp-sh)
-             (tramp-sh-handle-copy-file perltidyrc pertidyrc-remote t)
-             (setq perltidyrc pertidyrc-remote)
-             (setq perltidy-run-list
-                   (append perltidy-run-list
-                           (list (concat "-pro=" pertidyrc-remote))))))
-
-       (apply #'call-process-region
-              (append (list beg end perltidy-program
-                            t
-                            t
-                            nil
-                            )
-                      perltidy-run-list)))
-     t)
-
- (defun perltidy-subroutine ()
-   "Call perltidy for subroutine at point."
-   (interactive)
-
-   (save-excursion
-     (let ((current-point (point))
-           b e)
-       (setq b (progn (beginning-of-defun) (point)))
-       (when (and
-              (looking-at "\\s-*sub\\s-+")
-              (< b current-point)
-              (> (save-excursion
-                   (setq e (progn (end-of-defun) (point))))
-                 current-point))
-         (perltidy-region b e)))))
-
- (defun perltidy-find-perltidyrc (&optional dir rcregex)
-   (unless dir (setq dir (buffer-file-name)))
-   (unless rcregex (setq rcregex perltidy-rcregex))
-   (setq dir (file-name-directory dir))
-
-   (let (rcfile)
-     (catch 'my-tag
-       (locate-dominating-file
-        dir
-        (lambda (parent)
-          (let ((rc (car (ignore-errors (directory-files parent t rcregex))))
-                (pparent (file-name-directory (directory-file-name parent))))
-            (setq rcfile rc)
-            (cond ((equal parent
-                          pparent)
-                   (if (= (length rc) 0)
-                       (throw 'my-tag rc)
-                     (throw 'my-tag nil)))
-
-                  ((and (= (length rc) 0)
-                        (file-exists-p    (expand-file-name "lib" pparent))
-                        (file-directory-p (expand-file-name "lib" pparent)))
-                   (setq rcfile (car (ignore-errors (directory-files pparent t rcregex))))
-                   (throw 'my-tag rcfile))
-                  (t rc))))))
-     rcfile))
- #+END_SRC
-
- Perltidy для буфера, текущей функции, строчки и региона:
-
- #+BEGIN_SRC emacs-lisp
- (defun perl-mode-perltidy ()
-   "Perltidy buffer or region if this is perl file."
-   (interactive)
-   (let ((saved-line (line-number-at-pos)))
-     (save-excursion
-       (when (eq major-mode 'cperl-mode)
-         (if (use-region-p)
-             (perltidy-region (region-beginning) (region-end))
-           (perltidy-buffer))))
-     (forward-line saved-line)))
-
- (defun my-perltidy-subroutine ()
-   "Perltidy current subroutine keeping current position in the buffer as close as possible"
-   (interactive)
-   (let ((saved-line (line-number-at-pos)))
-     (perltidy-subroutine)
-     (goto-line saved-line)))
-
- (defun my-perl-tab-indent ()
-   (interactive)
-   (if (use-region-p)
-       (perltidy-region (region-beginning) (region-end))
-     (cperl-indent-command)))
-
- (use-package
-   cperl-mode
-   :after (tramp)
-   :bind (:map cperl-mode-map
-               ("C-c i d" . my-perltidy-subroutine)
-               ("C-c i b" . perl-mode-perltidy)
-               ("TAB" . my-perl-tab-indent)))
- #+END_SRC
-
- Вставка JSON из буфера как Perl-структуры. Не спрашивайте, нужно для работы.
-
- #+BEGIN_SRC emacs-lisp
- (defun my-perl-insert-json ()
-   (interactive)
-   (shell-command-on-region (point) (point) "xclip -o | json_to_perl.pl" t))
-
- (use-package
-   cperl-mode
-   :bind (:map cperl-mode-map
-               ("C-c j" . my-perl-insert-json)))
- #+END_SRC
-
-*** Подсветка TODO/FIXME
-
- #+BEGIN_SRC emacs-lisp
- (use-package fic-mode
-  :straight (fic-mode :type git
-                         :host github
-                         :repo "lewang/fic-mode"
-                         :branch "master"
-                         :files ("*.el"))
-   :hook prog-mode)
- #+END_SRC
-
-*** Цветной compile buffer
-
-#+BEGIN_SRC emacs-lisp
-(defun my-colorize-compilation-buffer ()
-  (toggle-read-only)
-  (ansi-color-apply-on-region compilation-filter-start (point))
-  (toggle-read-only))
-
-(use-package ansi-color
-  :hook (compilation-filter . my-colorize-compilation-buffer))
-#+END_SRC
-
-
 ** PlantUML
 
 #+BEGIN_SRC emacs-lisp
@@ -1764,7 +1477,10 @@ See URL `https://www.pylint.org/'."
   :defer t
   :mode ("\\.plantuml\\'" . plantuml-mode)
   :config
-  (setq plantuml-jar-path (concat (getenv "HOME") "/.guix-home/profile/share/java/plantuml.jar"))
+  (setq plantuml-jar-path
+        (or (let ((guix-path (expand-file-name "~/.guix-home/profile/share/java/plantuml.jar")))
+              (when (file-exists-p guix-path) guix-path))
+            (expand-file-name "~/.local/share/plantuml/plantuml.jar")))
   (setq plantuml-default-exec-mode 'jar)
   (setq plantuml-indent-level 2))
 #+END_SRC
@@ -1780,7 +1496,6 @@ See URL `https://www.pylint.org/'."
    ;; SRC-блоки должны выглядеть максимально похоже на исходные режимы редактирования для этих языков
    (setq org-src-fontify-natively t)
    ;; Кнопка tab в SRC-блоках имеет то же поведение, что и в исходных режимах языков
-   (setq org-src-tab-acts-natively t)
    ;; Не надо никуда смещать SRC-блоки
    (setq org-edit-src-content-indentation 0)
    ;; Ругаться, если пытаемся редактировать невидимый (напр., схлопнутый) текст
@@ -1798,9 +1513,6 @@ See URL `https://www.pylint.org/'."
    (setq org-refile-use-outline-path 'file)
    ;; Люблю выделять по shift-стрелочки, даже в org-mode
    (setq org-support-shift-select t)
-   ;; Отключаем org-persist, кэширование создает тормоза(!)
-   (setq org-element-cache-persistent nil)
-
    ;; Угадывать mode SRC-блоков по названию режимов
    (add-to-list 'org-src-lang-modes '("conf" . conf))
    (add-to-list 'org-src-lang-modes '("ini" . conf))
@@ -1835,17 +1547,11 @@ See URL `https://www.pylint.org/'."
  (use-package
    org
    :ensure nil
-   :hook ((org-mode . turn-on-flyspell)
-          ;; автоматом считывать изменения с диска
+   :hook (;; автоматом считывать изменения с диска
           (org-mode . turn-on-auto-revert-mode)
-          ;; автосохранение для org-буферов
-          ;; (auto-save . org-save-all-org-buffers)
           ;; автоперенос строк по умолчанию
           (org-mode . auto-fill-mode)
-          ;; ;; автоматом переносить в архив завершенные задачи с верхнего уровня
-          ;; (org-mode . (lambda () (add-hook 'after-save-hook 'org-archive-all-done nil t)))
           ;; выключить включенный теперь везде по умолчанию electric-indent-mode
-          ;; в org-mode он по нажатию enter вставляет строчку с отступом
           (org-mode . (lambda () (electric-indent-mode -1))))
    :bind (:map my-bindings-map
                ("C-c l" . org-store-link)
@@ -1857,7 +1563,32 @@ See URL `https://www.pylint.org/'."
     org-capture-templates
     ;; Главная кнопка добавления задачи
     '(("g" "Общий TODO" entry (file my-org-file-main-inbox)
-      "* TODO %?\nSCHEDULED: %t"))))
+      "* TODO %?\nSCHEDULED: %t")))
+
+   ;; Настройки LaTeX-экспорта
+   (setq org-latex-default-packages-alist
+         '(("utf8" "inputenc" t ("pdflatex"))
+           ("T2A" "fontenc" t ("pdflatex"))
+           ("english,main=russian" "babel" t)
+           ("" "cmap" t)
+           ("" "graphicx" t)
+           ("" "longtable" nil)
+           ("" "wrapfig" nil)
+           ("" "rotating" nil)
+           ("normalem" "ulem" t)
+           ("" "amsmath" t)
+           ("" "textcomp" t)
+           ("" "tabularx" t)
+           ("" "amssymb" t)
+           ("" "listings" t)
+           ("" "capt-of" nil)
+           ("" "hyperref" nil)))
+   (setq org-latex-listings t)
+   (setq org-latex-logfiles-extensions
+         '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "log" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv" "tex"))
+
+   ;; YouTube inline images
+   (advice-add #'org-display-inline-images :after #'org-yt-display-inline-images))
  #+END_SRC
 
 *** Синхронизация
@@ -1901,11 +1632,13 @@ See URL `https://www.pylint.org/'."
  (defun my-org-fill-files-list (&optional EXHAUSTIVE)
    (setq org-agenda-files
          (seq-remove
-          (lambda (file) (string-match "[.]#" file))
-          (directory-files-recursively my-org-root-path my-org-files-regexp)))
+          (lambda (file)
+            (or (string-match "[.]#" file)
+                (> (file-attribute-size (file-attributes file)) (* 2 1024 1024))))
+          (directory-files-recursively my-org-root-path my-org-files-regexp nil
+            (lambda (dir) (not (string-match-p "/\\." dir))))))
    ;; после пересоздания списков файлов, неплохо бы перечитать их с диска
    (my-org-reload-from-disk))
-   ;; (my-org-fill-inotify-handlers))
  #+END_SRC
 
 *** Базовые настройки agenda
@@ -1915,10 +1648,12 @@ See URL `https://www.pylint.org/'."
    (hl-line-mode))
 
  (defun my-org-agenda-basic-config ()
-   ;; Дни рожденния в BBDB брать из поля birthday
-   (setq org-bbdb-anniversary-field 'birthday)
+   ;; Ускорение agenda: не инициализировать org-mode полностью в каждом файле
+   (setq org-agenda-inhibit-startup t)
+   (setq org-agenda-dim-blocked-tasks nil)  ;; отключить дорогой обход дерева
+
    ;; Не показывать DONE в агенде
-   (setq org-agenda-skip-scheduled-if-done 't)
+   (setq org-agenda-skip-scheduled-if-done t)
 
    ;; Настройки по умолчанию в теме leuven мне в этом месте не нравятся
    (face-spec-set 'org-agenda-structure '((t :height 1.17)))
@@ -1932,11 +1667,9 @@ See URL `https://www.pylint.org/'."
 #+BEGIN_SRC emacs-lisp
 (advice-add 'revert-buffer :after
   (lambda (&rest _)
-    (if (eq major-mode 'org-mode)
-        (progn
-          (org-agenda-redo-all t)
-          ;; С одного раза агенда теперь почему-то не обновляется (с появлением кэшей в org?)
-          (org-agenda-redo-all t)))))
+    (when (eq major-mode 'org-mode)
+      (org-element-cache-reset)
+      (org-agenda-redo-all t))))
 #+END_SRC
 
 
@@ -1989,15 +1722,15 @@ See URL `https://www.pylint.org/'."
 
  #+BEGIN_SRC emacs-lisp
  (defun my-org-agenda-commands-config ()
-   (setq org-agenda-custom-commands
-       '(("d" . "Сегодня")
-         ("dd" agenda "Сегодня, все записи"
-          ((org-agenda-span 'day)
-           (org-agenda-overriding-header "Сегодня, все записи")))
-         ("da" agenda "Сегодня, без отложенных"
-          ((org-agenda-span 'day)
-           (org-agenda-skip-function 'my-org-agenda-skip-delayed)
-           (org-agenda-overriding-header "Сегодня, только активные"))))))
+   (dolist (cmd '(("da" agenda "Сегодня, без отложенных"
+                   ((org-agenda-span 'day)
+                    (org-agenda-skip-function 'my-org-agenda-skip-delayed)
+                    (org-agenda-overriding-header "Сегодня, только активные")))
+                  ("dd" agenda "Сегодня, все записи"
+                   ((org-agenda-span 'day)
+                    (org-agenda-overriding-header "Сегодня, все записи")))
+                  ("d" . "Сегодня")))
+     (add-to-list 'org-agenda-custom-commands cmd)))
  #+END_SRC
 
 *** Подключение
@@ -2006,7 +1739,6 @@ See URL `https://www.pylint.org/'."
  (use-package
      org-agenda
      :ensure nil
-     :after (org org-element)
 	 :hook (org-agenda-mode . my-agenda-mode-setup)
 	 :bind (:map my-bindings-map
 				 ("C-c a" . org-agenda))
@@ -2059,39 +1791,6 @@ See URL `https://www.pylint.org/'."
  #+END_SRC
 
 ** Org export
-
-*** LaTeX
-
- #+BEGIN_SRC emacs-lisp
- (use-package
-   org
-   :defer t
-   :config
-   ;; Какие \usepackage прописывать в LaTeX по умолчанию
-   (setq org-latex-default-packages-alist
-         '(("utf8" "inputenc" t ("pdflatex"))
-           ("T2A" "fontenc" t ("pdflatex"))
-           ("english,main=russian" "babel" t)
-           ("" "cmap" t)
-           ("" "graphicx" t)
-           ("" "grffile" t)
-           ("" "longtable" nil)
-           ("" "wrapfig" nil)
-           ("" "rotating" nil)
-           ("normalem" "ulem" t)
-           ("" "amsmath" t)
-           ("" "textcomp" t)
-           ("" "tabularx" t)
-           ("" "amssymb" t)
-           ("" "listings" t)
-           ("" "capt-of" nil)
-           ("" "hyperref" nil)))
-   ;; Для листинга кода использовать пакет listings вместо verbatim-окружений
-   (setq org-latex-listings t)
-   ;; Файлы с этими расширениями считаются временными при экспорте и будут удалены
-   (setq org-latex-logfiles-extensions
-         '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "log" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv" "tex")))
- #+END_SRC
 
 *** Hugo
 
@@ -2150,7 +1849,6 @@ See URL `https://www.pylint.org/'."
  (use-package
    ox-hugo
    :after (ox org)
-   :ensure t
    :commands (org-hugo-export-wim-to-md)
    :hook ((org-export-before-processing . my-org-hugo-add-printable-version)
           (org-export-before-processing . my-org-hugo-add-source-of-article))
@@ -2182,7 +1880,7 @@ See URL `https://www.pylint.org/'."
           (org-set-property
            "EXPORT_FILE_NAME"
            (format "twit-%s-%i" (format-time-string "%F-%T") org-twit-counter))
-          (incf org-twit-counter))))
+          (cl-incf org-twit-counter))))
     "twit"
     (list file)))
 
@@ -2210,81 +1908,9 @@ See URL `https://www.pylint.org/'."
               (directory-files-recursively my-org-blog-path "\\.s?org$"))))))
  #+END_SRC
 
-**** Экспорт embedded видео в Hugo. Не спрашивайте.
+**** Экспорт embedded видео в Hugo
 
  #+BEGIN_SRC emacs-lisp
- (defun org-image-update-overlay (file link &optional data-p refresh)
-   "Create image overlay for FILE associtated with org-element LINK.
-         If DATA-P is non-nil FILE is not a file name but a string with the image data.
-         See also `create-image'.
-         This function is almost a duplicate of a part of `org-display-inline-images'."
-   (when (or data-p (file-exists-p file))
-     (let ((width
-            ;; Apply `org-image-actual-width' specifications.
-            (cond
-             ((not (image-type-available-p 'imagemagick)) nil)
-             ((eq org-image-actual-width t) nil)
-             ((listp org-image-actual-width)
-              (or
-               ;; First try to find a width among
-               ;; attributes associated to the paragraph
-               ;; containing link.
-               (let ((paragraph
-                      (let ((e link))
-                        (while (and (setq e (org-element-property
-                                             :parent e))
-                                    (not (eq (org-element-type e)
-                                             'paragraph))))
-                        e)))
-                 (when paragraph
-                   (save-excursion
-                     (goto-char (org-element-property :begin paragraph))
-                     (when
-                         (re-search-forward
-                          "^[ \t]*#\\+attr_.*?: +.*?:width +\\(\\S-+\\)"
-                          (org-element-property
-                           :post-affiliated paragraph)
-                          t)
-                       (string-to-number (match-string 1))))))
-               ;; Otherwise, fall-back to provided number.
-               (car org-image-actual-width)))
-             ((numberp org-image-actual-width)
-              org-image-actual-width)))
-           (old (get-char-property-and-overlay
-                 (org-element-property :begin link)
-                 'org-image-overlay)))
-       (if (and (car-safe old) refresh)
-           (image-refresh (overlay-get (cdr old) 'display))
-         (let ((image (create-image file
-                                    (and width 'imagemagick)
-                                    data-p
-                                    :width width)))
-           (when image
-             (let* ((link
-                     ;; If inline image is the description
-                     ;; of another link, be sure to
-                     ;; consider the latter as the one to
-                     ;; apply the overlay on.
-                     (let ((parent
-                            (org-element-property :parent link)))
-                       (if (eq (org-element-type parent) 'link)
-                           parent
-                         link)))
-                    (ov (make-overlay
-                         (org-element-property :begin link)
-                         (progn
-                           (goto-char
-                            (org-element-property :end link))
-                           (skip-chars-backward " \t")
-                           (point)))))
-               (overlay-put ov 'display image)
-               (overlay-put ov 'face 'default)
-               (overlay-put ov 'org-image-overlay t)
-               (overlay-put
-                ov 'modification-hooks
-                (list 'org-display-inline-remove-overlay))
-               (push ov org-inline-image-overlays))))))))
-
  ;; youtube
 
  (defvar yt-iframe-format
@@ -2340,20 +1966,18 @@ See URL `https://www.pylint.org/'."
                           (and old
                                (car-safe old)
                                (overlay-get (cdr old) 'display)))
-                        (org-yt-get-image (format "http://img.youtube.com/vi/%s/0.jpg" video-id))))
+                        (org-yt-get-image (format "https://img.youtube.com/vi/%s/0.jpg" video-id))))
               (when image-data
                 (org-image-update-overlay image-data el t t)))))))))
 
- (use-package
-   org
-   :ensure nil
-   :config (advice-add #'org-display-inline-images :after #'org-yt-display-inline-images))
  #+END_SRC
 
 *** man pages
 
 #+BEGIN_SRC emacs-lisp
-(require 'ox-man)
+(use-package ox-man
+  :ensure nil
+  :defer t)
 #+END_SRC
 
 *** Markdown
@@ -2362,7 +1986,6 @@ See URL `https://www.pylint.org/'."
 
 #+BEGIN_SRC emacs-lisp
 (use-package ox-gfm
-  :ensure t
   :after ox
   :commands (org-gfm-export-to-markdown org-gfm-export-as-markdown))
 #+END_SRC
@@ -2370,34 +1993,27 @@ See URL `https://www.pylint.org/'."
 Также подключим стандартный ox-md для базового Markdown:
 
 #+BEGIN_SRC emacs-lisp
-(require 'ox-md)
+(use-package ox-md
+  :ensure nil
+  :after ox)
 #+END_SRC
 
-# *** wikipedia
-#
-# #+BEGIN_SRC emacs-lisp
-# (use-package ox-mediawiki)
-# #+END_SRC
 
 *** Форматированное копирование в буфер обмена
 
 #+BEGIN_SRC emacs-lisp
-(use-package ox-clip)
+(use-package ox-clip
+  :after ox)
 #+END_SRC
 
 *** Org-contrib
 
 #+BEGIN_SRC emacs-lisp
-(use-package org-contrib
-  :ensure t)
+(use-package org-contrib)
 
 (use-package ox-taskjuggler
-  :straight (ox-taskjuggler :type git
-                            :host github
-                            :repo "h-oll/ox-taskjuggler"
-                         :branch "master"
-                         :files ("lisp/*.el"))
-  :ensure t
+  :vc (:url "https://github.com/h-oll/ox-taskjuggler" :rev :newest)
+  :after ox
   :config
   (setq org-taskjuggler-default-reports
         '("textreport report \"Plan\" {
@@ -2440,7 +2056,6 @@ sorttasks plan.start.up
 
 (use-package tj3-mode
   :after ox-taskjuggler
-  :ensure t
   :config
   (require 'ox-taskjuggler))
 #+END_SRC
@@ -2459,11 +2074,7 @@ Org babel режимы, которые надо поддержать
          (string= lang "gnuplot")
          (string= lang "plantuml"))))
 
- (use-package babel
-   :ensure t
-   ;; :after
-   ;; (org ob-perl ob-shell ob-sql ob-plantuml ob-gnuplot ob-python ob-ocaml)
-   :config
+ (with-eval-after-load 'org
    ;; Не просить подтверждение для запуска SRC-блоков
    (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
    ;; Загрузить языки
@@ -2475,10 +2086,9 @@ Org babel режимы, которые надо поддержать
       (org . t)
       (dot . t)
       (sql . t)
-      ;; (coq . t)
-      (ocaml . t)
+      (python . t)
       (plantuml . t)
-      (gnuplot 't)
+      (gnuplot . t)
       (emacs-lisp . t))))
  #+END_SRC
 
@@ -2486,34 +2096,14 @@ Org babel режимы, которые надо поддержать
 
 *** Супер-шаблоны
 
- Refile всего поддерева под курсором с подстановкой дат по заданному смещению. Для корневого поддерева должно быть задано SCHEDULED.
-
- #+BEGIN_SRC emacs-lisp
- (defun my-org-clone-to-date ()
-   "Clone current subtree into specified file with all dates shifted to the same period."
-   (interactive)
-   (let* ((title (nth 4 (org-heading-components)))
-          (orig-date (org-time-string-to-absolute (org-entry-get nil "SCHEDULED")))
-          (dest-date (org-time-string-to-absolute
-                      (org-read-date nil nil nil (format "Дата для '%s'" title))))
-          (offset (format "+%id" (- dest-date orig-date))))
-     (org-copy-subtree)
-     (with-temp-buffer
-       (org-mode)
-       (org-paste-subtree)
-       (org-clone-subtree-with-time-shift 1 offset)
-       (org-forward-element)
-       (org-refile))))
- #+END_SRC
-
 **** Как использую
 
  У меня есть шаблоны мероприятий, где описана вся последовательность действий, которые надо совершить при подготовке. В верхнем уровне указан
  SCHEDULED, указывающий, когда мероприятие должно состояться. При выполнении внутри корневого элемента этой функции, создается копия всей
  структуры в указанный файл со смещением дат относительно указанной. Например:
 
- #+BEGIN_SRC org
- ,* Слёт Сплава [0%]                                                    :Сплав:
+ #+BEGIN_EXAMPLE
+ * Слёт Сплава [0%]                                                    :Сплав:
    DEADLINE: <2019-05-25 Сб -3d> SCHEDULED: <2019-05-25 Сб>
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
@@ -2526,7 +2116,7 @@ Org babel режимы, которые надо поддержать
 
  Расписание автобусов от лагеря: ...
 
- ,** TODO Список вещей
+ ** TODO Список вещей
     SCHEDULED: <2019-05-22 Ср>
 
  2 баллона газа
@@ -2535,37 +2125,28 @@ Org babel режимы, которые надо поддержать
  Каска
  ...
 
- ,** TODO Узнать расписание электричек, запланировать
+ ** TODO Узнать расписание электричек, запланировать
     SCHEDULED: <2019-05-22 Ср>
- ,** TODO Узнать расписание автобусов в [[https://vk.com/splavclub][группе]].
+ ** TODO Узнать расписание автобусов в [[https://vk.com/splavclub][группе]].
     SCHEDULED: <2019-05-22 Ср>
- ,** TODO Карта на GPS
+ ** TODO Карта на GPS
     SCHEDULED: <2019-05-21 Вт>
 
  В архиве карт на GPS лежит splav.img
 
- ,** TODO Снять деньги
+ ** TODO Снять деньги
     SCHEDULED: <2019-05-23 Чт>
 
- ,** TODO Продумать раскладку по еде
+ ** TODO Продумать раскладку по еде
     SCHEDULED: <2019-05-21 Вт>
 
- #+END_SRC
+ #+END_EXAMPLE
 
  *Важно*: фича реализована через функицю ~org-clone-subtree-with-time-shift~, и она слишком умно интерпретирует repeated tasks. Поэтому если
  в плане подготовки какой-то таск надо повторять (пример: перед поездкой в горы трижды в неделю запланировать бег), то таск надо
  раскопировать вручную, заранее расставив даты со смещением.
 
 ** Прочие Org-фичи
-
-# *** Менеджер паролей
-
-#  #+BEGIN_SRC emacs-lisp
-#  (use-package
-#    org-password-manager
-#    :after (org)
-#    :hook (org-mode . org-password-manager-key-bindings))
-#  #+END_SRC
 
 *** Таблицы
 
@@ -2577,54 +2158,10 @@ Org babel режимы, которые надо поддержать
 
  (use-package
    org-table
+   :ensure nil
    :after (org)
    :hook (org-mode . my-org-mode-on-save-buffer-setup))
  #+END_SRC
-
-*** Заархивировать все завершенные задачи в буфере
-
- #+BEGIN_SRC emacs-lisp
- (defun my-org-archive-done-tasks ()
-   "Archive all DONE tasks in current buffer"
-   (interactive)
-   (org-map-entries
-    (lambda ()
-      (org-archive-subtree)
-      (setq org-map-continue-from (outline-previous-heading)))
-    "/DONE" 'file))
- #+END_SRC
-
-** Obsidian
-
-Org-подобная система, модно-молодежная.
-
-#+BEGIN_SRC emacs-lisp
-(use-package obsidian
-  :ensure t
-  :demand t
-  :config
-  (global-obsidian-mode t)
-  :custom
-  ;; This directory will be used for `obsidian-capture' if set.
-  (obsidian-inbox-directory "Inbox")
-  ;; Create missing files in inbox? - when clicking on a wiki link
-  ;; t: in inbox, nil: next to the file with the link
-  ;; default: t
-  ;(obsidian-wiki-link-create-file-in-inbox nil)
-  ;; The directory for daily notes (file name is YYYY-MM-DD.md)
-  (obsidian-daily-notes-directory "Daily Notes")
-  ;; Directory of note templates, unset (nil) by default
-  ;(obsidian-templates-directory "Templates")
-  ;; Daily Note template name - requires a template directory. Default: Daily Note Template.md
-  ;(obsidian-daily-note-template "Daily Note Template.md")
-  :bind (:map obsidian-mode-map
-  ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
-  ("C-c C-o" . obsidian-follow-wiki-link-at-point)
-  ;; Jump to backlinks
-  ("C-c C-b" . obsidian-backlink-jump)
-  ;; If you prefer you can use `obsidian-insert-link'
-  ("C-c C-l" . obsidian-insert-wikilink)))
-#+END_SRC
 
 
 ** Spell-checking
@@ -2632,7 +2169,7 @@ Org-подобная система, модно-молодежная.
  #+BEGIN_SRC emacs-lisp
  (use-package
    flyspell
-  ;  :ensure-system-package (ispell aspell-en aspell-ru)
+   :ensure nil
    :hook ((text-mode . turn-on-flyspell)
           (prog-mode . flyspell-prog-mode))
    :commands (flyspell-buffer turn-on-flyspell)
@@ -2651,60 +2188,47 @@ Org-подобная система, модно-молодежная.
  #+BEGIN_SRC emacs-lisp
  (use-package
    flyspell-lazy
+   :hook (after-init . flyspell-lazy-mode)
    :config
    (setq flyspell-lazy-idle-seconds 1)
    ;; Проверять все буферы, включая временные типа *scratch* и буферов Gnus
-   (setq flyspell-lazy-disallow-buffers nil)   (flyspell-lazy-mode 1))
+   (setq flyspell-lazy-disallow-buffers nil))
  #+END_SRC
-** Helm
+** Completion & Search
 
- #+BEGIN_SRC emacs-lisp
- (use-package helm-org-rifle)
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package vertico
+  :init (vertico-mode))
 
- #+BEGIN_SRC emacs-lisp
- (use-package
-   helm
-   :after (helm-org-rifle recentf)
-   :bind (:map my-bindings-map
-               ("M-s M-s" . my-helm-search-all))
-   :preface
-   (defvar my-helm-sources)
-   ;; Функция ищет по всем подключенным источникам
-   (defun my-helm-search-all ()
-	 (interactive)
-	 (let ((sources (append (helm-org-rifle-get-sources-for-open-buffers) my-helm-sources)))
-	   (unless helm-source-buffers-list
-		 (setq helm-source-buffers-list
-			   (helm-make-source "Buffers" 'helm-source-buffers)))
-	   (helm :sources sources
-			 :buffer "*helm completions*")))
-   :config
-   (require 'helm-for-files)
-   (require 'helm-elisp)
-   (setq helm-split-window-in-side-p t
-         helm-M-x-fuzzy-match t
-         helm-buffers-fuzzy-matching t
-         helm-recentf-fuzzy-match t
-         projectile-completion-system 'helm)
-   (setq helm-input-idle-delay 0.1)
-   (setq my-helm-sources
-		 '(helm-source-buffers-list
-		   helm-source-recentf
-		   helm-source-info-pages
-		   helm-source-complex-command-history
-		   helm-source-etags-select
-		   helm-source-grep-ag
-		   helm-source-bookmarks))
-   (helm-adaptive-mode 1))
- #+END_SRC
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
- #+BEGIN_SRC emacs-lisp
- (use-package helm-descbinds
-   :after helm
-   :config
-   (helm-descbinds-mode))
- #+END_SRC
+(use-package marginalia
+  :init (marginalia-mode))
+
+(use-package consult
+  :bind (("C-s" . consult-line)
+         ("C-x b" . consult-buffer)
+         ("M-y" . consult-yank-pop)
+         ("M-g g" . consult-goto-line)
+         ("M-g M-g" . consult-goto-line)
+         ("M-s r" . consult-ripgrep)
+         ("M-s f" . consult-find)
+         :map my-bindings-map
+         ("M-s M-s" . consult-ripgrep)))
+
+(use-package embark
+  :bind ("C-." . embark-act))
+
+(use-package embark-consult
+  :after (embark consult))
+
+(use-package wgrep
+  :config
+  (setq wgrep-auto-save-buffer t))
+#+END_SRC
 
 ** Gnus
 
@@ -2748,7 +2272,6 @@ Org-подобная система, модно-молодежная.
 
  #+BEGIN_SRC emacs-lisp
  (use-package gnus
-   :demand t
    :commands (gnus)
    :hook ((message-mode . turn-on-flyspell)
           (message-mode . my-message-mode-setup)
@@ -2766,7 +2289,7 @@ Org-подобная система, модно-молодежная.
 
    ;; Свежий gnus перестал самостоятельно находить
    ;; Лечит ошибку: Mail source (file) error (Searching for program)
-   (setq mail-source-movemail-program "/usr/bin/movemail")
+   (setq mail-source-movemail-program (or (executable-find "movemail") "/usr/bin/movemail"))
 
    ;; Выставить таймаут на коннект к NNTP
    (setq nntp-connection-timeout 5)
@@ -2774,11 +2297,6 @@ Org-подобная система, модно-молодежная.
    ;; Периодический полл источников
    (gnus-demon-add-handler 'gnus-demon-scan-news 1200 300)
    (gnus-demon-init)
-
-   ;; Какой браузер использовать
-   ;; (setq gnus-button-url 'browse-url-generic
-   ;;       browse-url-generic-program "x-www-browser"
-   ;;       browse-url-browser-function gnus-button-url)
 
    ;; По умолчанию во всех группах делать копию отправляемого письма себе
    (setq gnus-parameters
@@ -2804,7 +2322,7 @@ Org-подобная система, модно-молодежная.
    ;; Способ оформления цитаты
    (setq message-citation-line-function 'message-insert-formatted-citation-line)
 
-   ;; Отправленные сообщения метить прочитанными (TODO работает ли?)
+   ;; Отправленные сообщения (Gcc-копии) метить прочитанными
    (setq gnus-gcc-mark-as-read t)
 
    ;; В наши трудные времена надо хотя бы сделать вид, что ты обеспечиваешь безопасность переписки
@@ -2842,8 +2360,7 @@ Org-подобная система, модно-молодежная.
            gnus-sum-thread-tree-single-indent "◎ "
            gnus-sum-thread-tree-vertical        "│"
            gnus-sum-thread-tree-leaf-with-other "├─► "
-           gnus-sum-thread-tree-single-leaf     "╰─► "))
-   )
+           gnus-sum-thread-tree-single-leaf     "╰─► ")))
  #+END_SRC
 
 ** Языковые модели   
@@ -2852,49 +2369,16 @@ Org-подобная система, модно-молодежная.
 
 #+BEGIN_SRC emacs-lisp
 (use-package shell-maker
-  :ensure t
-  :straight (:type git
-                   :host github
-                   :repo "xenodium/shell-maker"
-                   :files ("*.el")))
+  :vc (:url "https://github.com/xenodium/shell-maker"))
 
 (use-package chatgpt-shell
-  :ensure t
-  :straight (:type git :host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell*.el"))
+  :commands (chatgpt-shell)
+  :after shell-maker
+  :vc (:url "https://github.com/xenodium/chatgpt-shell")
   :custom
   (chatgpt-shell-openai-key
     (lambda ()
       (auth-source-pass-get 'secret "personal/openai-emacs-key"))))
-#+END_SRC
-
-*** Claude code
-
-#+BEGIN_SRC emacs-lisp
-(use-package vterm :ensure t)
-
-(use-package transient
-  :ensure t
-  :straight (:type git
-                   :host github
-                   :repo "magit/transient"))
-
-(use-package claude-code
-  :after transient
-  :straight (:type git
-                   :host github
-                   :repo "stevemolitor/claude-code.el"
-                   :files ("*.el" (:exclude "images/*")))
-  :bind-keymap
-  ("C-c x" . claude-code-command-map) ;; or your preferred key
-  :config
-  (setq claude-code-terminal-backend 'vterm)
-  (defun my-claude-notify (title message)
-    "Display a Linux notification using notify-send."
-    (if (executable-find "notify-send")
-        (call-process "notify-send" nil nil nil title message)
-      (message "%s: %s" title message)))
-  (setq claude-code-notification-function #'my-claude-notify)
-  (claude-code-mode))
 #+END_SRC
 
 
@@ -2902,32 +2386,15 @@ Org-подобная система, модно-молодежная.
 *** Автоматическое формирование коммит-сообщений
 
 #+BEGIN_SRC emacs-lisp
-(use-package plz-media-type
-  ;; :ensure t
-)
-
-(use-package llm-openai
-  ;; :ensure t
-)
-
 (use-package magit-gptcommit
-  ;; :straight t
-  :ensure t
   :after magit
   :bind (:map git-commit-mode-map
               ("C-c C-g" . magit-gptcommit-commit-accept))
-  :custom
-  (require 'llm-openai)
-  (magit-gptcommit-llm-provider (make-llm-openai :key (auth-source-pass-get 'secret "personal/openai-emacs-key")))
-
   :config
-  ;; Enable magit-gptcommit-mode to watch staged changes and generate commit message automatically in magit status buffer
-  ;; This mode is optional, you can also use `magit-gptcommit-generate' to generate commit message manually
-  ;; `magit-gptcommit-generate' should only execute on magit status buffer currently
-  ;; (magit-gptcommit-mode 1)
-
+  (require 'llm-openai)
+  (setq magit-gptcommit-llm-provider
+        (make-llm-openai :key (auth-source-pass-get 'secret "personal/openai-emacs-key")))
   ;; Add gptcommit transient commands to `magit-commit'
-  ;; Eval (transient-remove-suffix 'magit-commit '(1 -1)) to remove gptcommit transient commands
   (magit-gptcommit-status-buffer-setup))
 #+END_SRC
 
@@ -2940,90 +2407,6 @@ Org-подобная система, модно-молодежная.
  (add-hook 'dired-mode-hook 'auto-revert-mode)
  #+END_SRC
 
-** Спортивные утилиты
-
- #+BEGIN_SRC emacs-lisp
- (defun sport/equipment-report-weights (src)
-   "Return summary weights grouped by buggage type"
-   (let
-       ((vals
-         (let ((cols (- (length (first src)) 2)))
-                 (seq-reduce '(lambda (sums row)
-                                (mapcar*
-                                 '(lambda (v s)
-                                    (+ (* (number-or-v v 0) (lst-number-or-v row 1 0)) s))
-                                 (nthcdr 2 row)
-                                 sums))
-                             (cdr src)
-                             (make-list cols 0)))))
-     (list
-      (cons "ИТОГО" (nthcdr 2 (first src)))
-      'hline
-      (cons (seq-reduce #'+ vals 0) vals))))
-
- (defun sport/equipment-report-baggage (src pos)
-   "Return list for specified buggage type (column position in src table)"
-   (cons
-    '("" "Вес" "Кол-во")
-    (cons
-     'hline
-     (sort 
-      (remove-if-not
-       '(lambda (row) (> (nth 1 row) 0))
-       (map
-        #'list
-        '(lambda (row)
-           (let ((name (first row))
-                 (cnt (lst-number-or-v row pos 0)))
-             (list name (* (lst-number-or-v row 1 0) cnt) cnt)))
-        (cdr src)))
-      (lambda (a b) (> (nth 1 a) (nth 1 b)))))))
-
- (defun sport/equipment-report-shared (src)
-   "Return list for specified buggage type (column position in src table)"
-   (cons
-    '("" "Вес" "Кол-во")
-    (cons
-     'hline
-     (sort 
-       (map
-        #'list
-        '(lambda (row)
-           (list
-            (first row)
-            (lst-number-or-v row 1 0)
-            (lst-number-or-v row 6 0)))
-        (remove-if
-         '(lambda (row) (= (lst-number-or-v row 6 0) 0))
-         (cdr src)))
-       (lambda (a b) (string< (nth 0 a) (nth 0 b)))))))
-
- (defun my-sport-journal-add (type value notes)
-   (interactive
-    (list
-     (completing-read
-      "Тип: "
-      (with-current-buffer (find-file-noselect "~/org/personal/sport/sports-periodic-TODO.org")
-        (outline-show-all)
-        (goto-char (point-min))
-        (setq case-fold-search nil)
-        (re-search-forward "^#\\+NAME: sports-journal")
-        (next-line)
-        (mapcar
-         (lambda (row) (car (cdr row)))
-         (seq-filter (lambda (row) (not (eq row 'hline))) (org-table-to-lisp)))))
-     (read-string "Значение: ")
-     (read-string "Заметки: ")))
-   ;; TODO: improve
-   (with-current-buffer (find-file-noselect "~/org/personal/sport/sports-periodic-TODO.org")
-     (goto-char (point-min))
-     (setq case-fold-search nil)
-     (re-search-forward "^#\\+NAME: sports-journal")
-     (next-line)
-     (goto-char (org-table-end))
-     (insert
-      (format "| [%s] | %s | | %s | %s |\n" (format-time-string "%F %R") type value notes))))
- #+END_SRC
 
 ** Прочее
 
@@ -3064,6 +2447,7 @@ Org-подобная система, модно-молодежная.
 #+BEGIN_SRC emacs-lisp
 (use-package
   org-expenses
+  :if (file-directory-p "~/.emacs.d/public/org-expenses")
   :load-path "~/.emacs.d/public/org-expenses"
   :bind (:map my-bindings-map
               ("C-c f" . org-expenses/expense-view))
@@ -3072,21 +2456,10 @@ Org-подобная система, модно-молодежная.
 #+END_SRC
 
 
-*** Вспомогательные функции
-
-#+BEGIN_SRC emacs-lisp
-(defun number-or-v (n v)
-  "Return V if N is not a number, or N otherwise."
-  (if (not (numberp n)) v n))
-
-(defun lst-number-or-v (lst pos v)
-  "Return V if list element at POS is not a number, or (nth POS LST) otherwise."
-  (number-or-v (nth pos lst) v))
-#+END_SRC
-
-
 ** Загрузка локальных настроек
 
 #+BEGIN_SRC emacs-lisp
+(defvar org-agenda-custom-commands nil
+  "Pre-declare to allow local.org to add commands before org-agenda is loaded.")
 (my-load-org-config "local.org")
 #+END_SRC
