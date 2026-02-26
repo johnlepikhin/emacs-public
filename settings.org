@@ -243,6 +243,22 @@ GC-threshold ставится в most-positive-fixnum в early-init.el на вр
  (global-unset-key (kbd "C-z"))
  #+END_SRC
 
+*** Голосовой ввод
+
+По нажатию ~<f7>~ запускается распознавание голоса через =voice-type=:
+
+#+BEGIN_SRC emacs-lisp
+(defun my-voice-input ()
+  "Record voice input using voice-type and insert transcribed text at point."
+  (interactive)
+  (message "Listening... (voice-type)")
+  (let ((text (shell-command-to-string
+               "voice-type --config ~/.config/voice-type-simple.yaml record 2>/dev/null")))
+    (insert (replace-regexp-in-string "\n\\'" "" text))))
+
+(define-key my-bindings-map (kbd "<f7>") 'my-voice-input)
+#+END_SRC
+
 *** Expand region
 
  По нажатию ~C-=~ выбранный регион семантически/синтаксически расширяется:
@@ -2460,7 +2476,9 @@ Org babel режимы, которые надо поддержать
 (use-package gptel
   :bind (("C-c g g" . gptel)
          ("C-c g s" . gptel-send)
-         ("C-c g r" . gptel-rewrite))
+         ("C-c g r" . gptel-rewrite)
+         :map gptel-mode-map
+         ("C-<return>" . gptel-send))
   :config
   (setq gptel-model 'gpt-4o
         gptel-default-mode 'org-mode
