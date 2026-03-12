@@ -2515,7 +2515,6 @@ Org babel режимы, которые надо поддержать
           (message-send . ispell-message)
           (gnus-summary-mode . hl-line-mode)
           (gnus-group-mode . hl-line-mode)
-          (gnus-group-mode . gnus-topic-mode)
           (gnus-message-setup . mml-secure-message-sign-pgpmime))
    :bind (:map message-mode-map
                ("M-z" . my-gnus-zap-to-signature)
@@ -2524,6 +2523,11 @@ Org babel режимы, которые надо поддержать
    :config
    ;; Надо определить переменные
    (require 'gnus-msg)
+
+   ;; gnus-topic-mode определена в gnus-topic.el, не в gnus.el —
+   ;; нельзя ставить в :hook, иначе autoload не найдёт функцию
+   (require 'gnus-topic)
+   (add-hook 'gnus-group-mode-hook #'gnus-topic-mode)
 
    ;; Свежий gnus перестал самостоятельно находить
    ;; Лечит ошибку: Mail source (file) error (Searching for program)
