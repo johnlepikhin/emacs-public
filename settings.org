@@ -352,6 +352,12 @@ GC-threshold ставится в most-positive-fixnum в early-init.el на вр
 (global-set-key (kbd "C-<wheel-down>") nil)
 #+END_SRC
 
+Размер шрифта по умолчанию:
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil :height 100)
+#+END_SRC
+
 
 *** Imenu
 
