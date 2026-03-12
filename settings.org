@@ -644,7 +644,11 @@ Backspace/delete должны удалять выделенный текст:
 (use-package cape
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
-  (add-hook 'completion-at-point-functions #'cape-file))
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (setq-local completion-at-point-functions
+                          (remove #'cape-dabbrev completion-at-point-functions)))))
 
 (use-package corfu-terminal
   :unless (display-graphic-p)
@@ -700,9 +704,15 @@ Backspace/delete должны удалять выделенный текст:
   :commands lsp
   :hook ((lsp-mode . lsp-enable-which-key-integration))
   :config
+  ;; Автоопределение workspace root — защита от случайного выбора /tmp и т.п.
+  (setq lsp-auto-guess-root t)
+
   (setq lsp-pylsp-plugins-flake8-max-line-length 120
         lsp-pylsp-server-command '("pylsp" "-vv")
         lsp-pylsp-plugins-flake8-ignore ["E203", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"])
+
+  ;; Отключаем golangci-lint-langserver — линтинг через flycheck-golangci-lint
+  (setq lsp-disabled-clients '(golangci-lint))
   
   ;; Настройки для gopls
   (setq lsp-go-analyses '((shadow . t)
@@ -750,7 +760,13 @@ Backspace/delete должны удалять выделенный текст:
             (progn (message "Using emacs-lsp-booster for %s" orig-result)
                    (append '("emacs-lsp-booster" "--json-object-type" "hashtable" "--") orig-result))
           orig-result)))
-    (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)))
+    (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command))
+
+  ;; Inlay hints для языков, поддерживающих их
+  (add-hook 'lsp-after-initialize-hook
+            (lambda ()
+              (when (lsp-feature? "textDocument/inlayHint")
+                (lsp-inlay-hints-mode 1)))))
 
 (use-package lsp-ui
   :custom-face
@@ -890,6 +906,16 @@ Backspace/delete должны удалять выделенный текст:
                 ("C-x g" . magit-status))
     :hook (git-commit-setup . my-magit-generate-conventional-commit-message))
  #+END_SRC
+
+*** diff-hl
+
+#+BEGIN_SRC emacs-lisp
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode)
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+#+END_SRC
 
 *** Conventional changelog
 
@@ -1521,7 +1547,8 @@ See URL `https://www.pylint.org/'."
       :request "launch"
       :program (lambda () (buffer-file-name))))
   ;; Сохранять буферы перед запуском отладчика
-  (add-hook 'dape-on-start-hooks #'save-some-buffers))
+  (add-hook 'dape-on-start-hooks #'save-some-buffers)
+  (define-key my-bindings-map (kbd "C-c b") dape-global-map))
 #+END_SRC
 
 *** Graphviz
@@ -1686,14 +1713,112 @@ See URL `https://www.pylint.org/'."
 
 *** Синхронизация
 
+Универсальная синхронизация org-файлов через git-sync для всех репозиториев под =~/org=.
+
 #+BEGIN_SRC emacs-lisp
-(defun git-sync-org-private ()
-  (call-process-shell-command "cd ~/org/personal && git-sync" nil 0))
+;;; --- Компонент 1: Обобщённый git-sync для всех репо под ~/org ---
 
-(defun register-git-sync-org-private-hook ()
- (add-hook 'after-save-hook #'git-sync-org-private nil t))
+(defvar my-org-sync-root (expand-file-name "~/org"))
 
-(add-to-list 'safe-local-variable-values '(eval . (register-git-sync-org-private-hook)))
+(defun my-org-buffer-repo-root ()
+  "Git-root для текущего буфера, если файл внутри `my-org-sync-root`."
+  (when-let* ((file (buffer-file-name))
+              (_ (string-prefix-p my-org-sync-root (expand-file-name file))))
+    (locate-dominating-file file ".git")))
+
+(defvar my-org-git-sync-timers (make-hash-table :test 'equal)
+  "Таблица таймеров дебаунса git-sync по директориям.")
+
+(defun my-org-git-sync (dir)
+  "Запустить git-sync в DIR с дебаунсом 2 секунды."
+  (let* ((dir (expand-file-name dir))
+         (existing (gethash dir my-org-git-sync-timers)))
+    (when (timerp existing) (cancel-timer existing))
+    (puthash dir
+             (run-with-timer 2 nil
+               (lambda (d)
+                 (let* ((default-directory d)
+                        (proc (start-process "git-sync" "*git-sync*" "git-sync" "-s")))
+                   (set-process-sentinel proc
+                     (lambda (p event)
+                       (unless (zerop (process-exit-status p))
+                         (display-warning 'my-org-sync
+                           (format "git-sync failed in %s: %s" d (string-trim event))
+                           :error))))
+                   (remhash d my-org-git-sync-timers)))
+               dir)
+             my-org-git-sync-timers)))
+
+(defun my-org-find-all-repos ()
+  "Список git-репозиториев под `my-org-sync-root' (первый уровень вложенности)."
+  (when (file-directory-p my-org-sync-root)
+    (cl-remove-if-not
+     (lambda (d) (file-directory-p (expand-file-name ".git" d)))
+     (directory-files my-org-sync-root t "^[^.]"))))
+
+;; After-save хук: git-sync для текущего репо
+(add-hook 'org-mode-hook
+  (lambda ()
+    (when (my-org-buffer-repo-root)
+      (add-hook 'after-save-hook
+        (lambda () (when-let* ((root (my-org-buffer-repo-root)))
+                     (my-org-git-sync root)))
+        nil t))))
+
+;;; --- Компонент 2: Агрессивное автосохранение org-буферов ---
+
+(defun my-org-save-modified-buffers ()
+  "Тихо сохранить все изменённые org-буферы под ~/org."
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (derived-mode-p 'org-mode)
+                 buffer-file-name
+                 (buffer-modified-p)
+                 (string-prefix-p my-org-sync-root (expand-file-name buffer-file-name))
+                 (file-writable-p buffer-file-name))
+        (let ((inhibit-message t))
+          (save-buffer))))))
+
+;; Автосохранение при простое 5 секунд
+(run-with-idle-timer 5 t #'my-org-save-modified-buffers)
+
+;;; --- Компонент 3: Sync при получении/потере фокуса ---
+
+(defvar my-org-last-focus-sync 0
+  "Время последней синхронизации при получении фокуса.")
+
+(defun my-org-focus-change-handler ()
+  "Обработчик смены фокуса: сохранение при потере, sync при получении."
+  (if (frame-focus-state)
+      ;; Получили фокус — sync если прошло >60с
+      (let ((now (float-time)))
+        (when (> (- now my-org-last-focus-sync) 60)
+          (setq my-org-last-focus-sync now)
+          (my-org-save-modified-buffers)
+          (dolist (dir (my-org-find-all-repos))
+            (my-org-git-sync dir))))
+    ;; Потеряли фокус — сохранить
+    (my-org-save-modified-buffers)))
+
+(add-function :after after-focus-change-function #'my-org-focus-change-handler)
+
+;;; --- Компонент 4: Детект конфликтов при auto-revert ---
+
+(defun my-org-auto-revert-conflict-check (orig-fun &rest args)
+  "Advice для auto-revert: предупреждать о конфликте вместо молчаливого revert."
+  (if (and (derived-mode-p 'org-mode)
+           (buffer-modified-p)
+           buffer-file-name
+           (not (verify-visited-file-modtime)))
+      (progn
+        (auto-revert-mode -1)
+        (display-warning 'my-org-sync
+          (format "Конфликт: %s изменён на диске и в буфере. M-x ediff-current-file для разрешения, затем M-x auto-revert-mode для восстановления."
+                  (buffer-name))
+          :warning))
+    (apply orig-fun args)))
+
+(advice-add 'auto-revert-handler :around #'my-org-auto-revert-conflict-check)
 #+END_SRC
 
 
@@ -2167,6 +2292,9 @@ Org babel режимы, которые надо поддержать
          (string= lang "gnuplot")
          (string= lang "plantuml"))))
 
+ (use-package ob-restclient
+   :after org)
+
  (with-eval-after-load 'org
    ;; Не просить подтверждение для запуска SRC-блоков
    (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
@@ -2182,6 +2310,7 @@ Org babel режимы, которые надо поддержать
       (python . t)
       (plantuml . t)
       (gnuplot . t)
+      (restclient . t)
       (emacs-lisp . t))))
  #+END_SRC
 
@@ -2330,6 +2459,13 @@ Org babel режимы, которые надо поддержать
 
 (use-package consult-git-log-grep
   :bind ("C-c g l" . consult-git-log-grep))
+
+(use-package consult-lsp
+  :after (consult lsp-mode)
+  :bind (:map lsp-mode-map
+              ("C-c l s" . consult-lsp-symbols)
+              ("C-c l e" . consult-lsp-diagnostics)
+              ("C-c l f" . consult-lsp-file-symbols)))
 #+END_SRC
 
 ** Gnus
@@ -2483,7 +2619,13 @@ Org babel режимы, которые надо поддержать
   (setq gptel-model 'gpt-4o
         gptel-default-mode 'org-mode
         gptel-api-key (lambda ()
-                        (auth-source-pass-get 'secret "personal/openai-emacs-key"))))
+                        (auth-source-pass-get 'secret "personal/openai-emacs-key")))
+  (defun my-gptel-fill-response (beg end)
+    "Fill gptel response to 120 columns."
+    (let ((fill-column 120))
+      (fill-region beg end)))
+  (add-hook 'gptel-post-response-functions 'my-gptel-fill-response)
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 #+END_SRC
 
 

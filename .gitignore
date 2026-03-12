@@ -3,3 +3,5 @@
 **/*.elc
 **/.*.swp
 settings.el
+CLAUDE.md
+*.log
