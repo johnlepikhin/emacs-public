@@ -2665,7 +2665,8 @@ Org babel режимы, которые надо поддержать
 
    (defun my-gnus-notify-new-mail ()
      "Уведомить о новых письмах через dunstify."
-     (let ((new-count 0))
+     (when my-gnus--unread-before
+      (let ((new-count 0))
        (dolist (info gnus-newsrc-alist)
          (let* ((group (car info))
                 (unread (gnus-group-unread group))
@@ -2674,9 +2675,9 @@ Org babel режимы, которые надо поддержать
              (cl-incf new-count (- unread before)))))
        (when (> new-count 0)
          (my-dunstify (format "Новая почта: %d" new-count) nil
-                      :app "Gnus" :icon "mail-unread" :urgency 1))))
+                      :app "Gnus" :icon "mail-unread" :urgency 1)))))
 
-   (add-hook 'gnus-before-getting-new-news-hook #'my-gnus-save-unread-counts)
+   (add-hook 'gnus-get-new-news-hook #'my-gnus-save-unread-counts)
    (add-hook 'gnus-after-getting-new-news-hook #'my-gnus-notify-new-mail))
  #+END_SRC
 
