@@ -2565,6 +2565,54 @@ Org babel режимы, которые надо поддержать
     (visual-fill-column-mode)))
 #+END_SRC
 
+Перенаправление метаданных nnmaildir в кеш, чтобы не мешать mbsync:
+
+#+BEGIN_SRC emacs-lisp
+(require 'xdg)
+
+(defvar my-nnmaildir-cache-base
+  (file-name-as-directory (expand-file-name "gnus-nnmaildir" (xdg-cache-home)))
+  "Каталог для метаданных nnmaildir вне Maildir (чтобы не мешать mbsync).")
+
+(defvar my-nnmaildir-mail-base
+  (file-name-as-directory (expand-file-name "~/.mail"))
+  "Корень Maildir, синхронизируемый через mbsync.")
+
+(defun my-nnmaildir-rewrite-path (path)
+  "Перенаправить путь .nnmaildir в кеш-директорию.
+Возвращает новый путь или nil, если перенаправление не нужно."
+  (when (and (string-match-p "\\.nnmaildir" path)
+             (string-prefix-p my-nnmaildir-mail-base path))
+    (let ((relative (substring path (length my-nnmaildir-mail-base))))
+      (concat my-nnmaildir-cache-base
+              (replace-regexp-in-string "/?\\.nnmaildir/?" "/" relative)))))
+
+(defun my-nnmaildir-file-handler (operation &rest args)
+  "Прозрачно перенаправить файловые операции с .nnmaildir в кеш."
+  (let ((inhibit-file-name-handlers
+         (cons 'my-nnmaildir-file-handler
+               (and (eq inhibit-file-name-operation operation)
+                    inhibit-file-name-handlers)))
+        (inhibit-file-name-operation operation))
+    (let* ((new-args (mapcar (lambda (arg)
+                               (if (stringp arg)
+                                   (or (my-nnmaildir-rewrite-path arg) arg)
+                                 arg))
+                             args))
+           (rewritten (and (stringp (car new-args))
+                           (not (equal (car new-args) (car args)))
+                           (car new-args))))
+      ;; Обеспечить существование родительской директории в кеше
+      (when rewritten
+        (let ((parent (file-name-directory (directory-file-name rewritten))))
+          (when (and parent (not (file-exists-p parent)))
+            (make-directory parent t))))
+      (apply operation new-args))))
+
+(push '("\\.nnmaildir" . my-nnmaildir-file-handler)
+      file-name-handler-alist)
+#+END_SRC
+
  #+BEGIN_SRC emacs-lisp
  (use-package gnus
    :commands (gnus)
