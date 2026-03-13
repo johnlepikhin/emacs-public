@@ -75,6 +75,21 @@ GC-threshold ставится в most-positive-fixnum в early-init.el на вр
 (setq native-comp-async-report-warnings-errors 'silent)
 #+END_SRC
 
+*** Timestamps в *Messages*
+
+Добавляем временную метку к каждому сообщению в буфере =*Messages*= для удобства отладки:
+
+#+BEGIN_SRC emacs-lisp
+(defun my/message-with-timestamp (orig-fun fmt-string &rest args)
+  "Добавляет timestamp к сообщениям в *Messages*."
+  (when fmt-string
+    (apply orig-fun
+           (concat (format-time-string "[%F %T] ") fmt-string)
+           args)))
+
+(advice-add 'message :around #'my/message-with-timestamp)
+#+END_SRC
+
 *** Настройки отображения
 
  Некоторые оптимизации:
