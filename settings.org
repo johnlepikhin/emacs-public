@@ -2681,7 +2681,7 @@ Org babel режимы, которые надо поддержать
    (setq gnus-secondary-select-methods
          '(;; Читаем RSS/Atom через ньюсгруппы
            (nntp "news.gwene.org"
-                 (nntp-connection-timeout 120))))
+                 (nntp-connection-timeout 10))))
 
    ;; Способ оформления цитаты
    (setq message-citation-line-function 'message-insert-formatted-citation-line)
