@@ -45,10 +45,14 @@
 
 *** Окружение
 
-Добавляем ~/bin в начало PATH, чтобы пользовательские скрипты и утилиты (perltidy, gofumpt и др.) были доступны для вызовов из Emacs:
+Добавляем дополнительные пути в начало PATH и синхронизируем exec-path, чтобы пользовательские скрипты, утилиты и Guix-пакеты были доступны для вызовов из Emacs:
 
 #+BEGIN_SRC emacs-lisp
-(setenv "PATH" (concat (expand-file-name "~/bin") ":" (getenv "PATH")))
+(let ((extra-paths (list (expand-file-name "~/bin")
+                         (expand-file-name "~/.guix-home/profile/bin"))))
+  (setenv "PATH" (concat (string-join extra-paths ":") ":" (getenv "PATH")))
+  (dolist (p extra-paths)
+    (add-to-list 'exec-path p)))
 #+END_SRC
 
 *** Бэкапы файлов
@@ -487,6 +491,39 @@ GC-threshold ставится в most-positive-fixnum в early-init.el на вр
 (setq warning-minimum-level :error)
 #+END_SRC
 
+
+
+*** Уведомления (dunstify)
+
+ Универсальная обёртка для отправки уведомлений через dunstify.
+
+ #+BEGIN_SRC emacs-lisp
+ (defun my-dunstify (summary &optional body &rest args)
+   "Показать уведомление через dunstify.
+ SUMMARY — заголовок, BODY — текст (необязательно).
+ ARGS — plist: :app :icon :urgency :timeout :replace-id."
+   (when (executable-find "dunstify")
+     (let ((cmd-args nil))
+       (push "-a" cmd-args)
+       (push (or (plist-get args :app) "Emacs") cmd-args)
+       (when-let ((icon (plist-get args :icon)))
+         (push "-i" cmd-args) (push icon cmd-args))
+       (when-let ((urgency (plist-get args :urgency)))
+         (push "-u" cmd-args) (push (number-to-string urgency) cmd-args))
+       (when-let ((timeout (plist-get args :timeout)))
+         (push "-t" cmd-args) (push (number-to-string timeout) cmd-args))
+       (when-let ((rid (plist-get args :replace-id)))
+         (push "-r" cmd-args) (push (number-to-string rid) cmd-args))
+       (setq cmd-args (nreverse cmd-args))
+       (nconc cmd-args (list summary))
+       (when body (nconc cmd-args (list body)))
+       (with-temp-buffer
+         (let ((exit-code (apply #'call-process "dunstify" nil t nil cmd-args)))
+           (unless (zerop exit-code)
+             (message "dunstify exited with %d: %s"
+                      exit-code (string-trim (buffer-string))))
+           exit-code)))))
+ #+END_SRC
 
 
 *** Настройки isearch
@@ -2613,21 +2650,33 @@ Org babel режимы, которые надо поддержать
            gnus-sum-thread-tree-leaf-with-other "├─► "
            gnus-sum-thread-tree-single-leaf     "╰─► "))
 
-   ;; Уведомления о новой почте
+   ;; Уведомления о новой почте (только новые письма, не все непрочитанные)
+   (defvar my-gnus--unread-before nil
+     "Alist счётчиков непрочитанных писем до обновления.")
+
+   (defun my-gnus-save-unread-counts ()
+     "Сохранить текущие счётчики непрочитанных перед обновлением."
+     (setq my-gnus--unread-before
+           (mapcar (lambda (info)
+                     (let ((group (car info))
+                           (unread (gnus-group-unread (car info))))
+                       (cons group (if (numberp unread) unread 0))))
+                   gnus-newsrc-alist)))
+
    (defun my-gnus-notify-new-mail ()
      "Уведомить о новых письмах через dunstify."
-     (when (executable-find "dunstify")
-       (let ((unread-count 0))
-         (dolist (info gnus-newsrc-alist)
-           (let ((unread (gnus-group-unread (car info))))
-             (when (and (numberp unread) (> unread 0))
-               (cl-incf unread-count unread))))
-         (when (> unread-count 0)
-           (call-process "dunstify" nil 0 nil
-                         "-a" "Gnus"
-                         "-i" "mail-unread"
-                         "-u" "1"
-                         (format "Новая почта: %d" unread-count))))))
+     (let ((new-count 0))
+       (dolist (info gnus-newsrc-alist)
+         (let* ((group (car info))
+                (unread (gnus-group-unread group))
+                (before (or (cdr (assoc group my-gnus--unread-before)) 0)))
+           (when (and (numberp unread) (> unread before))
+             (cl-incf new-count (- unread before)))))
+       (when (> new-count 0)
+         (my-dunstify (format "Новая почта: %d" new-count) nil
+                      :app "Gnus" :icon "mail-unread" :urgency 1))))
+
+   (add-hook 'gnus-before-getting-new-news-hook #'my-gnus-save-unread-counts)
    (add-hook 'gnus-after-getting-new-news-hook #'my-gnus-notify-new-mail))
  #+END_SRC
 
