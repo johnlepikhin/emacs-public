@@ -2647,6 +2647,13 @@ Org babel режимы, которые надо поддержать
                ("M-z" . my-gnus-zap-to-signature)
                :map gnus-group-mode-map
                ("M-g" . my-gnus-update-news-external))
+   :init
+   ;; Определяем переменные до загрузки local.org,
+   ;; чтобы local.org мог дополнять их через add-to-list
+   (defvar gnus-posting-styles nil)
+   (setq gnus-secondary-select-methods
+         '((nntp "news.gwene.org"
+                 (nntp-connection-timeout 10))))
    :config
    ;; Улучшения рендеринга HTML-писем
    (setq shr-use-fonts t
@@ -2676,12 +2683,6 @@ Org babel режимы, которые надо поддержать
 
    ;; Обнуляем основной источник писем
    (setq gnus-select-method '(nnnil ""))
-
-   ;; Подключить дополнительные источники
-   (setq gnus-secondary-select-methods
-         '(;; Читаем RSS/Atom через ньюсгруппы
-           (nntp "news.gwene.org"
-                 (nntp-connection-timeout 10))))
 
    ;; Способ оформления цитаты
    (setq message-citation-line-function 'message-insert-formatted-citation-line)
