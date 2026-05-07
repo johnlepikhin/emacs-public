@@ -492,7 +492,6 @@ GC-threshold ставится в most-positive-fixnum в early-init.el на вр
 #+END_SRC
 
 
-
 *** Уведомления (dunstify)
 
  Универсальная обёртка для отправки уведомлений через dunstify.
@@ -697,6 +696,7 @@ Backspace/delete должны удалять выделенный текст:
   (corfu-auto t)
   (corfu-auto-delay 0.2)
   (corfu-auto-prefix 2)
+  :hook (org-mode . (lambda () (corfu-mode -1)))
   :init (global-corfu-mode))
 
 (use-package cape
