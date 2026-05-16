@@ -1560,6 +1560,35 @@ See URL `https://www.pylint.org/'."
   (add-hook 'bash-ts-mode-hook 'flymake-shellcheck-load))
 #+END_SRC
 
+*** RPM spec
+
+Major-mode для RPM spec-файлов + интеграция с собственным LSP-сервером
+=rpm-spec-lsp= (STDIO). Сервер регистрируется вручную через
+=lsp-register-client=, так как lsp-mode не знает о нём из коробки.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-rpm-spec-mode-setup ()
+  "Запускает rpm-spec-lsp, если бинарник найден в PATH."
+  (if (not (executable-find "rpm-spec-lsp"))
+      (message "Warning: rpm-spec-lsp not found in PATH")
+    (lsp-deferred)))
+
+(use-package rpm-spec-mode
+  :mode ("\\.spec\\(\\.in\\)?\\'" . rpm-spec-mode)
+  :hook (rpm-spec-mode . my-rpm-spec-mode-setup)
+  :config
+  (with-eval-after-load 'lsp-mode
+    (add-to-list 'lsp-language-id-configuration
+                 '(rpm-spec-mode . "rpmspec"))
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection "rpm-spec-lsp")
+      :major-modes '(rpm-spec-mode)
+      :language-id "rpmspec"
+      :server-id 'rpm-spec-lsp
+      :priority 0))))
+#+END_SRC
+
 
 *** Copilot
 
