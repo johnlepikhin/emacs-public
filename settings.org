@@ -1802,10 +1802,43 @@ Major-mode для RPM spec-файлов + интеграция с собстве
 
 Универсальная синхронизация org-файлов через git-sync для всех репозиториев под =~/org=.
 
+- После сохранения org-файла, при получении фокуса, при старте и раз в =my-org-sync-interval= секунд.
+- Не более одного git-sync на репозиторий: повторный запрос ставится в очередь и выполняется после текущего.
+- Синхронный flush при выходе из Emacs и перед сном (delay-блокировка logind через =elogind-inhibit=).
+- Проблемы (незавершённый rebase/merge, ошибка, нет сети) показываются в mode-line до следующей
+  успешной синхронизации; клик или =M-x my-org-sync-status= открывает magit на проблемном репозитории.
+
 #+BEGIN_SRC emacs-lisp
-;;; --- Компонент 1: Обобщённый git-sync для всех репо под ~/org ---
+;;; --- Компонент 1: git-sync с очередью для всех репо под ~/org ---
+
+(require 'cl-lib)
 
 (defvar my-org-sync-root (expand-file-name "~/org"))
+
+(defvar my-org-sync-interval 300
+  "Период фоновой синхронизации всех репозиториев, секунд.")
+
+(defvar my-org-sync-flush-timeout 20
+  "Общий предел времени синхронного git-sync при выходе из Emacs, секунд.")
+
+(defvar my-org-sync-sleep-flush-timeout 4
+  "Общий предел времени git-sync перед сном.
+Должен укладываться в InhibitDelayMaxSec logind (по умолчанию 5 секунд).")
+
+(cl-defstruct (my-org-sync-repo (:constructor my-org-sync-repo--make))
+  "Состояние синхронизации одного репозитория."
+  timer process pending (status 'unknown))
+
+(defvar my-org-sync-repos (make-hash-table :test 'equal)
+  "Состояние синхронизации по директориям репозиториев.")
+
+(defun my-org-sync--dir (dir)
+  "Нормализованный путь DIR: ключ для `my-org-sync-repos'."
+  (file-name-as-directory (expand-file-name dir)))
+
+(defun my-org-sync--repo (dir)
+  (or (gethash dir my-org-sync-repos)
+      (puthash dir (my-org-sync-repo--make) my-org-sync-repos)))
 
 (defun my-org-buffer-repo-root ()
   "Git-root для текущего буфера, если файл внутри `my-org-sync-root`."
@@ -1813,35 +1846,122 @@ Major-mode для RPM spec-файлов + интеграция с собстве
               (_ (string-prefix-p my-org-sync-root (expand-file-name file))))
     (locate-dominating-file file ".git")))
 
-(defvar my-org-git-sync-timers (make-hash-table :test 'equal)
-  "Таблица таймеров дебаунса git-sync по директориям.")
-
-(defun my-org-git-sync (dir)
-  "Запустить git-sync в DIR с дебаунсом 2 секунды."
-  (let* ((dir (expand-file-name dir))
-         (existing (gethash dir my-org-git-sync-timers)))
-    (when (timerp existing) (cancel-timer existing))
-    (puthash dir
-             (run-with-timer 2 nil
-               (lambda (d)
-                 (let* ((default-directory d)
-                        (proc (start-process "git-sync" "*git-sync*" "git-sync" "-s")))
-                   (set-process-sentinel proc
-                     (lambda (p event)
-                       (unless (zerop (process-exit-status p))
-                         (display-warning 'my-org-sync
-                           (format "git-sync failed in %s: %s" d (string-trim event))
-                           :error))))
-                   (remhash d my-org-git-sync-timers)))
-               dir)
-             my-org-git-sync-timers)))
-
 (defun my-org-find-all-repos ()
   "Список git-репозиториев под `my-org-sync-root' (первый уровень вложенности)."
   (when (file-directory-p my-org-sync-root)
-    (cl-remove-if-not
-     (lambda (d) (file-directory-p (expand-file-name ".git" d)))
-     (directory-files my-org-sync-root t "^[^.]"))))
+    (mapcar #'my-org-sync--dir
+            (cl-remove-if-not
+             (lambda (d) (file-directory-p (expand-file-name ".git" d)))
+             (directory-files my-org-sync-root t "^[^.]")))))
+
+(defun my-org-sync--repo-unsafe-p (dir)
+  "Не nil, если в DIR незавершённый rebase или merge: git-sync в таком состоянии не работает."
+  (let ((git (expand-file-name ".git" dir)))
+    (cl-some (lambda (f) (file-exists-p (expand-file-name f git)))
+             '("rebase-merge" "rebase-apply" "MERGE_HEAD"))))
+
+(defun my-org-sync--classify (dir code)
+  "Статус репозитория DIR по коду возврата git-sync CODE."
+  (cond ((my-org-sync--repo-unsafe-p dir) 'conflict)
+        ((eql code 0) 'ok)
+        ;; git-sync возвращает 3 при сбое fetch/push
+        ((eql code 3) 'offline)
+        (t 'error)))
+
+(defun my-org-sync--describe (status)
+  (pcase status
+    ('conflict "конфликт")
+    ('offline "нет связи")
+    (_ "ошибка")))
+
+(defun my-org-sync--set-status (dir status &optional code)
+  "Запомнить STATUS для DIR; предупредить при переходе в проблемное состояние."
+  (let* ((repo (my-org-sync--repo dir))
+         (old (my-org-sync-repo-status repo)))
+    (setf (my-org-sync-repo-status repo) status)
+    (unless (or (eq status 'ok) (eq status old))
+      (display-warning 'my-org-sync
+                       (format "git-sync в %s: %s%s, см. *git-sync*"
+                               dir (my-org-sync--describe status)
+                               (if code (format " (код %s)" code) ""))
+                       (if (eq status 'offline) :warning :error)))
+    (force-mode-line-update t)))
+
+(defun my-org-sync--log (dir)
+  (with-current-buffer (get-buffer-create "*git-sync*")
+    (goto-char (point-max))
+    (insert (format "\n[%s] %s\n" (format-time-string "%F %T") dir))))
+
+(defun my-org-sync--start (dir)
+  "Запустить git-sync в DIR либо поставить повтор в очередь, если он уже идёт."
+  (let ((repo (my-org-sync--repo dir)))
+    (setf (my-org-sync-repo-timer repo) nil)
+    (if (process-live-p (my-org-sync-repo-process repo))
+        (setf (my-org-sync-repo-pending repo) t)
+      (setf (my-org-sync-repo-pending repo) nil)
+      (my-org-sync--log dir)
+      (let ((default-directory dir))
+        (setf (my-org-sync-repo-process repo)
+              (make-process
+               :name "git-sync"
+               :buffer "*git-sync*"
+               :command '("git-sync" "-s")
+               :connection-type 'pipe
+               :noquery t
+               :sentinel (lambda (proc _event)
+                           (unless (process-live-p proc)
+                             (my-org-sync--finished dir proc)))))))))
+
+(defun my-org-sync--finished (dir proc)
+  (let ((repo (my-org-sync--repo dir))
+        (code (process-exit-status proc)))
+    (my-org-sync--set-status dir (my-org-sync--classify dir code) code)
+    (when (my-org-sync-repo-pending repo)
+      (my-org-sync--start dir))))
+
+(defun my-org-git-sync (dir)
+  "Запланировать git-sync в DIR с дебаунсом 2 секунды."
+  (let* ((dir (my-org-sync--dir dir))
+         (repo (my-org-sync--repo dir)))
+    (when (timerp (my-org-sync-repo-timer repo))
+      (cancel-timer (my-org-sync-repo-timer repo)))
+    (setf (my-org-sync-repo-timer repo)
+          (run-with-timer 2 nil #'my-org-sync--start dir))))
+
+(defun my-org-sync--all-repos ()
+  "Запланировать git-sync во всех репозиториях, не сохраняя буферы."
+  (mapc #'my-org-git-sync (my-org-find-all-repos)))
+
+(defun my-org-sync-all ()
+  "Сохранить org-буферы и синхронизировать все репозитории под `my-org-sync-root'."
+  (interactive)
+  (my-org-save-modified-buffers)
+  (my-org-sync--all-repos))
+
+(defun my-org-sync-flush (timeout)
+  "Синхронно сохранить org-буферы и прогнать git-sync во всех репозиториях.
+На всё отводится не более TIMEOUT секунд."
+  (my-org-save-modified-buffers)
+  (let ((deadline (+ (float-time) timeout)))
+    (dolist (dir (my-org-find-all-repos))
+      (let* ((repo (my-org-sync--repo dir))
+             (proc (my-org-sync-repo-process repo)))
+        (when (timerp (my-org-sync-repo-timer repo))
+          (cancel-timer (my-org-sync-repo-timer repo))
+          (setf (my-org-sync-repo-timer repo) nil))
+        ;; Дождаться идущего git-sync, чтобы не конкурировать за index.lock
+        (setf (my-org-sync-repo-pending repo) nil)
+        (while (and (process-live-p proc) (< (float-time) deadline))
+          (accept-process-output proc 0.1))
+        (let ((left (floor (- deadline (float-time)))))
+          (when (and (> left 0) (not (process-live-p proc)))
+            (my-org-sync--log dir)
+            (let* ((default-directory dir)
+                   (code (if (executable-find "timeout")
+                             (call-process "timeout" nil "*git-sync*" nil
+                                           (number-to-string left) "git-sync" "-s")
+                           (call-process "git-sync" nil "*git-sync*" nil "-s"))))
+              (my-org-sync--set-status dir (my-org-sync--classify dir code) code))))))))
 
 ;; After-save хук: git-sync для текущего репо
 (add-hook 'org-mode-hook
@@ -1851,6 +1971,18 @@ Major-mode для RPM spec-файлов + интеграция с собстве
         (lambda () (when-let* ((root (my-org-buffer-repo-root)))
                      (my-org-git-sync root)))
         nil t))))
+
+;; Синхронизация при старте (через 5с) и далее периодически
+(defvar my-org-sync--periodic-timer nil)
+(when (timerp my-org-sync--periodic-timer)
+  (cancel-timer my-org-sync--periodic-timer))
+(setq my-org-sync--periodic-timer
+      (run-with-timer 5 my-org-sync-interval #'my-org-sync--all-repos))
+
+;; Flush при выходе из Emacs
+(defun my-org-sync--kill-emacs ()
+  (my-org-sync-flush my-org-sync-flush-timeout))
+(add-hook 'kill-emacs-hook #'my-org-sync--kill-emacs)
 
 ;;; --- Компонент 2: Агрессивное автосохранение org-буферов ---
 
@@ -1881,9 +2013,7 @@ Major-mode для RPM spec-файлов + интеграция с собстве
       (let ((now (float-time)))
         (when (> (- now my-org-last-focus-sync) 60)
           (setq my-org-last-focus-sync now)
-          (my-org-save-modified-buffers)
-          (dolist (dir (my-org-find-all-repos))
-            (my-org-git-sync dir))))
+          (my-org-sync-all)))
     ;; Потеряли фокус — сохранить
     (my-org-save-modified-buffers)))
 
@@ -1906,6 +2036,82 @@ Major-mode для RPM spec-файлов + интеграция с собстве
     (apply orig-fun args)))
 
 (advice-add 'auto-revert-handler :around #'my-org-auto-revert-conflict-check)
+
+;;; --- Компонент 5: Сон и пробуждение (logind/elogind через D-Bus) ---
+
+(defvar my-org-sync--sleep-lock nil
+  "Процесс *-inhibit, держащий delay-блокировку сна, пока он жив.")
+
+(defvar my-org-sync--dbus-registration nil)
+
+(defun my-org-sync--sleep-lock-acquire ()
+  "Взять delay-блокировку сна, чтобы успеть сделать flush по PrepareForSleep."
+  (when-let* ((inhibit (or (executable-find "systemd-inhibit")
+                           (executable-find "elogind-inhibit"))))
+    (unless (process-live-p my-org-sync--sleep-lock)
+      (setq my-org-sync--sleep-lock
+            (make-process :name "org-sync-sleep-lock"
+                          :noquery t
+                          :command (list inhibit "--what=sleep" "--who=Emacs"
+                                         "--why=Sync org files" "--mode=delay"
+                                         "sleep" "infinity"))))))
+
+(defun my-org-sync--prepare-for-sleep (start)
+  "Перед сном (START не nil) — flush и снятие блокировки; после пробуждения — sync."
+  (if start
+      (progn
+        ;; Best effort: NetworkManager гасит сеть по тому же сигналу
+        (my-org-sync-flush my-org-sync-sleep-flush-timeout)
+        (when (process-live-p my-org-sync--sleep-lock)
+          (delete-process my-org-sync--sleep-lock)))
+    (my-org-sync--sleep-lock-acquire)
+    ;; Дать сети подняться после пробуждения
+    (run-with-timer 15 nil #'my-org-sync--all-repos)))
+
+(when (and (featurep 'dbusbind)
+           (require 'dbus nil t)
+           (dbus-ping :system "org.freedesktop.login1" 1000))
+  (when my-org-sync--dbus-registration
+    (dbus-unregister-object my-org-sync--dbus-registration))
+  (setq my-org-sync--dbus-registration
+        (dbus-register-signal :system "org.freedesktop.login1" "/org/freedesktop/login1"
+                              "org.freedesktop.login1.Manager" "PrepareForSleep"
+                              #'my-org-sync--prepare-for-sleep))
+  (my-org-sync--sleep-lock-acquire))
+
+;;; --- Компонент 6: Индикатор проблем в mode-line ---
+
+(defun my-org-sync--problems ()
+  "Список (DIR . STATUS) проблемных репозиториев, сначала конфликты и ошибки."
+  (let (res)
+    (maphash (lambda (dir repo)
+               (let ((s (my-org-sync-repo-status repo)))
+                 (when (memq s '(conflict error offline))
+                   (push (cons dir s) res))))
+             my-org-sync-repos)
+    (sort res (lambda (a b) (and (not (eq (cdr a) 'offline)) (eq (cdr b) 'offline))))))
+
+(defun my-org-sync-status ()
+  "Открыть magit-status для проблемного репозитория."
+  (interactive)
+  (if-let* ((dir (caar (my-org-sync--problems))))
+      (magit-status dir)
+    (message "org-sync: все репозитории синхронизированы")))
+
+(defvar my-org-sync--mode-line-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [mode-line mouse-1] #'my-org-sync-status)
+    map))
+
+(defun my-org-sync--mode-line ()
+  (when-let* ((status (cdar (my-org-sync--problems))))
+    (propertize (format " [org-sync: %s]" (my-org-sync--describe status))
+                'face (if (eq status 'offline) 'warning 'error)
+                'help-echo "mouse-1: открыть magit для проблемного репозитория"
+                'mouse-face 'mode-line-highlight
+                'local-map my-org-sync--mode-line-map)))
+
+(add-to-list 'global-mode-string '(:eval (my-org-sync--mode-line)) t)
 #+END_SRC
 
 
