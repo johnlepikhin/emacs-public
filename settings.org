@@ -36,6 +36,14 @@
 
 ** Базовая конфигурация
 
+Заголовок =:lexical t= действует только при интерактивном выполнении блоков, в tangled =settings.el= он не попадает.
+Без cookie на первой строке Emacs загружает файл с динамическим связыванием (и с 31-й версии предупреждает об этом),
+поэтому cookie добавляется отдельным блоком, который должен оставаться первым:
+
+#+BEGIN_SRC emacs-lisp :exports none
+;;; settings.el --- tangled from settings.org  -*- lexical-binding: t -*-
+#+END_SRC
+
 Собрать информацию по use-package. После загрузки можно позвать функци use-package-report и посмотреть.
 
 #+BEGIN_SRC emacs-lisp
@@ -77,6 +85,11 @@ GC-threshold ставится в most-positive-fixnum в early-init.el на вр
 
 ;; Убираем шум при фоновой компиляции пакетов
 (setq native-comp-async-report-warnings-errors 'silent)
+
+;; elgrep (зависимость obsidian) перезаписывает свой файл истории без lexical-binding cookie
+(add-to-list 'warning-suppress-log-types
+             `(files missing-lexbind-cookie
+                     ,(abbreviate-file-name (expand-file-name "elgrep-data.el" user-emacs-directory))))
 #+END_SRC
 
 *** Timestamps в *Messages*
@@ -1864,8 +1877,9 @@ Major-mode для RPM spec-файлов + интеграция с собстве
   "Статус репозитория DIR по коду возврата git-sync CODE."
   (cond ((my-org-sync--repo-unsafe-p dir) 'conflict)
         ((eql code 0) 'ok)
-        ;; git-sync возвращает 3 при сбое fetch/push
-        ((eql code 3) 'offline)
+        ;; git-sync возвращает 3 при сбое fetch/push; 124 — убит `timeout' во flush,
+        ;; на практике это зависший без сети fetch
+        ((memq code '(3 124)) 'offline)
         (t 'error)))
 
 (defun my-org-sync--describe (status)
@@ -1875,16 +1889,17 @@ Major-mode для RPM spec-файлов + интеграция с собстве
     (_ "ошибка")))
 
 (defun my-org-sync--set-status (dir status &optional code)
-  "Запомнить STATUS для DIR; предупредить при переходе в проблемное состояние."
+  "Запомнить STATUS для DIR; предупредить при переходе в проблемное состояние.
+Отсутствие связи ожидаемо при работе без сети: о нём сообщает только mode-line."
   (let* ((repo (my-org-sync--repo dir))
          (old (my-org-sync-repo-status repo)))
     (setf (my-org-sync-repo-status repo) status)
-    (unless (or (eq status 'ok) (eq status old))
+    (unless (or (memq status '(ok offline)) (eq status old))
       (display-warning 'my-org-sync
                        (format "git-sync в %s: %s%s, см. *git-sync*"
                                dir (my-org-sync--describe status)
                                (if code (format " (код %s)" code) ""))
-                       (if (eq status 'offline) :warning :error)))
+                       :error))
     (force-mode-line-update t)))
 
 (defun my-org-sync--log (dir)
